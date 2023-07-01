@@ -33,11 +33,31 @@ const UserSchema = new mongoose.Schema(
       default: "student",
     },
 
+    // student specific fields
+
     roll_no: {
       type: String,
     },
+
+    batch_id: {
+      type: mongoose.Types.ObjectId,
+    },
+
+    branch_id: {
+      type: mongoose.Types.ObjectId,
+    },
+
+    personal_details: {
+      type: mongoose.Types.ObjectId,
+      unique: true,
+    },
+
+    education_details: {
+      type: mongoose.Types.ObjectId,
+      unique: true,
+    },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 UserSchema.pre("save", async function () {

@@ -33,6 +33,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 // routes
 const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes");
+const studentDetailsRouter = require("./routes/studentDetailsRoutes");
 
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(morgan("tiny"));
@@ -46,6 +47,7 @@ app.use(express.static("./public"));
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", [authenticateUser, userRouter]);
+app.use("/api/v1/student", [authenticateUser, studentDetailsRouter]);
 
 app.use(notFoundHandler);
 app.use(errorHandlerMiddleware);
