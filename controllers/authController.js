@@ -8,6 +8,8 @@ const { createUserToken, attachCookieToResponse } = require("../utils");
 const login = async (req, res) => {
   const role = req.params?.role;
 
+  let { password } = req.body;
+
   if (!role || (role != "student" && role != "admin")) {
     throw new CustomAPIError.BadRequestError("Invalid role");
   }
@@ -15,28 +17,23 @@ const login = async (req, res) => {
   let user;
 
   if (role == "student") {
-    let { roll_no, date_of_birth } = req.body;
+    let { roll_no } = req.body;
 
-    if (!roll_no?.trim() || !date_of_birth?.trim()) {
+    if (!roll_no?.trim() || !password?.trim()) {
       throw new CustomAPIError.BadRequestError(
         "Please provide Roll No. & Date of Birth"
       );
     }
 
-    date_of_birth = new Date(date_of_birth);
+    const date_of_birth = new Date(password);
     console.log(roll_no, date_of_birth);
     if (date_of_birth == "Invalid Date") {
       throw new CustomAPIError.BadRequestError("Invalid date of birth!");
     }
 
-    user = await UserModel.findOne({ roll_no, date_of_birth, role });
-
-    if (!user) {
-      console.log("no user")
-      throw new CustomAPIError.UnauthenticatedError("Authentication failed");
-    }
+    user = await UserModel.findOne({ roll_no, role });
   } else if (role == "admin") {
-    const { email, password } = req.body;
+    const { email } = req.body;
 
     if (!email?.trim() || !password) {
       throw new CustomAPIError.BadRequestError(
@@ -45,14 +42,17 @@ const login = async (req, res) => {
     }
 
     user = await UserModel.findOne({ email: email.toLowerCase(), role });
-    if (!user) {
-      throw new CustomAPIError.UnauthenticatedError("Authentication failed");
-    }
-    const isPasswordCorrect = await user.comparePassword(password);
+  }
 
-    if (!isPasswordCorrect) {
-      throw new CustomAPIError.UnauthenticatedError("Authentication failed");
-    }
+  if (!user) {
+    console.log("no user");
+    throw new CustomAPIError.UnauthenticatedError("Authentication failed");
+  }
+
+  const isPasswordCorrect = await user.comparePassword(password);
+
+  if (!isPasswordCorrect) {
+    throw new CustomAPIError.UnauthenticatedError("Authentication failed");
   }
 
   const userToken = createUserToken(user);

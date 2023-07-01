@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema(
 
     email: {
       type: String,
-      required: [true, "Email is required"],
+      // required: [true, "Email is required"],
       unique: [true, "User already exists"],
       validate: {
         validator: validator.isEmail,
@@ -24,6 +24,7 @@ const UserSchema = new mongoose.Schema(
 
     password: {
       type: String,
+      required: [true, "Password is required"],
       minlength: [8, "Password should be of atleast 8 characters"],
     },
 
@@ -32,11 +33,11 @@ const UserSchema = new mongoose.Schema(
       default: "student",
     },
 
-    date_of_birth: {
-      type: Date
-    }
-
-  }, { timestamps: true }
+    roll_no: {
+      type: String,
+    },
+  },
+  { timestamps: true }
 );
 
 UserSchema.pre("save", async function () {
