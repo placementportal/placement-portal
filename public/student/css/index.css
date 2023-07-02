@@ -118,7 +118,8 @@
 /*********** Profile Detail Section Right ***********/
 
 .prof-right{
-    padding:0 40px;  
+    padding:0 40px;
+    width:100%;  
 }
 .basic-detail>h2{
     font-size: 32px;
@@ -136,3 +137,109 @@
     font-size:15px;
     color: #00A885;
 }
+
+
+.prof-info-list{
+    margin-top:50px;
+    display: block;
+}
+.prof-info-tab{
+    border-bottom: 1px solid #00a8869e;
+    padding:10px 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+.prof-info-tab>a{
+    text-decoration: none;
+    color: #000;
+    font-size: 16px;
+    font-weight: 400;
+    margin-right: 40px;
+    margin-bottom:15px;
+    display: block;
+}
+
+
+.pd-info-item .pd-info-head{
+    font-size: 14px;
+    color: #00A885;
+    position: relative;
+    margin-bottom:25px;
+}
+
+
+.pd-info-item{
+    margin:25px 0;
+    color: rgb(105, 105, 105);
+}
+.pd-info-item>h2{
+    font-size: 16px;
+    color: rgb(41, 41, 41);
+}
+
+.pd-info-text{
+    margin:10px 0;
+    font-size: 14px;
+}
+.pd-info-text>div{
+    display: flex;
+    align-items: center;  
+    margin-top:12px;
+}
+.pd-info-text>div>h3{
+    margin-right: 10px;
+}
+
+.prof-tab-links.active{
+    color:#00A885;
+    padding-bottom: 2px ;
+    border-bottom: 1px solid #007d6454;
+}
+.prof-tab-content{
+    display: none;
+}
+
+.exp-info-text{
+    max-width: 350px;
+    box-shadow: 1px 1px 10px 5px rgba(224, 224, 224, 0.518);
+    padding:30px 30px 30px 20px;
+    border-radius: 5px;
+}
+.prof-exp-item>h2{
+    font-size:18px;
+    margin-bottom: 15px;
+}
+.exp-inner-wrap{
+    display: flex;
+    justify-content: space-between;
+    margin:10px 0;
+}
+.exp-inner-wrap>div{
+    display: flex;
+    align-items: center;
+}
+.exp-inner-wrap>div>h3{
+    font-size:15px;
+    font-weight: 700;
+    margin-right: 8px;
+}
+.exp-inner-wrap>div>span{
+    font-size:14px;
+}
+
+@media (max-width: 720px) {
+    .prof-detail {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column-reverse;
+        padding: 40px 50px;
+    }
+    .prof-right {
+        padding: 0 0px;
+        width: 100%;
+    }
+    .main-menu{
+        display: none;
+    }
+}
+  

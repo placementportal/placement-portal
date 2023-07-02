@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>Student Profile</title>
     <link rel="stylesheet" href="./css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -19,10 +19,13 @@
                      <a href="#">Notification</a>
                 </div>
                 <div>
-                    <i class="fa-regular fa-circle-question"></i>
+                    <i class="fa-regular fa-circle-play"></i>
                     <a href="#">Quiz</a>
                 </div>
-                
+                <div>
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <a href="#">Logout</a>
+                </div>
             </div>
         </div>
 
@@ -68,13 +71,94 @@
                 </div>
             </div>
             <div class="prof-right">
-                <div class="basic-detail">
-                    <h2>Rohan Singh</h2>
+                <div class="prof-basic-info">
+                    <div class="basic-detail">
+                        <h2>Rohan Singh</h2>
+                    </div>
+    
+                    <div class="report-query">
+                        <i class="fa-solid fa-message"></i>
+                        <a href="#">Report Query To Admin</a>
+                    </div>
                 </div>
+                <div class="prof-info-list">
 
-                <div class="report-query">
-                    <i class="fa-solid fa-message"></i>
-                    <a href="#">Report Query To Admin</a>
+                    <div class="prof-info-tab">
+                        <a href="#" class="prof-tab-links active" data-tab="personal-details" class="active"><i class="fa-regular fa-user"></i> Personal Details</a>
+                        <a href="#" class="prof-tab-links" data-tab="education-info"><i class="fa-solid fa-graduation-cap"></i> Education</a>
+                        <a href="#" class="prof-tab-links" data-tab="experience-info"><i class="fa-solid fa-briefcase"></i> Placement and Experience</a>
+                        <a href="#" class="prof-tab-links" data-tab="training-info"><i class="fa-solid fa-certificate"></i> Training and certificates</a>
+                    </div>
+
+                    <div id="personal-details" class="prof-tab-content">
+                        <div class="pd-info-item">
+                            <div class="pd-info-head">Student Basic Information</div>
+                            <div class="pd-info-text">
+                                <div><h3>Name:</h3><span>Rohan Singh</span></div>
+                                <div><h3>Father's Name:</h3><span>2018-2021</span></div>
+                                <div><h3>Email:</h3><span>rohansingh@gmail.com</span></div>
+                                <div><h3>Phone:</h3><span>8948xxxxxx</span></div>
+                                <div><h3>Gender:</h3><span>Male</span></div>
+                                
+                            </div> 
+                        </div>
+                    </div>
+                    <div id="education-info" class="prof-tab-content">
+                        <div class="pd-info-item">
+                            <div class="pd-info-head">Education Basic Information</div>
+                            <!-- Qualification Item 1 -->
+                    <div class="prof-qual-item">
+                        <h2>Bansal Institute of Engineering and technology</h2>
+                        <div class="course-det">
+                            <div><h3>Course:</h3><span>B.Tech</span></div>
+                            <div><h3>Duration:</h3><span>2021-2025</span></div>
+                        </div>    
+                        <div class="course-det">
+                            <div><h3>Branch:</h3><span>CSE</span></div>    
+                        </div>
+                    </div>
+                    <!-- Qualification Item 2 -->
+                    <div class="prof-qual-item">
+                        <h2>Government Polytechnic Unnao</h2>
+                        <div class="course-det">
+                            <div><h3>Course:</h3><span>Diploma</span></div>
+                            <div><h3>Duration:</h3><span>2018-2021</span></div>
+                        </div>    
+                        <div class="course-det">
+                            <div><h3>Branch:</h3><span>CSE</span></div>    
+                        </div>
+                    </div>
+                        </div>
+                    </div>
+
+                    <div id="experience-info" class="prof-tab-content">
+                        <div class="pd-info-item">
+                            <div class="pd-info-head">Experience & Placement</div>
+                            <div class="exp-info-text">
+                                <div class="prof-exp-item">
+                                    <h2>Antarish Developer</h2>
+                                    <div class="exp-inner-wrap">
+                                        <div><h3>Job Role:</h3><span>SDE II</span></div>  
+                                    </div>    
+                                    <div class="exp-inner-wrap">
+                                        <div><h3>Start Date:</h3><span>2018-2021</span></div>
+                                        <div><h3>End Date:</h3><span>2022</span></div>    
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>
+
+                    <div id="training-info" class="prof-tab-content">
+                        <div class="pd-info-item">
+                            <div class="pd-info-head">Training & Certificate</div>
+                            <div class="pd-info-text">
+                                <div class="pd-info-text">
+                                    <p>No Information Available</p>
+                                </div> 
+                            </div> 
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

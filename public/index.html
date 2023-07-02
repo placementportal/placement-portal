@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Login form with JavaScript Validation</title>
+  <title>Student Login</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
   <link rel="stylesheet" href="./assets/css/login.css">
-
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 <body>
 <!-- partial:index.partial.html -->
@@ -36,7 +36,7 @@
                     <input id="rememberMe" type="checkbox">
                     <label for="rememberMe">Remember Me</label>
                   </div> -->
-                  <a class="forgot pull-right" href="./adminLogin.html">Admin Login</a>
+                  <a class="forgot pull-right" href="./admin-login.html">Admin Login</a>
                 </div>
               </form>
               <form method="post"  id="studentFormValidate"></form>
@@ -50,8 +50,8 @@
 
   <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.15.0/jquery.validate.min.js'></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="./assets/js/login.js"></script>
-  <script src="./assets/js/apiCalls.js"></script>
 
 </body>
 </html>

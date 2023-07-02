@@ -3,14 +3,14 @@ window.onload = function() {
 };
 
 function checkAlreadyLogged(){
-  fetch("http://localhost:5000/api/v1/user/whoami/")
+  fetch("/api/v1/user/whoami/")
   .then(response => response.json())    
   .then((data) => {
     
     if(data?.user?.role==='student'){
-        window.location.href="http://localhost:5000/student/index.html"
+        window.location.href="/student/index.html"
     }else if(data?.user?.role!=='admin'){
-       window.location.href="http://localhost:5000/"
+       window.location.href="/"
     }
     // console.log(JSON.stringify(data))
   })  
