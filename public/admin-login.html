@@ -17,16 +17,16 @@
         </div>
         <div class="wrapper">
             <div class="inner-warpper text-center">
-              <h2 class="title">Student Login</h2>
-              <form method="post"  id="studentFormValidate">
+              <h2 class="title">Admin Login</h2>
+              <form method="post"  id="adminFormValidate">
                 <div class="input-group">
-                  <label class="palceholder" for="rollNo">Roll No</label>
-                  <input class="form-control" name="rollNo" id="rollNo" type="text" placeholder="" />
+                  <label class="palceholder" for="email">Email</label>
+                  <input class="form-control" name="email" id="email" type="text" placeholder="" />
                   <span class="lighting"></span>
                 </div>
                 <div class="input-group">
-                  <!-- <label class="palceholder" for="userPassword">Enter DOB</label> -->
-                  <input class="form-control" type="date" name="dob" id="dob"   />
+                  <label class="palceholder" for="adminPassword">Password</label>
+                  <input class="form-control" type="password" name="adminPassword" id="adminPassword"   />
                   <span class="lighting"></span>
                 </div>
           
@@ -36,11 +36,11 @@
                     <input id="rememberMe" type="checkbox">
                     <label for="rememberMe">Remember Me</label>
                   </div> -->
-                  <a class="forgot pull-right" href="./adminLogin.html">Admin Login</a>
+                  <a class="forgot pull-right" href="./index.html">Student Login</a>
                 </div>
               </form>
-              <form method="post"  id="studentFormValidate"></form>
             </div>
+            <form method="post"  id="studentFormValidate"></form>
             <!-- <div class="signup-wrapper text-center">
               <a href="#">Don't have an accout? <span class="text-primary">Create One</span></a>
             </div> -->
@@ -51,7 +51,6 @@
   <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.15.0/jquery.validate.min.js'></script>
   <script src="./assets/js/login.js"></script>
-  <script src="./assets/js/apiCalls.js"></script>
 
 </body>
 </html>

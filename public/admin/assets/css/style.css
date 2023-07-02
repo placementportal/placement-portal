@@ -260,14 +260,13 @@ body {
 }
 
 /* ================== Order Details List ============== */
-.details {
+/* .details {
   position: relative;
   width: 100%;
   padding: 20px;
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-gap: 30px;
-  /* margin-top: 10px; */
 }
 
 .details .recentOrders {
@@ -404,7 +403,7 @@ body {
 }
 .recentCustomers table tr:hover td h4 span {
   color: var(--white);
-}
+} */
 
 /* ====================== Responsive Design ========================== */
 @media (max-width: 991px) {
@@ -468,3 +467,147 @@ body {
     left: initial;
   }
 }
+
+
+
+/************ STUDENT FORM CSS ***********/
+.student-form{
+  max-width: 600px;
+  margin:0 auto;
+  width: 100%;
+  background-color: #fff;
+  padding: 25px 30px;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+.student-form .form-title{
+  font-size: 25px;
+  font-weight: 500;
+  position: relative;
+  margin-bottom: 20px;
+}
+.student-form .form-title::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 30px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #00634f, #009274);
+}
+.form-content form .fuser-details{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px 0 12px 0;
+}
+form .fuser-details .finput-box{
+  display: flex;
+  justify-content: space-between;
+  width:100%;
+  margin-bottom: 15px;
+  /* width: calc(100% / 2 - 20px); */
+}
+form .finput-box span.form-details{
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.fuser-details .finput-box input{
+  height: 40px;
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  border-radius: 5px;
+  padding-left: 15px;
+  border: 1px solid #ccc;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+}
+.fuser-details .finput-box input:focus,
+.fuser-details .finput-box input:valid{
+  border-color: #9b59b6;
+}
+ form .fgender-details .fgender-title{
+  font-size: 20px;
+  font-weight: 500;
+ }
+ form .form-category{
+   display: flex;
+   width: 80%;
+   margin: 14px 0;
+ }
+ form .form-category label{
+   display: flex;
+   align-items: center;
+   cursor: pointer;
+ }
+ form .form-category .dot-1{
+  margin-right:15px;
+  border:1px solid black;
+ }
+ form .form-category label .dot{
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background: #d9d9d9;
+  border: 5px solid transparent;
+  transition: all 0.3s ease;
+}
+ #dot-1:checked ~ .form-category label .one,
+ #dot-2:checked ~ .form-category label .two,
+ #dot-3:checked ~ .form-category label .three{
+   background: #00634f;
+   border-color: #009274;
+ }
+ form input[type="radio"]{
+   display: none;
+ }
+ form .form-button{
+   height: 45px;
+   margin: 35px 0
+ }
+ form .form-button input{
+   height: 100%;
+   width: 100%;
+   border-radius: 5px;
+   border: none;
+   color: #fff;
+   font-size: 18px;
+   font-weight: 500;
+   letter-spacing: 1px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   background: linear-gradient(135deg, #00634f, #009274);
+ }
+ form .form-button input:hover{
+  /* transform: scale(0.99); */
+  background: linear-gradient(-135deg, #3cffd8, #0d5b4c);
+  }
+ @media(max-width: 584px){
+ .student-form{
+  max-width: 100%;
+}
+form .fuser-details .finput-box{
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  form .form-category{
+    width: 100%;
+  }
+  .form-content form .fuser-details{
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+  .fuser-details::-webkit-scrollbar{
+    width: 5px;
+  }
+  }
+  @media(max-width: 459px){
+  .student-form .form-content .form-category{
+    flex-direction: column;
+  }
+}
+
