@@ -199,6 +199,10 @@
     display: none;
 }
 
+#experience-container {
+    display: flex;
+}
+
 .exp-info-text{
     max-width: 350px;
     box-shadow: 1px 1px 10px 5px rgba(224, 224, 224, 0.518);
