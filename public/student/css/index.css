@@ -4,7 +4,9 @@
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
 }
-
+body{
+    position: relative;
+}
 .main-header{
     display: flex;
     justify-content: space-between;
@@ -145,8 +147,9 @@
 }
 .prof-info-tab{
     border-bottom: 1px solid #00a8869e;
-    padding:10px 0;
+    padding:5px 0;
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
 }
 .prof-info-tab>a{
@@ -155,11 +158,22 @@
     font-size: 16px;
     font-weight: 400;
     margin-right: 40px;
-    margin-bottom:15px;
+    margin-bottom:10px;
     display: block;
 }
 
-
+.create-head-wrap{
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #00A885;
+    position: relative;
+    margin-bottom:25px;
+}
+.create-head-wrap>a{
+    text-decoration: none;
+    color: #00A885;
+}
 .pd-info-item .pd-info-head{
     font-size: 14px;
     color: #00A885;
@@ -192,8 +206,9 @@
 
 .prof-tab-links.active{
     color:#00A885;
-    padding-bottom: 2px ;
+    padding:10px;
     border-bottom: 1px solid #007d6454;
+    box-shadow: 2px 2px 5px 5px rgba(219, 219, 219, 0.516);
 }
 .prof-tab-content{
     display: none;
@@ -201,13 +216,14 @@
 
 #experience-container {
     display: flex;
+    flex-wrap: wrap;
 }
-
 .exp-info-text{
-    max-width: 350px;
+    width: 350px;
     box-shadow: 1px 1px 10px 5px rgba(224, 224, 224, 0.518);
     padding:30px 30px 30px 20px;
     border-radius: 5px;
+    margin:0 15px 10px 0;
 }
 .prof-exp-item>h2{
     font-size:18px;
@@ -231,12 +247,65 @@
     font-size:14px;
 }
 
+/********** ADD EXPERIENCE FORM *********/
+#create-exp-modal{
+    position: fixed;
+    top:50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    width: 450px;
+    display: none;
+    z-index:999;
+}
+.create-exp-form{
+    padding:40px 30px;
+    box-shadow: 2px 2px 5px 5px rgba(230, 230, 230, 0.788);
+    width: 100%;
+}
+.create-modal-head{
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+.create-modal-head>h2{
+    font-size:25px;
+    padding-bottom:30px;
+    color: #00A885;
+}
+.create-exp-form .form-control{
+    margin-bottom: 15px;
+}
+.create-exp-form .form-control>label{
+    font-size:14px;
+    color: black;
+}
+.create-exp-form .form-control>input{
+    width:100%;
+    padding:8px;
+    outline: none;
+    border: 1px solid rgba(220, 220, 220, 0.913);
+    border-radius: 5px;
+    margin-top:3px;
+}
+.add-exp-btn{
+    width: 100%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #00A885;
+    margin:10px 0;
+}
+
+
 @media (max-width: 720px) {
     .prof-detail {
         display: flex;
         flex-wrap: wrap;
         flex-direction: column-reverse;
-        padding: 40px 50px;
+        padding: 40px 20px;
     }
     .prof-right {
         padding: 0 0px;
@@ -244,6 +313,9 @@
     }
     .main-menu{
         display: none;
+    }
+    #create-exp-modal{
+        width: 300px;
     }
 }
   

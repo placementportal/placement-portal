@@ -57,6 +57,22 @@ async function fetchExperience() {
   }
 }
 
+
+
+ //Create Experience poppup
+ const createExpBtn = document.getElementById('create-exp-btn'); 
+ const closeExpBtn = document.getElementById('close-exp-modal'); 
+
+ createExpBtn.addEventListener('click',showExpModal);
+ closeExpBtn.addEventListener('click',hideExpModal);
+ function showExpModal(event){
+   event.preventDefault();
+   document.getElementById('create-exp-modal').style.display="block";
+ }
+ function hideExpModal(event){
+   event.preventDefault();
+   document.getElementById('create-exp-modal').style.display="none";
+ }
 const tabButtons = document.querySelectorAll(".prof-tab-links");
 for (let i = 0; i < tabButtons.length; i++) {
   tabButtons[i].addEventListener("click", function (e) {

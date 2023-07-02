@@ -131,8 +131,38 @@
 
                     <div id="experience-info" class="prof-tab-content">
                         <div class="pd-info-item">
-                            <div class="pd-info-head">Experiences</div>
+                            <div class="create-head-wrap">
+                                <div class="create-info-head">Experience & Placement</div>
+                                <a href="#" id="create-exp-btn"><i class="fa-solid fa-plus"></i> Add Experience</a>
+                            </div>
                             <div id="experience-container"></div>
+
+                            <div id="create-exp-modal">
+                                <form action="" class="create-exp-form">
+                                    <div class="create-modal-head">
+                                        <h2>Add Experience Form</h2>
+                                        <a href="#" id="close-exp-modal"><i class="fa-solid fa-xmark"></i></a>
+                                    </div>
+                                    <div class="form-control">
+                                        <label for="company_name">Company Name</label>
+                                        <input type="text" name="company_name" id="company_name" placeholder="Enter Company Name">
+                                    </div>
+                                    <div class="form-control">
+                                        <label for="job_profile">Job Profile</label>
+                                        <input type="text" name="job_profile" id="job_profile" placeholder="Enter Job Profile">
+                                    </div>
+                                    <div class="form-control">
+                                        <label for="start_date">Enter Start Date</label>
+                                        <input type="date" name="start_date" id="start_date" placeholder="Enter Start Date">
+                                    </div>
+                                    <div class="form-control">
+                                        <label for="end_date">Enter End Date</label>
+                                        <input type="date" name="start_date" id="start_date" placeholder="Enter End Date">
+                                    </div>
+
+                                    <button class="add-exp-btn" type="submit">Add Experience</button>
+                                </form>
+                           </div>
                         </div>
 
                         <div class="pd-info-item">
