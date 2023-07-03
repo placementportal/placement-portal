@@ -24,7 +24,7 @@
                 </div>
                 <div>
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    <a href="#">Logout</a>
+                    <a href="#" id="logout">Logout</a>
                 </div>
             </div>
         </div>
@@ -119,7 +119,7 @@
                     <div class="prof-qual-item">
                         <h2>Government Polytechnic Unnao</h2>
                         <div class="course-det">
-                            <div><h3>Course:</h3><span>Diploma</span></div>
+                            <div><h3>Course:</h3><span>Diplom</span></div>
                             <div><h3>Duration:</h3><span>2018-2021</span></div>
                         </div>    
                         <div class="course-det">
@@ -132,28 +132,28 @@
                     <div id="experience-info" class="prof-tab-content">
                         <div class="pd-info-item">
                             <div class="create-head-wrap">
-                                <div class="create-info-head">Experience & Placement</div>
+                                <div class="create-info-head">Experience</div>
                                 <a href="#" id="create-exp-btn"><i class="fa-solid fa-plus"></i> Add Experience</a>
                             </div>
                             <div id="experience-container"></div>
 
                             <div id="create-exp-modal">
-                                <form action="" class="create-exp-form">
+                                <form action="" id="create-exp-form" class="create-exp-form">
                                     <div class="create-modal-head">
                                         <h2>Add Experience Form</h2>
                                         <a href="#" id="close-exp-modal"><i class="fa-solid fa-xmark"></i></a>
                                     </div>
                                     <div class="form-control">
                                         <label for="company_name">Company Name</label>
-                                        <input type="text" name="company_name" id="company_name" placeholder="Enter Company Name">
+                                        <input type="text" name="company_name" id="company_name" placeholder="Enter Company Name" required>
                                     </div>
                                     <div class="form-control">
                                         <label for="job_profile">Job Profile</label>
-                                        <input type="text" name="job_profile" id="job_profile" placeholder="Enter Job Profile">
+                                        <input type="text" name="job_profile" id="job_profile" placeholder="Enter Job Profile" required>
                                     </div>
                                     <div class="form-control">
                                         <label for="start_date">Enter Start Date</label>
-                                        <input type="date" name="start_date" id="start_date" placeholder="Enter Start Date">
+                                        <input type="date" name="start_date" id="start_date" placeholder="Enter Start Date" required>
                                     </div>
                                     <div class="form-control">
                                         <label for="end_date">Enter End Date</label>
@@ -166,14 +166,69 @@
                         </div>
 
                         <div class="pd-info-item">
-                            <div class="pd-info-head">Placements</div>
+                            <div class="create-head-wrap">
+                                
+                                <div class="create-info-head">Placement</div>
+                                <a href="#" id="create-plac-btn"><i class="fa-solid fa-plus"></i> Add Placement</a>
+                            </div>
                             <div id="placement-container"></div>
+
+                            <div id="create-plac-modal">
+                                                    <!-- ================= STUDENT TAB  ==================== -->
+                                <form class="student-form">
+                                    <div class="create-modal-head">
+                                        <div class="form-title">Placement Details</div>
+                                        <a href="#" id="close-plac-modal"><i class="fa-solid fa-xmark"></i></a>
+                                    </div>
+                                   
+                                    <div class="form-content">
+                                        <form action="#">
+                                            <div class="fuser-details">
+                                                <div class="finput-box">
+                                                    <div class="finput-box">
+                                                        <span class="form-details">Job Pofile</span>
+                                                        <input type="text" placeholder="Enter Job Profile" required>
+                                                    </div>
+                                                    <span class="form-details">Company Name</span>
+                                                    <input type="text" placeholder="Enter Placed Company Name" required>
+                                                </div>
+                                                <div class="finput-box">
+                                                    <span class="form-details">Company Location</span>
+                                                    <input type="text" placeholder="Enter Comapny Location" required>
+                                                </div>
+                                                <div class="finput-box">
+                                                    <span class="form-details">Package</span>
+                                                    <input type="text" placeholder="Enter Package (In LPA)" required>
+                                                </div>
+                                                <div class="finput-box">
+                                                    <span class="form-details">Add Offer Letter</span>
+                                                    <label for="offer-letter"><i class="fa-solid fa-upload"></i><span>Click to upload offer letter</span></label>
+                                                    <input type="file"  id="offer-letter" style="display: none;" required />
+                                                </div>
+                                                <div class="finput-box">
+                                                    <span class="form-details">Add Joining Letter</span>
+                                                    <label for="joining-letter"><i class="fa-solid fa-upload"></i><span>Click to upload Joining letter</span></label>
+                                                    <input type="file"  id="joining-letter" style="display: none;" required />
+                                                </div>
+                                                <div class="finput-box">
+                                                    <span class="form-details">Date of joining</span>
+                                                    <input type="date" required>
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="form-button">
+                                                <input type="submit" value="Save Details">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
 
                     <div id="training-info" class="prof-tab-content">
                         <div class="pd-info-item">
-                            <div class="pd-info-head">Training & Certificate</div>
+                            <div class="pd-info-head">Training & Certificates</div>
                             <div class="pd-info-text">
                                 <div class="pd-info-text">
                                     <p>No Information Available</p>

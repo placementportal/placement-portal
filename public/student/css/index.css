@@ -175,6 +175,9 @@ body{
     color: #00A885;
 }
 .pd-info-item .pd-info-head{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 14px;
     color: #00A885;
     position: relative;
@@ -268,6 +271,9 @@ body{
     justify-content: space-between;
     text-align: center;
 }
+.create-modal-head>a{
+    display: block;
+}
 .create-modal-head>h2{
     font-size:25px;
     padding-bottom:30px;
@@ -317,5 +323,182 @@ body{
     #create-exp-modal{
         width: 300px;
     }
+    .create-exp-form{
+        padding:40px 25px;
+    }
+    .create-modal-head>h2{
+        font-size:20px;
+    }
 }
+  
+
+
+
+
+
+/************ STUDENT FORM CSS ***********/
+#create-plac-modal{
+    position: absolute;
+    top:0%;
+    left:0;
+    width:100%;
+    height:100%;
+    background-color: #28282853;
+    /* transform: translate(-50%, -50%); */
+    display: none;
+    z-index:999;
+}
+.student-form{
+    
+    position:fixed;
+  top:50%;
+  left:50%;
+  width:450px; /* Change as your requirement */
+  transform:translate(-50%, -50%);
+  z-index:9999;
+    /* width: 450px;
+    margin:0 auto; */
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+  }
+  .student-form .form-title{
+    font-size: 25px;
+    font-weight: 500;
+    position: relative;
+    margin-bottom: 20px;
+  }
+  .student-form .form-title::before{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 30px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #00634f, #009274);
+  }
+  .form-content form .fuser-details{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px 0 12px 0;
+  }
+  form .fuser-details .finput-box{
+    /* display: flex;
+    justify-content: space-between; */
+    width:100%;
+    margin-bottom: 15px;
+    /* width: calc(100% / 2 - 20px); */
+  }
+  .finput-box>label{
+    display: block;
+    padding:8px 15px;
+    background-color: #00927590;
+    color: #fff;
+    border-radius: 15px;
+  }
+  .finput-box>label>i{
+    margin-right: 10px;
+  }
+  form .finput-box span.form-details{
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  .fuser-details .finput-box input{
+    height: 40px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    padding-left: 15px;
+    border: 1px solid #ccc;
+    border-bottom-width: 2px;
+    transition: all 0.3s ease;
+  }
+  .fuser-details .finput-box input:focus,
+  .fuser-details .finput-box input:valid{
+    border-color: #9b59b6;
+  }
+   form .fgender-details .fgender-title{
+    font-size: 20px;
+    font-weight: 500;
+   }
+   form .form-category{
+     display: flex;
+     width: 80%;
+     margin: 14px 0;
+   }
+   form .form-category label{
+     display: flex;
+     align-items: center;
+     cursor: pointer;
+   }
+   
+   form .form-button{
+     height: 45px;
+     margin: 25px 0
+   }
+   form .form-button input{
+     height: 100%;
+     width: 100%;
+     border-radius: 5px;
+     border: none;
+     color: #fff;
+     font-size: 18px;
+     font-weight: 500;
+     letter-spacing: 1px;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     background: linear-gradient(135deg, #00634f, #009274);
+   }
+   form .form-button input:hover{
+    /* transform: scale(0.99); */
+    background: linear-gradient(-135deg, #3cffd8, #0d5b4c);
+    }
+   @media(max-width: 584px){
+    .student-form { 
+        width: 330px;
+    }
+    .fuser-details .finput-box input {
+        height: 35px;
+        font-size: 13px;
+        padding-left: 10px;
+    }
+   form .finput-box span.form-details {
+        font-size: 13px;
+    }
+  form .fuser-details .finput-box{
+      margin-bottom: 15px;
+      width: 100%;
+    }
+    .finput-box>label {
+        padding: 5px 16px;
+    }
+    .finput-box>label>span{
+        font-size: 13px;
+    }
+    form .form-button {
+        height: 38px;
+        margin: 20px 0;
+    }
+    form .form-category{
+      width: 100%;
+    }
+    .form-content form .fuser-details{
+      max-height: 300px;
+      overflow-y: scroll;
+    }
+    .fuser-details::-webkit-scrollbar{
+      width: 5px;
+    }
+    }
+    @media(max-width: 459px){
+    .student-form .form-content .form-category{
+      flex-direction: column;
+    }
+  }
+  
   

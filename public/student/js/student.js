@@ -24,7 +24,7 @@ async function fetchExperience() {
   try {
     const response = await fetch("/api/v1/student/experience");
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
 
     const { experiences } = data;
 
@@ -58,6 +58,41 @@ async function fetchExperience() {
 }
 
 
+ //Create Experience Fetch
+document.getElementById('create-exp-form').addEventListener('submit',createExperience);
+async function createExperience(e) {
+    e.preventDefault();
+    const company_name=document.getElementById('company_name').value;
+    const job_profile=document.getElementById('job_profile').value;
+    const start_date=document.getElementById('start_date').value;
+
+    console.log(start_date)
+    // const end_date=document.getElementById('end_date').value;
+    try {
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    const raw = JSON.stringify({
+      "jobProfile": job_profile,
+      "company": company_name,
+      "startDate": start_date
+    });
+    console.log(raw)
+    const requestOptions = {
+      method: 'POST',
+      body: raw,
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+  
+    const response = await fetch("/api/v1/student/experience",requestOptions);
+    const data = await response.json();
+    console.log(data);
+
+    
+  } catch (error) {
+    // console.log("failed to fetch error", error);
+  }
+}
 
  //Create Experience poppup
  const createExpBtn = document.getElementById('create-exp-btn'); 
@@ -73,6 +108,47 @@ async function fetchExperience() {
    event.preventDefault();
    document.getElementById('create-exp-modal').style.display="none";
  }
+
+  //Create Placement poppup
+  const createPlacBtn = document.getElementById('create-plac-btn'); 
+  const closePlacBtn = document.getElementById('close-plac-modal'); 
+ 
+  createPlacBtn.addEventListener('click',showPlacModal);
+  closePlacBtn.addEventListener('click',hidePlacModal);
+  function showPlacModal(event){
+    event.preventDefault();
+    document.getElementById('create-plac-modal').style.display="block";
+  }
+  function hidePlacModal(event){
+    event.preventDefault();
+    document.getElementById('create-plac-modal').style.display="none";
+  }
+
+
+
+// LOGOUT 
+document.getElementById('logout').addEventListener('click',logoutFunc);
+async function logoutFunc(e){
+  e.preventDefault();
+  try {
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+    const response = await fetch("/api/v1/auth/logout",requestOptions);
+    const data = await response.json();
+    window.location.reload();
+
+    
+  } catch (error) {
+    // console.log("failed to fetch error", error);
+  }
+}
+
+
+
+
+
 const tabButtons = document.querySelectorAll(".prof-tab-links");
 for (let i = 0; i < tabButtons.length; i++) {
   tabButtons[i].addEventListener("click", function (e) {

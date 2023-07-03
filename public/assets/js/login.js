@@ -14,7 +14,7 @@
   });
   $('.form-control').blur();
 
-  // validetion
+  // validation
   $.validator.setDefaults({
     errorElement: 'span',
     errorClass: 'validate-tooltip'

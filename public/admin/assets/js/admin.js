@@ -22,6 +22,26 @@ function checkAlreadyLogged(){
 
 
 
+// LOGOUT 
+document.getElementById('logout').addEventListener('click',logoutFunc);
+async function logoutFunc(e){
+  e.preventDefault();
+  try {
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+    const response = await fetch("/api/v1/auth/logout",requestOptions);
+    const data = await response.json();
+    window.location.reload();
+
+    
+  } catch (error) {
+    // console.log("failed to fetch error", error);
+  }
+}
+
+
 // add hovered class to selected list item
 let list = document.querySelectorAll(".navigation li");
 
