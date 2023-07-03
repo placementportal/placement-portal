@@ -8,11 +8,13 @@
     <link rel="stylesheet" href="./css/index.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../assets/loader/loader.css" />
 </head>
 <body>
     <div class="profile-container">
         <div class="main-header">
             <div class="logo">Placement Portal</div>
+            <div id="hamburger"><i class="fa-solid fa-bars"></i></div>
             <div class="main-menu">
                 <div>
                     <i class="fa-regular fa-bell"></i>
@@ -143,6 +145,7 @@
                                         <h2>Add Experience Form</h2>
                                         <a href="#" id="close-exp-modal"><i class="fa-solid fa-xmark"></i></a>
                                     </div>
+                                    <div id="exp-error-msg"></div>
                                     <div class="form-control">
                                         <label for="company_name">Company Name</label>
                                         <input type="text" name="company_name" id="company_name" placeholder="Enter Company Name" required>
@@ -175,45 +178,55 @@
 
                             <div id="create-plac-modal">
                                                     <!-- ================= STUDENT TAB  ==================== -->
-                                <form class="student-form">
+                                <div class="student-form">
                                     <div class="create-modal-head">
                                         <div class="form-title">Placement Details</div>
                                         <a href="#" id="close-plac-modal"><i class="fa-solid fa-xmark"></i></a>
                                     </div>
+                                    <div id="plac-error-msg"></div>
                                    
                                     <div class="form-content">
-                                        <form action="#">
+                                        <form action="" id="placed-detail-form">
                                             <div class="fuser-details">
-                                                <div class="finput-box">
+                                                <div class="finput-group">
                                                     <div class="finput-box">
                                                         <span class="form-details">Job Pofile</span>
-                                                        <input type="text" placeholder="Enter Job Profile" required>
+                                                        <input type="text" id="placed-job-profile" placeholder="Enter Job Profile" required>
                                                     </div>
-                                                    <span class="form-details">Company Name</span>
-                                                    <input type="text" placeholder="Enter Placed Company Name" required>
+                                                    <div class="finput-box">
+                                                        <span class="form-details">Company Name</span>
+                                                        <input type="text" id="placed-company" placeholder="Enter Placed Company Name" required>
+                                                    </div>
                                                 </div>
-                                                <div class="finput-box">
-                                                    <span class="form-details">Company Location</span>
-                                                    <input type="text" placeholder="Enter Comapny Location" required>
+                                                <div class="finput-group">
+                                                    <div class="finput-box">
+                                                        <span class="form-details">Company Location</span>
+                                                        <input type="text" id="placed-company-loc" placeholder="Enter Comapny Location" required>
+                                                    </div>
+                                                    <div class="finput-box">
+                                                        <span class="form-details">Package</span>
+                                                        <input type="text" id="placed-package" placeholder="Enter Package (In LPA)" required>
+                                                    </div>
                                                 </div>
-                                                <div class="finput-box">
-                                                    <span class="form-details">Package</span>
-                                                    <input type="text" placeholder="Enter Package (In LPA)" required>
-                                                </div>
-                                                <div class="finput-box">
-                                                    <span class="form-details">Add Offer Letter</span>
-                                                    <label for="offer-letter"><i class="fa-solid fa-upload"></i><span>Click to upload offer letter</span></label>
-                                                    <input type="file"  id="offer-letter" style="display: none;" required />
-                                                </div>
-                                                <div class="finput-box">
-                                                    <span class="form-details">Add Joining Letter</span>
-                                                    <label for="joining-letter"><i class="fa-solid fa-upload"></i><span>Click to upload Joining letter</span></label>
-                                                    <input type="file"  id="joining-letter" style="display: none;" required />
-                                                </div>
-                                                <div class="finput-box">
-                                                    <span class="form-details">Date of joining</span>
-                                                    <input type="date" required>
-                                                </div>
+                                                
+                                                    <div class="finput-box">
+                                                        <span class="form-details">Add Offer Letter</span>
+                                                        <label for="placed-offer-letter"><i class="fa-solid fa-upload"></i><span>Click to upload offer letter</span></label>
+                                                        <input type="file"  id="placed-offer-letter" accept=".pdf" style="display: none;" required />
+                                                        <div class="plac-form-attached"></div>
+                                                    </div>
+                                                    <div class="finput-box">
+                                                        <span class="form-details">Add Joining Letter</span>
+                                                        <label for="placed-joining-letter"><i class="fa-solid fa-upload"></i><span>Click to upload Joining letter</span></label>
+                                                        <input type="file"  id="placed-joining-letter" accept=".pdf" style="display: none;" required />
+                                                        <div class="plac-form-attached"></div>
+                                                    </div>
+                                                    <div class="finput-box">
+                                                        <span class="form-details">Date of joining</span>
+                                                        <input type="date" id="placed-doj" required >
+                                                    </div>
+                                           
+                                                
                                             </div>
                                         
                                             <div class="form-button">
@@ -221,7 +234,7 @@
                                             </div>
                                         </form>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -242,6 +255,6 @@
     </div>
 </body>
 
-
+    <script src="../assets/loader/loader.js"></script>
     <script src="./js/student.js"></script>
 </html>

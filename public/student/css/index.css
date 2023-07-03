@@ -34,7 +34,9 @@ body{
     color: black;
     font-size:16px;
 }
-
+#hamburger{
+    display: none;
+}
 /*********** Profile Detail Section Left ***********/
 
 .prof-detail{
@@ -252,19 +254,27 @@ body{
 
 /********** ADD EXPERIENCE FORM *********/
 #create-exp-modal{
+    position: absolute;
+    top:0%;
+    left:0%;
+    width:100%;
+    height:100%;
+    background-color: #28282853;
+    /* transform: translate(-50%, -50%); */
+    display: none;
+    z-index:999;
+}
+.create-exp-form{
     position: fixed;
     top:50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;
     width: 450px;
-    display: none;
-    z-index:999;
-}
-.create-exp-form{
+    z-index:9999;
     padding:40px 30px;
-    box-shadow: 2px 2px 5px 5px rgba(230, 230, 230, 0.788);
-    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
 }
 .create-modal-head{
     display: flex;
@@ -305,6 +315,9 @@ body{
     margin:10px 0;
 }
 
+#exp-error-msg{
+    color: red;
+}
 
 @media (max-width: 720px) {
     .prof-detail {
@@ -319,6 +332,28 @@ body{
     }
     .main-menu{
         display: none;
+    }
+    .main-menu.showHamburger{
+        display: block;
+        position: absolute;
+        top:70px;
+        right: 0;
+        width:280px;
+        height:80vh;
+        background-color: #000000cf;
+        color: #fff;
+        padding:10px 0;
+    }
+    .main-menu>div{
+        padding:20px 10px;
+        border-bottom: 1px solid #fff;
+    }
+    .main-menu a{
+        color: #fff;
+    }
+    #hamburger{
+        display: block;
+        cursor: pointer;
     }
     #create-exp-modal{
         width: 300px;
@@ -337,6 +372,10 @@ body{
 
 
 /************ STUDENT FORM CSS ***********/
+#placement-container {
+    display: flex;
+    flex-wrap: wrap;
+}
 #create-plac-modal{
     position: absolute;
     top:0%;
@@ -351,18 +390,18 @@ body{
 .student-form{
     
     position:fixed;
-  top:50%;
-  left:50%;
-  width:450px; /* Change as your requirement */
-  transform:translate(-50%, -50%);
-  z-index:9999;
-    /* width: 450px;
-    margin:0 auto; */
+            
+    top:50%;
+    left:50%;
+    width:600px; /* Change as your requirement */
+    transform:translate(-50%, -50%);
+    z-index:9999;
     background-color: #fff;
     padding: 25px 30px;
     border-radius: 5px;
     box-shadow: 0 5px 10px rgba(0,0,0,0.15);
   }
+  
   .student-form .form-title{
     font-size: 25px;
     font-weight: 500;
@@ -380,15 +419,21 @@ body{
     background: linear-gradient(135deg, #00634f, #009274);
   }
   .form-content form .fuser-details{
-    display: flex;
+    /* display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: space-between; */
     margin: 20px 0 12px 0;
   }
+ .finput-group{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;        
+ }
   form .fuser-details .finput-box{
     /* display: flex;
     justify-content: space-between; */
-    width:100%;
+    min-width: 260px;
+    margin-right: 5px;
     margin-bottom: 15px;
     /* width: calc(100% / 2 - 20px); */
   }
@@ -407,6 +452,7 @@ body{
     font-weight: 500;
     margin-bottom: 5px;
   }
+  
   .fuser-details .finput-box input{
     height: 40px;
     width: 100%;
@@ -458,6 +504,13 @@ body{
     /* transform: scale(0.99); */
     background: linear-gradient(-135deg, #3cffd8, #0d5b4c);
     }
+
+    .plac-form-attached{
+        color:green;
+      }
+      #plac-error-msg{
+        color: red;
+      }
    @media(max-width: 584px){
     .student-form { 
         width: 330px;
