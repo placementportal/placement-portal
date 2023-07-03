@@ -26,7 +26,10 @@ cloudinary.config({
 const connectDB = require("./db/connect");
 
 // middlewares
-const { authenticateUser } = require("./middleware/authentication-middleware");
+const {
+  authenticateUser,
+  authorizeRoles,
+} = require("./middleware/authentication-middleware");
 const notFoundHandler = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 
@@ -47,7 +50,11 @@ app.use(express.static("./public"));
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", [authenticateUser, userRouter]);
-app.use("/api/v1/student", [authenticateUser, studentDetailsRouter]);
+app.use("/api/v1/student", [
+  authenticateUser,
+  authorizeRoles("student"),
+  studentDetailsRouter,
+]);
 
 app.use(notFoundHandler);
 app.use(errorHandlerMiddleware);

@@ -36,10 +36,13 @@ const updateEducationData = async (req, res) => {
     is_lateral_entry,
     highschool_year,
     highschool_score,
+    highschool_board,
     intermediate_year,
     intermediate_score,
+    intermediate_board,
     diploma_year,
     diploma_score,
+    diploma_board,
     btech_scores,
   } = req.body;
 
@@ -54,6 +57,7 @@ const updateEducationData = async (req, res) => {
       is_lateral_entry,
       highschool_year,
       highschool_score,
+      highschool_board,
     });
     await UserModel.findOneAndUpdate(
       { role: "student", _id: student_id },
@@ -69,7 +73,7 @@ const updateEducationData = async (req, res) => {
   if (is_lateral_entry) {
     intermediate_year = intermediate_score = undefined;
 
-    if (!diploma_score || !diploma_year)
+    if (!diploma_score || !diploma_year || !diploma_board)
       throw new CustomAPIError.BadRequestError("Enter Diploma Details!");
 
     if (btech_scores.length > 6)
@@ -77,7 +81,7 @@ const updateEducationData = async (req, res) => {
   } else {
     diploma_year = diploma_score = undefined;
 
-    if (!intermediate_score || !intermediate_year)
+    if (!intermediate_score || !intermediate_year || !intermediate_board)
       throw new CustomAPIError.BadRequestError("Enter Intermediate Details!");
 
     if (btech_scores.length > 8)
@@ -88,10 +92,13 @@ const updateEducationData = async (req, res) => {
     is_lateral_entry,
     highschool_year,
     highschool_score,
+    highschool_board,
     intermediate_year,
     intermediate_score,
+    intermediate_board,
     diploma_year,
     diploma_score,
+    diploma_board,
     btech_scores,
   });
 
@@ -269,6 +276,22 @@ const createPlacement = async (req, res) => {
   });
 };
 
+const getPlacements = async (req, res) => {
+  const student_id = req.user.userId;
+
+  const placements = await StudentPlacementDataModel.find({ student_id });
+
+  if (!placements || !placements.length) {
+    throw new CustomAPIError.NotFoundError("No placements found!");
+  }
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: "Placements found!",
+    placements,
+  });
+};
+
 module.exports = {
   getEducationData,
   updateEducationData,
@@ -276,4 +299,5 @@ module.exports = {
   createExperience,
   updateExperience,
   createPlacement,
+  getPlacements,
 };

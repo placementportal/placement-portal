@@ -25,6 +25,12 @@ const StudentEducationDataSchema = new mongoose.Schema(
       required: [true, "Highschool score is required!"],
     },
 
+    highschool_board: {
+      type: String,
+      required: [true, "Highschool baord is required!"],
+      trim: true,
+    },
+
     intermediate_year: {
       type: Number,
     },
@@ -33,6 +39,11 @@ const StudentEducationDataSchema = new mongoose.Schema(
       type: Number,
       min: 0,
       max: 100,
+    },
+
+    intermediate_board: {
+      type: String,
+      trim: true,
     },
 
     diploma_year: {
@@ -45,11 +56,15 @@ const StudentEducationDataSchema = new mongoose.Schema(
       max: 100,
     },
 
+    diploma_board: {
+      type: String,
+      trim: true,
+    },
+
     btech_scores: {
       type: [Number],
       default: [],
-    }
-
+    },
   },
   { timestamps: true, versionKey: false }
 );

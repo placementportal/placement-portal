@@ -7,6 +7,7 @@ const {
   createExperience,
   updateExperience,
   createPlacement,
+  getPlacements,
 } = require("../controllers/studentDetailsController");
 
 router.patch("/education", updateEducationData);
@@ -17,5 +18,6 @@ router.post("/experience", createExperience);
 router.patch("/experience/:id", updateExperience);
 
 router.post("/placement", createPlacement);
+router.get("/placement", getPlacements);
 
 module.exports = router;

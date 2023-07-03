@@ -19,4 +19,15 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-module.exports = { authenticateUser };
+const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      throw new CustomAPIError.UnauthorizedError(
+        'Unauthorized to access this route'
+      );
+    }
+    next();
+  };
+};
+
+module.exports = { authenticateUser, authorizeRoles };
