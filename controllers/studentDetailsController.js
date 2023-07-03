@@ -9,6 +9,7 @@ const {
 
 const CustomAPIError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
+const { fileUpload } = require("../utils/fileUpload");
 
 const getEducationData = async (req, res) => {
   const education_details = await StudentEducationDataModel.findOne({
@@ -112,7 +113,7 @@ const getExperiences = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Experiences found!",
-    experiences
+    experiences,
   });
 };
 
@@ -203,10 +204,76 @@ const updateExperience = async (req, res) => {
   });
 };
 
+const createPlacement = async (req, res) => {
+  let { jobProfile, company, location, package, joiningDate } = req.body;
+  let { offerLetter, joiningLetter } = req?.files;
+  const student_id = req.user.userId;
+
+  if (joiningDate) {
+    joiningDate = new Date(joiningDate);
+    if (joiningDate == "Invalid Date") {
+      throw new CustomAPIError.BadRequestError("Invalid joining date!");
+    }
+  }
+
+  if (offerLetter) {
+    const fileUploadResp = await fileUpload(
+      offerLetter,
+      "offer-letters",
+      "document"
+    );
+    const { fileURL } = fileUploadResp;
+    offerLetter = fileURL;
+  }
+
+  if (joiningLetter) {
+    if (!joiningDate)
+      throw new CustomAPIError.BadRequestError("Joining Date is required!");
+
+    joiningDate = new Date(joiningDate);
+    if (joiningDate == "Invalid Date")
+      throw new CustomAPIError.BadRequestError("Invalid Joining Date!");
+
+    const fileUploadResp = await fileUpload(
+      joiningLetter,
+      "joining-letters",
+      "document"
+    );
+    const { fileURL } = fileUploadResp;
+    joiningLetter = fileURL;
+  }
+
+  const placement = await StudentPlacementDataModel.create({
+    student_id,
+    jobProfile,
+    company,
+    location,
+    package,
+    joiningDate,
+    offerLetter,
+    joiningLetter,
+  });
+
+  let jobData = await StudentJobDataModel.findOne({ student_id });
+  if (!jobData) {
+    jobData = await StudentJobDataModel.create({ student_id });
+  }
+
+  jobData.placements.push(placement._id);
+  await jobData.save();
+
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    message: "New Placement created!",
+    id: placement._id,
+  });
+};
+
 module.exports = {
   getEducationData,
   updateEducationData,
   getExperiences,
   createExperience,
   updateExperience,
+  createPlacement,
 };

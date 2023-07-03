@@ -50,22 +50,28 @@ const PlacementDataSchema = new mongoose.Schema(
       trim: true,
     },
 
+    location: {
+      type: String,
+      required: [true, "Location is required"],
+      trim: true,
+    },
+
     package: {
       type: Number,
-      required: [true, "Package is required"],
+      required: [true, "Package Amount is required"],
     },
 
     offerLetter: {
       type: String,
     },
 
-    appointmentLetter: {
+    joiningLetter: {
       type: String,
     },
 
-    salarySlip: {
-      type: String,
-    },
+    joiningDate: {
+      type: Date
+    }
   },
   { versionKey: false }
 );

@@ -4,18 +4,26 @@ const cloudinary = require("cloudinary").v2;
 
 const CustomAPIError = require("../errors");
 
-const fileUpload = async (file, folder) => {
+const fileUpload = async (file, folder, acceptType) => {
   const fileMimeType = file.mimetype;
   const fileSize = file.size; // bytes
-  const maxFileSize = 2 * 1024 * 1024; // 2 MB
+  let maxFileSize;
 
-  if (!fileMimeType.startsWith("image/")) {
-    throw new CustomAPIError.BadRequestError("File format should be image");
+  if (acceptType == "image") {
+    acceptMIME = "image/";
+    maxFileSize = 1 * 1024 * 1024; // 1 MB
+  } else if(acceptType == "document") {
+    acceptMIME = "application/pdf";
+    maxFileSize = 2 * 1024 * 1024; // 2 MB
+  }
+
+  if (!fileMimeType.startsWith(acceptMIME)) {
+    throw new CustomAPIError.BadRequestError("Invalid file format!");
   }
 
   if (fileSize > maxFileSize) {
     throw new CustomAPIError.BadRequestError(
-      "File size should be less than 1 MB"
+      "Maximum file size exceeded!"
     );
   }
 
