@@ -37,6 +37,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes");
 const studentDetailsRouter = require("./routes/studentDetailsRoutes");
+const batchDeptRouter = require("./routes/batchDeptRoutes");
 
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(morgan("tiny"));
@@ -54,6 +55,11 @@ app.use("/api/v1/student", [
   authenticateUser,
   authorizeRoles("student"),
   studentDetailsRouter,
+]);
+app.use("/api/v1/batchDept", [
+  authenticateUser,
+  authorizeRoles("admin"),
+  batchDeptRouter,
 ]);
 
 app.use(notFoundHandler);

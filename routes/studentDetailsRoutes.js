@@ -1,6 +1,7 @@
 const router = require("express").Router();
 
 const {
+  getPersonalData,
   updateEducationData,
   getEducationData,
   getExperiences,
@@ -9,6 +10,8 @@ const {
   createPlacement,
   getPlacements,
 } = require("../controllers/studentDetailsController");
+
+router.get("/personal", getPersonalData);
 
 router.patch("/education", updateEducationData);
 router.get("/education", getEducationData);

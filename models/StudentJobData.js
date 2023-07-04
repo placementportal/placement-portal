@@ -5,6 +5,7 @@ const ExperienceDataSchema = new mongoose.Schema(
     student_id: {
       type: mongoose.Types.ObjectId,
       required: true,
+      ref: "User",
     },
 
     jobProfile: {
@@ -36,6 +37,7 @@ const PlacementDataSchema = new mongoose.Schema(
     student_id: {
       type: mongoose.Types.ObjectId,
       required: true,
+      ref: "User",
     },
 
     jobProfile: {
@@ -82,6 +84,7 @@ const StudentJobDataSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
       unique: true,
+      ref: "User"
     },
 
     placements: {

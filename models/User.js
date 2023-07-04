@@ -39,12 +39,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
     },
 
-    batch_id: {
+    batchId: {
       type: mongoose.Types.ObjectId,
+      ref: "Batch"
     },
 
-    branch_id: {
+    departmentId: {
       type: mongoose.Types.ObjectId,
+      ref: "Department",
     },
 
     personal_details: {

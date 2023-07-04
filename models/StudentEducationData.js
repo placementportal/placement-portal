@@ -6,6 +6,17 @@ const StudentEducationDataSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
       unique: true,
+      ref: "User",
+    },
+
+    batchId: {
+      type: mongoose.Types.ObjectId,
+      ref: "Batch",
+    },
+
+    departmentId: {
+      type: mongoose.Types.ObjectId,
+      ref: "Department",
     },
 
     is_lateral_entry: {

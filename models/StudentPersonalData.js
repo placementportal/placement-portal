@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const StudentPersonalDataSchema = new mongoose.Schema(
   {
@@ -6,26 +7,40 @@ const StudentPersonalDataSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
       unique: true,
+      ref: "User",
     },
 
-    father_name: {
+    fatherName: {
       type: String,
-      required: [true, "Name is required"],
+      required: [true, "Father's Name is required"],
       trim: true,
-      minlength: [3, "Name should be of atleast 3 characters"],
-      maxlength: [30, "Name should be of maximum 30 characters"],
+      minlength: [3, "Father's Name should be of atleast 3 characters"],
+      maxlength: [30, "Father's Name should be of maximum 30 characters"],
     },
 
-    contact_number: {
+    motherName: {
+      type: String,
+      required: [true, "Mother's Name is required"],
+      trim: true,
+      minlength: [3, "Mother's Name should be of atleast 3 characters"],
+      maxlength: [30, "Mother's Name should be of maximum 30 characters"],
+    },
+
+    contactNumber: {
       type: String,
       required: [true, "Contact Number is required"],
       trim: true,
+      unique: true,
     },
 
-    father_contact_number: {
+    email: {
       type: String,
-      required: [true, "Father's Contact Number is required"],
-      trim: true,
+      required: [true, "Email is required"],
+      unique: [true, "User already exists"],
+      validate: {
+        validator: validator.isEmail,
+        message: "Please enter a valid email",
+      },
     },
 
     address: {
@@ -40,8 +55,10 @@ const StudentPersonalDataSchema = new mongoose.Schema(
       trim: true,
     },
 
-    hobbies: {
-      type: [String],
+    state: {
+      type: String,
+      required: [true, "State is required"],
+      trim: true,
     },
   },
   { timestamps: true, versionKey: false }

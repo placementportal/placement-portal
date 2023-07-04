@@ -7,14 +7,45 @@ const {
   StudentJobDataModel,
 } = require("../models/StudentJobData");
 
+const BatchModel = require("../models/Batch");
+const DepartmentModel = require("../models/Department");
+
 const CustomAPIError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 const { fileUpload } = require("../utils/fileUpload");
 
+const getPersonalData = async (req, res) => {
+  const student_id = req.user.userId;
+  const personalData = await StudentPersonalDataModel.findOne({
+    student_id,
+  });
+
+  if (!personalData) {
+    throw new CustomAPIError.BadRequestError(
+      "No personal data found for this student"
+    );
+  }
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: "Pesonal details found!",
+    personalData,
+  });
+};
+
 const getEducationData = async (req, res) => {
   const education_details = await StudentEducationDataModel.findOne({
     student_id: req.user.userId,
-  }).select("-createdAt -updatedAt -student_id");
+  })
+    .select("-createdAt -updatedAt -student_id")
+    .populate({
+      path: "batchId",
+      select: "batchName",
+    })
+    .populate({
+      path: "departmentId",
+      select: "departmentName",
+    });
 
   if (!education_details) {
     throw new CustomAPIError.NotFoundError(
@@ -300,4 +331,5 @@ module.exports = {
   updateExperience,
   createPlacement,
   getPlacements,
+  getPersonalData,
 };
