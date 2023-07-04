@@ -1,58 +1,83 @@
 <!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin Login</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-  <link rel="stylesheet" href="./assets/css/login.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Admin Login</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"
+        />
+        <link rel="stylesheet" href="./assets/css/login.css" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+        />
+    </head>
+    <body>
+        <!-- partial:index.partial.html -->
+        <div class="out-container">
+            <div class="in-container">
+                <div class="logo text-center">
+                    <h1>Placement Portal</h1>
+                </div>
+                <div class="wrapper">
+                    <div class="inner-warpper text-center">
+                        <h2 class="title">Admin Login</h2>
+                        <form method="post" id="adminFormValidate">
+                            <div class="input-group">
+                                <label class="palceholder" for="email"
+                                    >Email</label
+                                >
+                                <input
+                                    class="form-control"
+                                    name="email"
+                                    id="email"
+                                    type="text"
+                                    placeholder=""
+                                />
+                                <span class="lighting"></span>
+                            </div>
+                            <div class="input-group">
+                                <label class="palceholder" for="adminPassword"
+                                    >Password</label
+                                >
+                                <input
+                                    class="form-control"
+                                    type="password"
+                                    name="adminPassword"
+                                    id="adminPassword"
+                                />
+                                <span class="lighting"></span>
+                            </div>
 
-</head>
-<body>
-<!-- partial:index.partial.html -->
-<div class="out-container">
-    <div class="in-container">
-        <div class="logo text-center">
-            <h1>Placement Portal</h1>
-        </div>
-        <div class="wrapper">
-            <div class="inner-warpper text-center">
-              <h2 class="title">Admin Login</h2>
-              <form method="post"  id="adminFormValidate">
-                <div class="input-group">
-                  <label class="palceholder" for="email">Email</label>
-                  <input class="form-control" name="email" id="email" type="text" placeholder="" />
-                  <span class="lighting"></span>
-                </div>
-                <div class="input-group">
-                  <label class="palceholder" for="adminPassword">Password</label>
-                  <input class="form-control" type="password" name="adminPassword" id="adminPassword"   />
-                  <span class="lighting"></span>
-                </div>
-          
-                <button type="submit" id="login">Login</button>
-                <div class="clearfix supporter">
-                  <!-- <div class="pull-left remember-me">
+                            <button type="submit" id="login">Login</button>
+                            <div class="clearfix supporter">
+                                <!-- <div class="pull-left remember-me">
                     <input id="rememberMe" type="checkbox">
                     <label for="rememberMe">Remember Me</label>
                   </div> -->
-                  <a class="forgot pull-right" href="./index.html">Student Login</a>
-                </div>
-              </form>
-            </div>
-            <form method="post"  id="studentFormValidate"></form>
-            <!-- <div class="signup-wrapper text-center">
+                                <a class="forgot pull-right" href="./index.html"
+                                    >Student Login</a
+                                >
+                            </div>
+                        </form>
+                    </div>
+                    <form method="post" id="studentFormValidate"></form>
+                    <!-- <div class="signup-wrapper text-center">
               <a href="#">Don't have an accout? <span class="text-primary">Create One</span></a>
             </div> -->
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
-  <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.15.0/jquery.validate.min.js'></script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-  <script src="./assets/js/login.js"></script>
-
-</body>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.15.0/jquery.validate.min.js"></script>
+        <script
+            type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/toastify-js"
+        ></script>
+        <script src="./assets/js/login.js"></script>
+    </body>
 </html>

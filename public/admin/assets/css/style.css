@@ -3,172 +3,171 @@
 
 /* =============== Globals ============== */
 * {
-  font-family: "Ubuntu", sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    font-family: "Ubuntu", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 :root {
-  --blue: #009274;
-  --white: #fff;
-  --gray: #f5f5f5;
-  --black1: #222;
-  --black2: #999;
+    --blue: #009274;
+    --white: #fff;
+    --gray: #f5f5f5;
+    --black1: #222;
+    --black2: #999;
 }
 
 body {
-  min-height: 100vh;
-  overflow-x: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .container {
-  position: relative;
-  width: 100%;
+    position: relative;
+    width: 100%;
 }
 
 /* =============== Navigation ================ */
 .navigation {
-  position: fixed;
-  width: 300px;
-  height: 100%;
-  background: var(--blue);
-  border-left: 10px solid var(--blue);
-  transition: 0.5s;
-  overflow: hidden;
+    position: fixed;
+    width: 300px;
+    height: 100%;
+    background: var(--blue);
+    border-left: 10px solid var(--blue);
+    transition: 0.5s;
+    overflow: hidden;
 }
 .navigation.active {
-  width: 80px;
+    width: 80px;
 }
 
 .navigation ul {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 }
 
 .navigation ul li {
-  position: relative;
-  width: 100%;
-  list-style: none;
-  border-top-left-radius: 30px;
-  border-bottom-left-radius: 30px;
+    position: relative;
+    width: 100%;
+    list-style: none;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
 }
 
 .navigation ul li:hover,
 .navigation ul li.hovered {
-  background-color: var(--white);
+    background-color: var(--white);
 }
 
 .navigation ul li:nth-child(1) {
-  margin-bottom: 40px;
-  pointer-events: none;
+    margin-bottom: 40px;
+    pointer-events: none;
 }
 
 .navigation ul li a {
-  position: relative;
-  display: block;
-  width: 100%;
-  display: flex;
-  text-decoration: none;
-  color: var(--white);
+    position: relative;
+    display: block;
+    width: 100%;
+    display: flex;
+    text-decoration: none;
+    color: var(--white);
 }
 .navigation ul li:hover a,
 .navigation ul li.hovered a {
-  color: var(--blue);
+    color: var(--blue);
 }
 
 .navigation ul li a .icon {
-  position: relative;
-  display: block;
-  min-width: 60px;
-  height: 60px;
-  line-height: 75px;
-  text-align: center;
+    position: relative;
+    display: block;
+    min-width: 60px;
+    height: 60px;
+    line-height: 75px;
+    text-align: center;
 }
 .navigation ul li a .icon ion-icon {
-  font-size: 1.75rem;
+    font-size: 1.75rem;
 }
 
 .navigation ul li a .title {
-  position: relative;
-  display: block;
-  padding: 0 10px;
-  height: 60px;
-  line-height: 60px;
-  text-align: start;
-  white-space: nowrap;
+    position: relative;
+    display: block;
+    padding: 0 10px;
+    height: 60px;
+    line-height: 60px;
+    text-align: start;
+    white-space: nowrap;
 }
 
 /* --------- curve outside ---------- */
 .navigation ul li:hover a::before,
 .navigation ul li.hovered a::before {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: -50px;
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  border-radius: 50%;
-  box-shadow: 35px 35px 0 10px var(--white);
-  pointer-events: none;
+    content: "";
+    position: absolute;
+    right: 0;
+    top: -50px;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border-radius: 50%;
+    box-shadow: 35px 35px 0 10px var(--white);
+    pointer-events: none;
 }
 .navigation ul li:hover a::after,
 .navigation ul li.hovered a::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: -50px;
-  width: 50px;
-  height: 50px;
-  background-color: transparent;
-  border-radius: 50%;
-  box-shadow: 35px -35px 0 10px var(--white);
-  pointer-events: none;
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -50px;
+    width: 50px;
+    height: 50px;
+    background-color: transparent;
+    border-radius: 50%;
+    box-shadow: 35px -35px 0 10px var(--white);
+    pointer-events: none;
 }
 
 /* ===================== Main ===================== */
 .main {
-  position: absolute;
-  width: calc(100% - 300px);
-  left: 300px;
-  min-height: 100vh;
-  background: var(--white);
-  transition: 0.5s;
+    position: absolute;
+    width: calc(100% - 300px);
+    left: 300px;
+    min-height: 100vh;
+    background: var(--white);
+    transition: 0.5s;
 }
 .main.active {
-  width: calc(100% - 80px);
-  left: 80px;
+    width: calc(100% - 80px);
+    left: 80px;
 }
 
 .topbar {
-  width: 100%;
-  height: 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding:15px 20px;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
 }
 
 .toggle {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2.5rem;
-  cursor: pointer;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    cursor: pointer;
 }
 
 .search {
-  position: relative;
-  width: 400px;
-  margin: 0 10px;
+    position: relative;
+    width: 400px;
+    margin: 0 10px;
 }
-
 
 /* .search label {
   position: relative;
@@ -194,274 +193,271 @@ body {
 } */
 
 .user {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  cursor: pointer;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .user img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* ======================= Cards ====================== */
 .cardBox {
-  position: relative;
-  width: 100%;
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 30px;
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 30px;
 }
 
 .cardBox .card {
-  position: relative;
-  background: var(--white);
-  padding: 30px;
-  border-radius: 20px;
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+    position: relative;
+    background: var(--white);
+    padding: 30px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
 }
 
 .cardBox .card .numbers {
-  position: relative;
-  font-weight: 500;
-  font-size: 2.5rem;
-  color: var(--blue);
+    position: relative;
+    font-weight: 500;
+    font-size: 2.5rem;
+    color: var(--blue);
 }
 
 .cardBox .card .cardName {
-  color: var(--black2);
-  font-size: 1.1rem;
-  margin-top: 5px;
+    color: var(--black2);
+    font-size: 1.1rem;
+    margin-top: 5px;
 }
 
 .cardBox .card .iconBx {
-  font-size: 3.5rem;
-  color: var(--black2);
+    font-size: 3.5rem;
+    color: var(--black2);
 }
 
 .cardBox .card:hover {
-  background: var(--blue);
+    background: var(--blue);
 }
 .cardBox .card:hover .numbers,
 .cardBox .card:hover .cardName,
 .cardBox .card:hover .iconBx {
-  color: var(--white);
+    color: var(--white);
 }
 
 /* ====================== Responsive Design ========================== */
 @media (max-width: 991px) {
-  .navigation {
-    left: -300px;
-  }
-  .navigation.active {
-    width: 300px;
-    left: 0;
-  }
-  .main {
-    width: 100%;
-    left: 0;
-  }
-  .main.active {
-    left: 0px;
-  }
-  .cardBox {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    .navigation {
+        left: -300px;
+    }
+    .navigation.active {
+        width: 300px;
+        left: 0;
+    }
+    .main {
+        width: 100%;
+        left: 0;
+    }
+    .main.active {
+        left: 0px;
+    }
+    .cardBox {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
-  .details {
-    grid-template-columns: 1fr;
-  }
-  .recentOrders {
-    overflow-x: auto;
-  }
-  .status.inProgress {
-    white-space: nowrap;
-  }
+    .details {
+        grid-template-columns: 1fr;
+    }
+    .recentOrders {
+        overflow-x: auto;
+    }
+    .status.inProgress {
+        white-space: nowrap;
+    }
 }
 
 @media (max-width: 480px) {
-  .cardBox {
-    grid-template-columns: repeat(1, 1fr);
-  }
-  .cardHeader h2 {
-    font-size: 20px;
-  }
-  .user {
-    min-width: 40px;
-  }
-  .navigation {
-    width: 100%;
-    left: -100%;
-    z-index: 1000;
-  }
-  .navigation.active {
-    width: 100%;
-    left: 0;
-  }
-  .toggle {
-    z-index: 10001;
-  }
-  .main.active .toggle {
-    color: #fff;
-    position: fixed;
-    right: 0;
-    left: initial;
-  }
+    .cardBox {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    .cardHeader h2 {
+        font-size: 20px;
+    }
+    .user {
+        min-width: 40px;
+    }
+    .navigation {
+        width: 100%;
+        left: -100%;
+        z-index: 1000;
+    }
+    .navigation.active {
+        width: 100%;
+        left: 0;
+    }
+    .toggle {
+        z-index: 10001;
+    }
+    .main.active .toggle {
+        color: #fff;
+        position: fixed;
+        right: 0;
+        left: initial;
+    }
 }
-
-
 
 /************ STUDENT FORM CSS ***********/
-.student-form{
-  max-width: 600px;
-  margin:0 auto;
-  width: 100%;
-  background-color: #fff;
-  padding: 25px 30px;
-  border-radius: 5px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+.student-form {
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
 }
-.student-form .form-title{
-  font-size: 25px;
-  font-weight: 500;
-  position: relative;
-  margin-bottom: 20px;
+.student-form .form-title {
+    font-size: 25px;
+    font-weight: 500;
+    position: relative;
+    margin-bottom: 20px;
 }
-.student-form .form-title::before{
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 3px;
-  width: 30px;
-  border-radius: 5px;
-  background: linear-gradient(135deg, #00634f, #009274);
+.student-form .form-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 30px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #00634f, #009274);
 }
-.form-content form .fuser-details{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 20px 0 12px 0;
+.form-content form .fuser-details {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px 0 12px 0;
 }
-form .fuser-details .finput-box{
-  display: flex;
-  justify-content: space-between;
-  width:100%;
-  margin-bottom: 15px;
-  /* width: calc(100% / 2 - 20px); */
+form .fuser-details .finput-box {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 15px;
+    /* width: calc(100% / 2 - 20px); */
 }
-form .finput-box span.form-details{
-  display: block;
-  font-weight: 500;
-  margin-bottom: 5px;
+form .finput-box span.form-details {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
 }
-.fuser-details .finput-box input{
-  height: 40px;
-  width: 100%;
-  outline: none;
-  font-size: 16px;
-  border-radius: 5px;
-  padding-left: 15px;
-  border: 1px solid #ccc;
-  border-bottom-width: 2px;
-  transition: all 0.3s ease;
+.fuser-details .finput-box input {
+    height: 40px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    padding-left: 15px;
+    border: 1px solid #ccc;
+    border-bottom-width: 2px;
+    transition: all 0.3s ease;
 }
 .fuser-details .finput-box input:focus,
-.fuser-details .finput-box input:valid{
-  border-color: #9b59b6;
+.fuser-details .finput-box input:valid {
+    border-color: #9b59b6;
 }
- form .fgender-details .fgender-title{
-  font-size: 20px;
-  font-weight: 500;
- }
- form .form-category{
-   display: flex;
-   width: 80%;
-   margin: 14px 0;
- }
- form .form-category label{
-   display: flex;
-   align-items: center;
-   cursor: pointer;
- }
- form .form-category .dot-1{
-  margin-right:15px;
-  border:1px solid black;
- }
- form .form-category label .dot{
-  height: 18px;
-  width: 18px;
-  border-radius: 50%;
-  margin-right: 10px;
-  background: #d9d9d9;
-  border: 5px solid transparent;
-  transition: all 0.3s ease;
+form .fgender-details .fgender-title {
+    font-size: 20px;
+    font-weight: 500;
 }
- #dot-1:checked ~ .form-category label .one,
- #dot-2:checked ~ .form-category label .two,
- #dot-3:checked ~ .form-category label .three{
-   background: #00634f;
-   border-color: #009274;
- }
- form input[type="radio"]{
-   display: none;
- }
- form .form-button{
-   height: 45px;
-   margin: 35px 0
- }
- form .form-button input{
-   height: 100%;
-   width: 100%;
-   border-radius: 5px;
-   border: none;
-   color: #fff;
-   font-size: 18px;
-   font-weight: 500;
-   letter-spacing: 1px;
-   cursor: pointer;
-   transition: all 0.3s ease;
-   background: linear-gradient(135deg, #00634f, #009274);
- }
- form .form-button input:hover{
-  /* transform: scale(0.99); */
-  background: linear-gradient(-135deg, #3cffd8, #0d5b4c);
-  }
- @media(max-width: 584px){
- .student-form{
-  max-width: 100%;
+form .form-category {
+    display: flex;
+    width: 80%;
+    margin: 14px 0;
 }
-form .fuser-details .finput-box{
-    margin-bottom: 15px;
+form .form-category label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+form .form-category .dot-1 {
+    margin-right: 15px;
+    border: 1px solid black;
+}
+form .form-category label .dot {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background: #d9d9d9;
+    border: 5px solid transparent;
+    transition: all 0.3s ease;
+}
+#dot-1:checked ~ .form-category label .one,
+#dot-2:checked ~ .form-category label .two,
+#dot-3:checked ~ .form-category label .three {
+    background: #00634f;
+    border-color: #009274;
+}
+form input[type="radio"] {
+    display: none;
+}
+form .form-button {
+    height: 45px;
+    margin: 35px 0;
+}
+form .form-button input {
+    height: 100%;
     width: 100%;
-  }
-  form .form-category{
-    width: 100%;
-  }
-  .form-content form .fuser-details{
-    max-height: 300px;
-    overflow-y: scroll;
-  }
-  .fuser-details::-webkit-scrollbar{
-    width: 5px;
-  }
-  }
-  @media(max-width: 459px){
-  .student-form .form-content .form-category{
-    flex-direction: column;
-  }
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #00634f, #009274);
 }
-
+form .form-button input:hover {
+    /* transform: scale(0.99); */
+    background: linear-gradient(-135deg, #3cffd8, #0d5b4c);
+}
+@media (max-width: 584px) {
+    .student-form {
+        max-width: 100%;
+    }
+    form .fuser-details .finput-box {
+        margin-bottom: 15px;
+        width: 100%;
+    }
+    form .form-category {
+        width: 100%;
+    }
+    .form-content form .fuser-details {
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+    .fuser-details::-webkit-scrollbar {
+        width: 5px;
+    }
+}
+@media (max-width: 459px) {
+    .student-form .form-content .form-category {
+        flex-direction: column;
+    }
+}

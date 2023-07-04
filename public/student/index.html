@@ -1,259 +1,461 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Profile</title>
-    <link rel="stylesheet" href="./css/index.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="../assets/loader/loader.css" />
-</head>
-<body>
-    <div class="profile-container">
-        <div class="main-header">
-            <div class="logo">Placement Portal</div>
-            <div id="hamburger"><i class="fa-solid fa-bars"></i></div>
-            <div class="main-menu">
-                <div>
-                    <i class="fa-regular fa-bell"></i>
-                     <a href="#">Notification</a>
-                </div>
-                <div>
-                    <i class="fa-regular fa-circle-play"></i>
-                    <a href="#">Quiz</a>
-                </div>
-                <div>
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    <a href="#" id="logout">Logout</a>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Student Profile</title>
+        <link rel="stylesheet" href="./css/index.css" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,500&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <link rel="stylesheet" href="../assets/loader/loader.css" />
+    </head>
+    <body>
+        <div class="profile-container">
+            <div class="main-header">
+                <div class="logo">Placement Portal</div>
+                <div id="hamburger"><i class="fa-solid fa-bars"></i></div>
+                <div class="main-menu">
+                    <div>
+                        <i class="fa-regular fa-bell"></i>
+                        <a href="#">Notification</a>
+                    </div>
+                    <div>
+                        <i class="fa-regular fa-circle-play"></i>
+                        <a href="#">Quiz</a>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <a href="#" id="logout">Logout</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="prof-detail">
-            <div class="prof-left">
-                <div class="prof-img">
-                    <img src="./profile-picture.jpg" />
-                </div>
-                <div class="prof-qual">
-                    <div class="prof-qual-head">Qualification</div>
-                    <!-- Qualification Item 1 -->
-                    <div class="prof-qual-item">
-                        <h2>Bansal Institute of Engineering and technology</h2>
-                        <div class="course-det">
-                            <div><h3>Course:</h3><span>B.Tech</span></div>
-                            <div><h3>Duration:</h3><span>2021-2025</span></div>
-                        </div>    
-                        <div class="course-det">
-                            <div><h3>Branch:</h3><span>CSE</span></div>    
-                        </div>
+            <div class="prof-detail">
+                <div class="prof-left">
+                    <div class="prof-img">
+                        <img src="./profile-picture.jpg" />
                     </div>
-                    <!-- Qualification Item 2 -->
-                    <div class="prof-qual-item">
-                        <h2>Government Polytechnic Unnao</h2>
-                        <div class="course-det">
-                            <div><h3>Course:</h3><span>Diploma</span></div>
-                            <div><h3>Duration:</h3><span>2018-2021</span></div>
-                        </div>    
-                        <div class="course-det">
-                            <div><h3>Branch:</h3><span>CSE</span></div>    
-                        </div>
-                    </div>
-                </div>
-
-                <div class="prof-skill">
-                    <div class="prof-skill-head">Skill</div>
-                    <!-- Qualification Item 1 -->
-                    <div class="prof-skill-item">
-                        <h3>Web Development</h3>
-                        <h3>App Development</h3>
-                        <h3>Devops</h3>
-                     </div>   
-                </div>
-            </div>
-            <div class="prof-right">
-                <div class="prof-basic-info">
-                    <div class="basic-detail">
-                        <h2>Rohan Singh</h2>
-                    </div>
-    
-                    <div class="report-query">
-                        <i class="fa-solid fa-message"></i>
-                        <a href="#">Report Query To Admin</a>
-                    </div>
-                </div>
-                <div class="prof-info-list">
-
-                    <div class="prof-info-tab">
-                        <a href="#" class="prof-tab-links active" data-tab="personal-details" class="active"><i class="fa-regular fa-user"></i>&ensp;Personal Details</a>
-                        <a href="#" class="prof-tab-links" data-tab="education-info"><i class="fa-solid fa-graduation-cap"></i>&ensp;Education</a>
-                        <a href="#" class="prof-tab-links" data-tab="experience-info"><i class="fa-solid fa-briefcase"></i>&ensp;Experience & Placement</a>
-                        <a href="#" class="prof-tab-links" data-tab="training-info"><i class="fa-solid fa-certificate"></i>&ensp;Training and certificates</a>
-                    </div>
-
-                    <div id="personal-details" class="prof-tab-content">
-                        <div class="pd-info-item">
-                            <div class="pd-info-head">Student Basic Information</div>
-                            <div class="pd-info-text">
-                                <div><h3>Name:</h3><span>Tushar Jain</span></div>
-                                <div><h3>Father's Name:</h3><span>Ajay Kumar Jain</span></div>
-                                <div><h3>Email:</h3><span>metusharjain@gmail.com</span></div>
-                                <div><h3>Phone:</h3><span>8604446338</span></div>
-                            </div> 
-                        </div>
-                    </div>
-                    <div id="education-info" class="prof-tab-content">
-                        <div class="pd-info-item">
-                            <div class="pd-info-head">Education Basic Information</div>
-                            <!-- Qualification Item 1 -->
-                    <div class="prof-qual-item">
-                        <h2>Bansal Institute of Engineering and technology</h2>
-                        <div class="course-det">
-                            <div><h3>Course:</h3><span>B.Tech</span></div>
-                            <div><h3>Duration:</h3><span>2021-2025</span></div>
-                        </div>    
-                        <div class="course-det">
-                            <div><h3>Branch:</h3><span>CSE</span></div>    
-                        </div>
-                    </div>
-                    <!-- Qualification Item 2 -->
-                    <div class="prof-qual-item">
-                        <h2>Government Polytechnic Unnao</h2>
-                        <div class="course-det">
-                            <div><h3>Course:</h3><span>Diplom</span></div>
-                            <div><h3>Duration:</h3><span>2018-2021</span></div>
-                        </div>    
-                        <div class="course-det">
-                            <div><h3>Branch:</h3><span>CSE</span></div>    
-                        </div>
-                    </div>
-                        </div>
-                    </div>
-
-                    <div id="experience-info" class="prof-tab-content">
-                        <div class="pd-info-item">
-                            <div class="create-head-wrap">
-                                <div class="create-info-head">Experience</div>
-                                <a href="#" id="create-exp-btn"><i class="fa-solid fa-plus"></i> Add Experience</a>
+                    <div class="prof-qual">
+                        <div class="prof-qual-head">Qualification</div>
+                        <!-- Qualification Item 1 -->
+                        <div class="prof-qual-item">
+                            <h2>
+                                Bansal Institute of Engineering and technology
+                            </h2>
+                            <div class="course-det">
+                                <div>
+                                    <h3>Course:</h3>
+                                    <span>B.Tech</span>
+                                </div>
+                                <div>
+                                    <h3>Duration:</h3>
+                                    <span>2021-2025</span>
+                                </div>
                             </div>
-                            <div id="experience-container"></div>
-
-                            <div id="create-exp-modal">
-                                <form action="" id="create-exp-form" class="create-exp-form">
-                                    <div class="create-modal-head">
-                                        <h2>Add Experience Form</h2>
-                                        <a href="#" id="close-exp-modal"><i class="fa-solid fa-xmark"></i></a>
-                                    </div>
-                                    <div id="exp-error-msg"></div>
-                                    <div class="form-control">
-                                        <label for="company_name">Company Name</label>
-                                        <input type="text" name="company_name" id="company_name" placeholder="Enter Company Name" required>
-                                    </div>
-                                    <div class="form-control">
-                                        <label for="job_profile">Job Profile</label>
-                                        <input type="text" name="job_profile" id="job_profile" placeholder="Enter Job Profile" required>
-                                    </div>
-                                    <div class="form-control">
-                                        <label for="start_date">Enter Start Date</label>
-                                        <input type="date" name="start_date" id="start_date" placeholder="Enter Start Date" required>
-                                    </div>
-                                    <div class="form-control">
-                                        <label for="end_date">Enter End Date</label>
-                                        <input type="date" name="start_date" id="start_date" placeholder="Enter End Date">
-                                    </div>
-
-                                    <button class="add-exp-btn" type="submit">Add Experience</button>
-                                </form>
-                           </div>
-                        </div>
-
-                        <div class="pd-info-item">
-                            <div class="create-head-wrap">
-                                
-                                <div class="create-info-head">Placement</div>
-                                <a href="#" id="create-plac-btn"><i class="fa-solid fa-plus"></i> Add Placement</a>
+                            <div class="course-det">
+                                <div>
+                                    <h3>Branch:</h3>
+                                    <span>CSE</span>
+                                </div>
                             </div>
-                            <div id="placement-container"></div>
-
-                            <div id="create-plac-modal">
-                                                    <!-- ================= STUDENT TAB  ==================== -->
-                                <div class="student-form">
-                                    <div class="create-modal-head">
-                                        <div class="form-title">Placement Details</div>
-                                        <a href="#" id="close-plac-modal"><i class="fa-solid fa-xmark"></i></a>
-                                    </div>
-                                    <div id="plac-error-msg"></div>
-                                   
-                                    <div class="form-content">
-                                        <form action="" id="placed-detail-form">
-                                            <div class="fuser-details">
-                                                <div class="finput-group">
-                                                    <div class="finput-box">
-                                                        <span class="form-details">Job Pofile</span>
-                                                        <input type="text" id="placed-job-profile" placeholder="Enter Job Profile" required>
-                                                    </div>
-                                                    <div class="finput-box">
-                                                        <span class="form-details">Company Name</span>
-                                                        <input type="text" id="placed-company" placeholder="Enter Placed Company Name" required>
-                                                    </div>
-                                                </div>
-                                                <div class="finput-group">
-                                                    <div class="finput-box">
-                                                        <span class="form-details">Company Location</span>
-                                                        <input type="text" id="placed-company-loc" placeholder="Enter Comapny Location" required>
-                                                    </div>
-                                                    <div class="finput-box">
-                                                        <span class="form-details">Package</span>
-                                                        <input type="text" id="placed-package" placeholder="Enter Package (In LPA)" required>
-                                                    </div>
-                                                </div>
-                                                
-                                                    <div class="finput-box">
-                                                        <span class="form-details">Add Offer Letter</span>
-                                                        <label for="placed-offer-letter"><i class="fa-solid fa-upload"></i><span>Click to upload offer letter</span></label>
-                                                        <input type="file"  id="placed-offer-letter" accept=".pdf" style="display: none;" required />
-                                                        <div class="plac-form-attached"></div>
-                                                    </div>
-                                                    <div class="finput-box">
-                                                        <span class="form-details">Add Joining Letter</span>
-                                                        <label for="placed-joining-letter"><i class="fa-solid fa-upload"></i><span>Click to upload Joining letter</span></label>
-                                                        <input type="file"  id="placed-joining-letter" accept=".pdf" style="display: none;" required />
-                                                        <div class="plac-form-attached"></div>
-                                                    </div>
-                                                    <div class="finput-box">
-                                                        <span class="form-details">Date of joining</span>
-                                                        <input type="date" id="placed-doj" required >
-                                                    </div>
-                                           
-                                                
-                                            </div>
-                                        
-                                            <div class="form-button">
-                                                <input type="submit" value="Save Details">
-                                            </div>
-                                        </form>
-                                    </div>
+                        </div>
+                        <!-- Qualification Item 2 -->
+                        <div class="prof-qual-item">
+                            <h2>Government Polytechnic Unnao</h2>
+                            <div class="course-det">
+                                <div>
+                                    <h3>Course:</h3>
+                                    <span>Diploma</span>
+                                </div>
+                                <div>
+                                    <h3>Duration:</h3>
+                                    <span>2018-2021</span>
+                                </div>
+                            </div>
+                            <div class="course-det">
+                                <div>
+                                    <h3>Branch:</h3>
+                                    <span>CSE</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="training-info" class="prof-tab-content">
-                        <div class="pd-info-item">
-                            <div class="pd-info-head">Training & Certificates</div>
-                            <div class="pd-info-text">
-                                <div class="pd-info-text">
+                    <div class="prof-skill">
+                        <div class="prof-skill-head">Skill</div>
+                        <!-- Qualification Item 1 -->
+                        <div class="prof-skill-item">
+                            <h3>Web Development</h3>
+                            <h3>App Development</h3>
+                            <h3>Devops</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="prof-right">
+                    <div class="prof-basic-info">
+                        <div class="basic-detail">
+                            <h2 id="student-name-top"></h2>
+                        </div>
+
+                        <div class="report-query">
+                            <i class="fa-solid fa-message"></i>
+                            <a href="#">Report Query To Admin</a>
+                        </div>
+                    </div>
+                    <div class="prof-info-list">
+                        <div class="prof-info-tab">
+                            <a
+                                href="#"
+                                class="prof-tab-links active"
+                                data-tab="personal-details"
+                                class="active"
+                                ><i class="fa-regular fa-user"></i
+                                >&ensp;Personal Details</a
+                            >
+                            <a
+                                href="#"
+                                class="prof-tab-links"
+                                data-tab="education-info"
+                                ><i class="fa-solid fa-graduation-cap"></i
+                                >&ensp;Education</a
+                            >
+                            <a
+                                href="#"
+                                class="prof-tab-links"
+                                data-tab="experience-info"
+                                ><i class="fa-solid fa-briefcase"></i
+                                >&ensp;Experience & Placement</a
+                            >
+                            <a
+                                href="#"
+                                class="prof-tab-links"
+                                data-tab="training-info"
+                                ><i class="fa-solid fa-certificate"></i
+                                >&ensp;Training and certificates</a
+                            >
+                        </div>
+
+                        <div id="personal-details" class="prof-tab-content">
+                            <div class="pd-info-item">
+                                <div class="pd-info-head">
+                                    Student Basic Information
+                                </div>
+                                
+                                <div id="personal-info-container"></div>
+                            </div>
+                        </div>
+                        <div id="education-info" class="prof-tab-content">
+                            <div class="pd-info-item">
+                                <div class="create-head-wrap">
+                                    <div class="create-info-head">
+                                        Education Details
+                                    </div>
+                                    <a href="#" id="create-education-btn"
+                                        ><i class="fa-solid fa-plus"></i> Update
+                                        Education</a
+                                    >
+                                </div>
+
+                                <!--- Education Details -->
+                                <div id="education-container"></div>
+                            </div>
+                        </div>
+
+                        <div id="experience-info" class="prof-tab-content">
+                            <div class="pd-info-item">
+                                <div class="create-head-wrap">
+                                    <div class="create-info-head">
+                                        Experience
+                                    </div>
+                                    <a href="#" id="create-exp-btn"
+                                        ><i class="fa-solid fa-plus"></i> Add
+                                        Experience</a
+                                    >
+                                </div>
+                                <div id="experience-container"></div>
+
+                                <div id="create-exp-modal">
+                                    <form
+                                        action=""
+                                        id="create-exp-form"
+                                        class="create-exp-form"
+                                    >
+                                        <div class="create-modal-head">
+                                            <h2>Add Experience Form</h2>
+                                            <a href="#" id="close-exp-modal"
+                                                ><i
+                                                    class="fa-solid fa-xmark"
+                                                ></i
+                                            ></a>
+                                        </div>
+                                        <div id="exp-error-msg"></div>
+                                        <div class="form-control">
+                                            <label for="company_name"
+                                                >Company Name</label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="company_name"
+                                                id="company_name"
+                                                placeholder="Enter Company Name"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="form-control">
+                                            <label for="job_profile"
+                                                >Job Profile</label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="job_profile"
+                                                id="job_profile"
+                                                placeholder="Enter Job Profile"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="form-control">
+                                            <label for="start_date"
+                                                >Enter Start Date</label
+                                            >
+                                            <input
+                                                type="date"
+                                                name="start_date"
+                                                id="start_date"
+                                                placeholder="Enter Start Date"
+                                                required
+                                            />
+                                        </div>
+                                        <div
+                                            class="form-control"
+                                            id="exp_end_date"
+                                        >
+                                            <label for="end_date"
+                                                >Enter End Date</label
+                                            >
+                                            <input
+                                                type="date"
+                                                name="end_date"
+                                                id="end_date"
+                                                placeholder="Enter End Date"
+                                            />
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                id="exp-curr-work"
+                                            />
+                                            <label for="exp-curr-work"
+                                                >Curently Working</label
+                                            >
+                                        </div>
+                                        <button
+                                            class="add-exp-btn"
+                                            type="submit"
+                                        >
+                                            Add Experience
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="pd-info-item">
+                                <div class="create-head-wrap">
+                                    <div class="create-info-head">
+                                        Placement
+                                    </div>
+                                    <a href="#" id="create-plac-btn"
+                                        ><i class="fa-solid fa-plus"></i> Add
+                                        Placement</a
+                                    >
+                                </div>
+                                <div id="placement-container"></div>
+
+                                <div id="create-plac-modal">
+                                    <!-- ================= STUDENT TAB  ==================== -->
+                                    <div class="student-form">
+                                        <div class="create-modal-head">
+                                            <div class="form-title">
+                                                Placement Details
+                                            </div>
+                                            <a href="#" id="close-plac-modal"
+                                                ><i
+                                                    class="fa-solid fa-xmark"
+                                                ></i
+                                            ></a>
+                                        </div>
+                                        <div id="plac-error-msg"></div>
+
+                                        <div class="form-content">
+                                            <form
+                                                action=""
+                                                id="placed-detail-form"
+                                            >
+                                                <div class="fuser-details">
+                                                    <div class="finput-group">
+                                                        <div class="finput-box">
+                                                            <span
+                                                                class="form-details"
+                                                                >Job
+                                                                Pofile</span
+                                                            >
+                                                            <input
+                                                                type="text"
+                                                                id="placed-job-profile"
+                                                                placeholder="Enter Job Profile"
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div class="finput-box">
+                                                            <span
+                                                                class="form-details"
+                                                                >Company
+                                                                Name</span
+                                                            >
+                                                            <input
+                                                                type="text"
+                                                                id="placed-company"
+                                                                placeholder="Enter Placed Company Name"
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div class="finput-group">
+                                                        <div class="finput-box">
+                                                            <span
+                                                                class="form-details"
+                                                                >Company
+                                                                Location</span
+                                                            >
+                                                            <input
+                                                                type="text"
+                                                                id="placed-company-loc"
+                                                                placeholder="Enter Comapny Location"
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div class="finput-box">
+                                                            <span
+                                                                class="form-details"
+                                                                >Package</span
+                                                            >
+                                                            <input
+                                                                type="text"
+                                                                id="placed-package"
+                                                                placeholder="Enter Package (In LPA)"
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="finput-box">
+                                                        <span
+                                                            class="form-details"
+                                                            >Add Offer
+                                                            Letter</span
+                                                        >
+                                                        <label
+                                                            for="placed-offer-letter"
+                                                            ><i
+                                                                class="fa-solid fa-upload"
+                                                            ></i
+                                                            ><span
+                                                                >Click to upload
+                                                                offer
+                                                                letter</span
+                                                            ></label
+                                                        >
+                                                        <input
+                                                            type="file"
+                                                            id="placed-offer-letter"
+                                                            accept=".pdf"
+                                                            style="
+                                                                display: none;
+                                                            "
+                                                        />
+                                                        <div
+                                                            class="plac-form-attached"
+                                                        ></div>
+                                                    </div>
+                                                    <div class="finput-box">
+                                                        <span
+                                                            class="form-details"
+                                                            >Add Joining
+                                                            Letter</span
+                                                        >
+                                                        <label
+                                                            for="placed-joining-letter"
+                                                            ><i
+                                                                class="fa-solid fa-upload"
+                                                            ></i
+                                                            ><span
+                                                                >Click to upload
+                                                                Joining
+                                                                letter</span
+                                                            ></label
+                                                        >
+                                                        <input
+                                                            type="file"
+                                                            id="placed-joining-letter"
+                                                            accept=".pdf"
+                                                            style="
+                                                                display: none;
+                                                            "
+                                                        />
+                                                        <div
+                                                            class="plac-form-attached"
+                                                        ></div>
+                                                    </div>
+                                                    <div class="finput-box">
+                                                        <span
+                                                            class="form-details"
+                                                            >Date of
+                                                            joining</span
+                                                        >
+                                                        <input
+                                                            type="date"
+                                                            id="placed-doj"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-button">
+                                                    <input
+                                                        type="submit"
+                                                        value="Save Details"
+                                                    />
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="training-info" class="prof-tab-content">
+                            <div class="pd-info-item">
+                                <div class="pd-info-head">
+                                    Training & Certificates
+                                </div>
+                                <div class="tp-info-text">
                                     <p>No Information Available</p>
-                                </div> 
-                            </div> 
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</body>
+    </body>
 
     <script src="../assets/loader/loader.js"></script>
     <script src="./js/student.js"></script>
