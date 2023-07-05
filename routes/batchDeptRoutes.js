@@ -1,16 +1,21 @@
 const router = require("express").Router();
 
 const {
+  createCourse,
+  getAllCourses,
   createBatch,
+  getBatches,
   createDepartment,
-  getAllBatches,
   getDepartments,
 } = require("../controllers/batchDeptController");
 
-router.get("/batch", getAllBatches);
-router.post("/batch", createBatch);
+router.post("/course", createCourse);
+router.get("/course", getAllCourses);
 
-router.get("/dept/:batchId", getDepartments);
+router.post("/batch", createBatch);
+router.get("/batch", getBatches);
+
 router.post("/dept", createDepartment);
+router.get("/dept", getDepartments);
 
 module.exports = router;

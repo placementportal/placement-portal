@@ -12,9 +12,14 @@ const UserSchema = new mongoose.Schema(
       maxlength: [30, "Name should be of maximum 30 characters"],
     },
 
+    photo: {
+      type: String,
+      trim: true,
+    },
+
     email: {
       type: String,
-      // required: [true, "Email is required"],
+      required: [true, "Email is required"],
       unique: [true, "User already exists"],
       validate: {
         validator: validator.isEmail,
@@ -39,9 +44,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
     },
 
+    courseId: {
+      type: mongoose.Types.ObjectId,
+      ref: "Course",
+    },
+
     batchId: {
       type: mongoose.Types.ObjectId,
-      ref: "Batch"
+      ref: "Batch",
     },
 
     departmentId: {
@@ -52,12 +62,27 @@ const UserSchema = new mongoose.Schema(
     personal_details: {
       type: mongoose.Types.ObjectId,
       unique: true,
+      ref: "StudentPersonalData",
     },
 
     education_details: {
       type: mongoose.Types.ObjectId,
       unique: true,
+      ref: "StudentEducationData",
     },
+
+    placement_details: {
+      type: mongoose.Types.ObjectId,
+      unique: true,
+      ref: "StudentPlacementData",
+    },
+
+    experience_details: {
+      type: mongoose.Types.ObjectId,
+      unique: true,
+      ref: "StudentExperienceData",
+    }
+
   },
   { timestamps: true, versionKey: false }
 );

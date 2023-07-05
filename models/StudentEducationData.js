@@ -9,16 +9,6 @@ const StudentEducationDataSchema = new mongoose.Schema(
       ref: "User",
     },
 
-    batchId: {
-      type: mongoose.Types.ObjectId,
-      ref: "Batch",
-    },
-
-    departmentId: {
-      type: mongoose.Types.ObjectId,
-      ref: "Department",
-    },
-
     is_lateral_entry: {
       type: Boolean,
       default: false,

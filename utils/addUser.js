@@ -30,7 +30,7 @@ const addAdmin = async (adminInfo) => {
 const addStudent = async (adminInfo) => {
   await connectDB(process.env.MONGO_URI);
 
-  const { name, roll_no, password } = adminInfo;
+  const { name, email, roll_no, password } = adminInfo;
 
   if (!name || !roll_no?.trim() || !password) {
     throw new CustomAPIError.BadRequestError("Please provide all details");
@@ -45,6 +45,7 @@ const addStudent = async (adminInfo) => {
     name,
     roll_no,
     password,
+    email,
     role: "student"
   });
 
@@ -61,4 +62,5 @@ const addStudent = async (adminInfo) => {
 //   name: "Tushar",
 //   roll_no: "2204220109038",
 //   password: "2002-02-25",
-// })
+//   email: "metusharjain@gmail.com"
+// });

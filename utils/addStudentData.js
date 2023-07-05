@@ -38,5 +38,4 @@ const addPersonalData = async (studentPersonalInfo) => {
 //   state: "Uttar Pradesh",
 //   district: "Sitapur",
 //   contactNumber: "8604446338",
-//   email: "metusharjain@gmail.com",
 // });

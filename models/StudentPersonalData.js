@@ -33,16 +33,6 @@ const StudentPersonalDataSchema = new mongoose.Schema(
       unique: true,
     },
 
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      unique: [true, "User already exists"],
-      validate: {
-        validator: validator.isEmail,
-        message: "Please enter a valid email",
-      },
-    },
-
     address: {
       type: String,
       required: [true, "Address is required"],

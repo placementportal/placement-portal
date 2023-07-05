@@ -1,87 +1,132 @@
-const BatchModel = require("../models/Batch");
-const DepartmentModel = require("../models/Department");
+const {
+  CourseModel,
+  DepartmentModel,
+  BatchModel,
+} = require("../models/Course");
 
 const CustomAPIError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 
+const createCourse = async (req, res) => {
+  const { courseName } = req.body;
+  const course = await CourseModel.create({ courseName });
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    message: "Course Created!",
+    id: course._id,
+  });
+};
+
+const getAllCourses = async (req, res) => {
+  const courses = await CourseModel.find();
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: "Found all courses!",
+    id: courses,
+  });
+};
+
 const createBatch = async (req, res) => {
-  const { batchName } = req.body;
-  const batch = await BatchModel.create({ batchName });
-  return res.status(StatusCodes.CREATED).json({
+  const { batchYear, courseId } = req.body;
+
+  if (!courseId?.trim()) {
+    throw new CustomAPIError.BadRequestError("Course Id is required!");
+  }
+
+  const course = await CourseModel.findById(courseId);
+  if (!course) {
+    throw new CustomAPIError.BadRequestError(
+      `No course found with id: ${courseId}`
+    );
+  }
+
+  const batch = await BatchModel.create({ batchYear, courseId });
+
+  course.batches.push(batch._id);
+  await course.save();
+
+  res.status(StatusCodes.CREATED).json({
     success: true,
     message: "Batch created!",
     id: batch._id,
   });
 };
 
-const createDepartment = async (req, res) => {
-  const { departmentName } = req.body;
-  const { batchId } = req.params;
+const getBatches = async (req, res) => {
+  const courseId = req?.query?.courseId;
 
-  if (!batchId?.trim()) {
-    throw new CustomAPIError.BadRequestError("Batch Id is required!");
+  if (!courseId?.trim()) {
+    throw new CustomAPIError.BadRequestError("Course Id is required!");
   }
 
-  const batch = await BatchModel.findById(batchId);
-  if (!batch) {
-    throw new Error(`No batch found with id: ${batchId}`);
+  const course = await CourseModel.findById(courseId);
+  if (!course) {
+    throw new CustomAPIError.NotFoundError(
+      `Course with id: ${courseId} doesn't exist!`
+    );
   }
 
-  const department = await DepartmentModel.create({
-    departmentName,
-    batchId,
+  const batches = await BatchModel.find({ courseId });
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: `Found batches for course id: ${courseId}`,
+    batches,
   });
+};
 
-  batch.departments.push(department._id);
-  await batch.save();
+const createDepartment = async (req, res) => {
+  const { departmentName, courseId } = req.body;
 
-  return res.status(StatusCodes.CREATED).json({
+  if (!courseId?.trim()) {
+    throw new CustomAPIError.BadRequestError("Course Id is required!");
+  }
+
+  const course = await CourseModel.findById(courseId);
+  if (!course) {
+    throw new CustomAPIError.BadRequestError(
+      `No course found with id: ${courseId}`
+    );
+  }
+
+  const department = await DepartmentModel.create({ departmentName, courseId });
+
+  course.departments.push(department._id);
+  await course.save();
+
+  res.status(StatusCodes.CREATED).json({
     success: true,
     message: "Department created!",
     id: department._id,
   });
 };
 
-const getAllBatches = async (req, res) => {
-  const batches = await BatchModel.find().select("batchName");
-  res.status(StatusCodes.OK).json({
-    success: true,
-    batches,
-  });
-};
-
 const getDepartments = async (req, res) => {
-  const batchId = req.params?.batchId;
+  const courseId = req?.query?.courseId;
 
-  if (!batchId) {
-    throw new CustomAPIError.BadRequestError("Batch Id is required");
+  if (!courseId?.trim()) {
+    throw new CustomAPIError.BadRequestError("Course Id is required!");
   }
 
-  let departments;
-
-  if (batchId == "all") {
-    departments = await DepartmentModel.find();
-  } else {
-    const batch = await BatchModel.findById(batchId);
-    if (!batch) {
-      throw new CustomAPIError.BadRequestError(
-        `No batch found with id: ${batchId}`
-      );
-    }
-    departments = await DepartmentModel.find({ batchId }).select(
-      "departmentName batchId"
+  const course = await CourseModel.findById(courseId);
+  if (!course) {
+    throw new CustomAPIError.NotFoundError(
+      `Course with id: ${courseId} doesn't exist!`
     );
   }
 
+  const departments = await DepartmentModel.find({ courseId });
   res.status(StatusCodes.OK).json({
     success: true,
+    message: `Departments batches for course id: ${courseId}`,
     departments,
   });
 };
 
 module.exports = {
+  createCourse,
+  getAllCourses,
   createBatch,
+  getBatches,
   createDepartment,
-  getAllBatches,
   getDepartments,
 };

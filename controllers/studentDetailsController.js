@@ -7,8 +7,11 @@ const {
   StudentJobDataModel,
 } = require("../models/StudentJobData");
 
-const BatchModel = require("../models/Batch");
-const DepartmentModel = require("../models/Department");
+const {
+  CourseModel,
+  DepartmentModel,
+  BatchModel,
+} = require("../models/Course");
 
 const CustomAPIError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
@@ -16,47 +19,42 @@ const { fileUpload } = require("../utils/fileUpload");
 
 const getPersonalData = async (req, res) => {
   const student_id = req.user.userId;
-  const personalData = await StudentPersonalDataModel.findOne({
-    student_id,
-  });
 
-  if (!personalData) {
-    throw new CustomAPIError.BadRequestError(
-      "No personal data found for this student"
-    );
-  }
+  const student = await UserModel.findById(student_id)
+    .select("name email photo personal_details")
+    .populate("personal_details");
 
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Pesonal details found!",
-    personalData,
+    student,
   });
 };
 
 const getEducationData = async (req, res) => {
-  const education_details = await StudentEducationDataModel.findOne({
-    student_id: req.user.userId,
-  })
-    .select("-createdAt -updatedAt -student_id")
+  const student_id = req.user.userId;
+  const student = await UserModel.findById(student_id)
+    .select("roll_no courseId batchId departmentId education_details")
+    .populate({
+      path: "courseId",
+      select: "courseName",
+    })
     .populate({
       path: "batchId",
-      select: "batchName",
+      select: "batchYear",
     })
     .populate({
       path: "departmentId",
       select: "departmentName",
+    }).populate({
+      path: "education_details",
+      select: "-student_id -_id"
     });
-
-  if (!education_details) {
-    throw new CustomAPIError.NotFoundError(
-      `No education record found for this user`
-    );
-  }
 
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Education Details found!",
-    education_details,
+    education_details: student,
   });
 };
 
