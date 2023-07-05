@@ -7,12 +7,12 @@ const CustomAPIError = require("../errors");
 const fileUpload = async (file, folder, acceptType) => {
   const fileMimeType = file.mimetype;
   const fileSize = file.size; // bytes
-  let maxFileSize;
+  let maxFileSize, acceptMIME;
 
   if (acceptType == "image") {
     acceptMIME = "image/";
     maxFileSize = 1 * 1024 * 1024; // 1 MB
-  } else if(acceptType == "document") {
+  } else if (acceptType == "document") {
     acceptMIME = "application/pdf";
     maxFileSize = 2 * 1024 * 1024; // 2 MB
   }
@@ -22,16 +22,15 @@ const fileUpload = async (file, folder, acceptType) => {
   }
 
   if (fileSize > maxFileSize) {
-    throw new CustomAPIError.BadRequestError(
-      "Maximum file size exceeded!"
-    );
+    throw new CustomAPIError.BadRequestError("Maximum file size exceeded!");
   }
 
-  const filePath = path.join(__dirname, "../tmp/" + file.name);
+  const filePath = path.resolve(__dirname, "../tmp/" + file.name);
   await file.mv(filePath);
 
   const uploadedFile = await cloudinary.uploader.upload(filePath, {
-    use_filename: true, folder
+    use_filename: true,
+    folder,
   });
 
   fs.unlinkSync(filePath);

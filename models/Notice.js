@@ -20,6 +20,18 @@ const NoticeSchema = new mongoose.Schema(
       required: [true, "Notice File is required"],
     },
 
+    receivingCourse: {
+      type: mongoose.Types.ObjectId,
+      ref: "Course",
+      required: true,
+    },
+
+    receivingBatches: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Batch",
+      required: true,
+    },
+
     receivingDepartments: {
       type: [mongoose.Types.ObjectId],
       ref: "Department",
