@@ -44,7 +44,7 @@ const NoticeSchema = new mongoose.Schema(
       ref: "User",
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false }
 );
 
 const NoticeModel = mongoose.model("Notice", NoticeSchema);

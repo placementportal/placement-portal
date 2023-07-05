@@ -5,6 +5,7 @@ const {
 } = require("../models/Course");
 
 const NoticeModel = require("../models/Notice");
+const UserModel = require("../models/User");
 
 const CustomAPIError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
@@ -106,6 +107,53 @@ const createNotice = async (req, res) => {
   }
 };
 
+const getAllNotices = async (req, res) => {
+  const notices = await NoticeModel.find()
+    .sort("-createdAt")
+    .populate({
+      path: "receivingCourse",
+      select: "courseName",
+    })
+    .populate({
+      path: "receivingBatches",
+      select: "batchYear",
+    })
+    .populate({
+      path: "receivingDepartments",
+      select: "departmentName",
+    });
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: "Notices found!",
+    notices,
+  });
+};
+
+const getMyNotices = async (req, res) => {
+  const student_id = req.user.userId;
+  const student = await UserModel.findById(student_id);
+
+  const { batchId, departmentId, courseId, lastNoticeFetched } = student;
+
+  const notices = await NoticeModel.find({
+    receivingCourse: courseId,
+    receivingBatches: batchId,
+    receivingDepartments: departmentId,
+    createdAt: { $gte: lastNoticeFetched },
+  }).select("noticeTitle noticeBody noticeFile createdAt");
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: "Notices found!",
+    notices,
+  });
+
+  student.lastNoticeFetched = new Date();
+  await student.save();
+};
+
 module.exports = {
   createNotice,
+  getAllNotices,
+  getMyNotices,
 };

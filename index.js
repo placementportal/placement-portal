@@ -38,7 +38,7 @@ const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes");
 const studentDetailsRouter = require("./routes/studentDetailsRoutes");
 const batchDeptRouter = require("./routes/batchDeptRoutes");
-const noticeRouter = require("./routes/noticeController");
+const noticeRouter = require("./routes/noticeRoutes");
 
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(morgan("tiny"));
@@ -62,11 +62,7 @@ app.use("/api/v1/batchDept", [
   authorizeRoles("admin"),
   batchDeptRouter,
 ]);
-app.use("/api/v1/notice", [
-  authenticateUser,
-  authorizeRoles("admin"),
-  noticeRouter,
-]);
+app.use("/api/v1/notice", [authenticateUser, noticeRouter]);
 
 app.use(notFoundHandler);
 app.use(errorHandlerMiddleware);

@@ -46,15 +46,16 @@ const getEducationData = async (req, res) => {
     .populate({
       path: "departmentId",
       select: "departmentName",
-    }).populate({
+    })
+    .populate({
       path: "education_details",
-      select: "-student_id -_id"
+      select: "-student_id -_id",
     });
 
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Education Details found!",
-    education_details: student,
+    data: student,
   });
 };
 

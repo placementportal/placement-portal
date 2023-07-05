@@ -4,6 +4,9 @@ const CustomAPIError = require("../errors");
 const UserModel = require("../models/User");
 
 const showCurrentUser = async (req, res) => {
+
+  
+
   res.status(StatusCodes.OK).json({ success: true, user: req.user });
 };
 

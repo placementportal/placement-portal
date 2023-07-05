@@ -81,7 +81,12 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       unique: true,
       ref: "StudentExperienceData",
-    }
+    },
+
+    lastNoticeFetched: {
+      type: Date,
+      default: new Date(),
+    },
 
   },
   { timestamps: true, versionKey: false }
