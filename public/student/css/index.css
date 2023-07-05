@@ -72,9 +72,7 @@ body {
     /* border-top: 1px solid black; */
     z-index: -1;
 }
-#education-container{
-    margin:0 10px;
-}
+
 .prof-qual-item {
     margin: 25px 0;
     color: rgb(105, 105, 105);
@@ -83,6 +81,21 @@ body {
 .prof-qual-item > h2 {
     font-size: 16px;
     color: rgb(41, 41, 41);
+}
+.qual-head-wrap{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 550px;
+}
+.qual-head-wrap>a{
+    text-decoration: none;
+    color:#00a885;
+}
+.qual-head-wrap > h2 {
+    font-size: 16px;
+    color: rgb(41, 41, 41);
+    margin-bottom: 15px;
 }
 .course-det {
     display: flex;
@@ -238,6 +251,58 @@ body {
     display: none;
 }
 
+
+
+#education-container{
+    margin:0 10px;
+}
+
+/* Education Edit Modals */
+
+.edit-education-modal{
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color: #28282853;
+    /* transform: translate(-50%, -50%); */
+
+    z-index: 999;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+}
+.edit-education-form{
+    z-index: 9999;
+    background-color: #fff;
+    padding: 25px 30px;
+    border-radius: 5px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    position: relative;
+    width:500px;
+    margin: 20px;
+    margin-right: auto;
+    margin-left: auto;
+}
+#edit-grad-modal, #edit-highSchool-modal, #edit-diploma-modal{
+    display: none;
+}
+
+.edu-form-group>h3{
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.update-grad-btn{
+    width: 100%;
+    padding: 10px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #00a885;
+    margin: 10px 0;
+}
 #experience-container {
     display: flex;
     flex-wrap: wrap;
@@ -288,16 +353,6 @@ body {
 
 }
 .create-exp-form {
-    /* position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    width: 450px;
-    z-index: 9999;
-    padding: 40px 30px;
-    border-radius: 5px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); */
     z-index: 9999;
     background-color: #fff;
     padding: 25px 30px;
@@ -322,14 +377,14 @@ body {
     padding-bottom: 30px;
     color: #00a885;
 }
-.create-exp-form .form-control {
+.form-control {
     margin-bottom: 15px;
 }
-.create-exp-form .form-control > label {
+.form-control > label {
     font-size: 14px;
     color: black;
 }
-.create-exp-form .form-control > input {
+.form-control > input {
     width: 100%;
     padding: 8px;
     outline: none;

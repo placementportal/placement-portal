@@ -71,9 +71,11 @@ window.onload = function () {
 };
 
 function checkAlreadyLogged() {
+  
     fetch("/api/v1/user/whoami/")
         .then((response) => response.json())
         .then((data) => {
+           
             if (data?.user?.role === "student") {
                 window.location.href = "/student/index.html";
             } else if (data?.user?.role === "admin") {
@@ -112,10 +114,11 @@ function studentLogin(event) {
         body: raw,
         redirect: "follow",
     };
-
+    Loader.open();
     fetch("/api/v1/auth/login/student", requestOptions)
         .then((response) => {
             response.text();
+            Loader.close();
             if (response.status === 200) {
                 window.location.href = `/student/`;
             } else {
@@ -153,10 +156,11 @@ function adminLogin(event) {
         body: raw,
         redirect: "follow",
     };
-
+    Loader.open();
     fetch("/api/v1/auth/login/admin", requestOptions)
         .then((response) => {
             response.text();
+            Loader.close();
             if (response.status === 200) {
                 window.location.href = `/admin/`;
             } else {

@@ -43,7 +43,7 @@
             <div class="prof-detail">
                 <div class="prof-left">
                     <div class="prof-img">
-                        <img src="./profile-picture.jpg" />
+                        <img src="" id="student-profile-pic" />
                     </div>
                     <div class="prof-qual">
                         <div class="prof-qual-head">Qualification</div>
@@ -150,7 +150,7 @@
                                 <div class="pd-info-head">
                                     Student Basic Information
                                 </div>
-                                
+
                                 <div id="personal-info-container"></div>
                             </div>
                         </div>
@@ -168,6 +168,244 @@
 
                                 <!--- Education Details -->
                                 <div id="education-container"></div>
+
+                                <!----- Edit Graduation Poppup -->
+                                <div
+                                    class="edit-education-modal"
+                                    id="edit-grad-modal"
+                                >
+                                    <form
+                                        action=""
+                                        id="edit-grad-form"
+                                        class="edit-education-form"
+                                    >
+                                        <div class="create-modal-head">
+                                            <h2>Edit Graduation Detail</h2>
+                                            <a
+                                                href="#"
+                                                id="close-grad-modal"
+                                                onclick="closeGradModal(event);"
+                                                ><i
+                                                    class="fa-solid fa-xmark"
+                                                ></i
+                                            ></a>
+                                        </div>
+
+                                        <div
+                                            class="edu-form-group"
+                                            id="lateral-hide"
+                                        >
+                                            <h3>1st year</h3>
+                                            <div class="form-control">
+                                                <input
+                                                    type="number"
+                                                    name="first_sem_score"
+                                                    id="first_sem_score"
+                                                    placeholder="Enter First Semester GPA"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    name="second_sem_score"
+                                                    id="second_sem_score"
+                                                    placeholder="Enter second Semester GPA"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div class="edu-form-group">
+                                            <h3>2nd year</h3>
+                                            <div class="form-control">
+                                                <input
+                                                    type="number"
+                                                    name="third_sem_score"
+                                                    id="third_sem_score"
+                                                    placeholder="Enter third Semester GPA"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    name="fourth_sem_score"
+                                                    id="fourth_sem_score"
+                                                    placeholder="Enter fourth Semester GPA"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div class="edu-form-group">
+                                            <h3>3rd year</h3>
+                                            <div class="form-control">
+                                                <input
+                                                    type="number"
+                                                    name="fifth_sem_score"
+                                                    id="fifth_sem_score"
+                                                    placeholder="Enter fifth Semester GPA"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    name="sixth_sem_score"
+                                                    id="sixth_sem_score"
+                                                    placeholder="Enter sixth Semester GPA"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="edu-form-group">
+                                            <h3>4th year</h3>
+                                            <div class="form-control">
+                                                <input
+                                                    type="number"
+                                                    name="seventh_sem_score"
+                                                    id="seventh_sem_score"
+                                                    placeholder="Enter seventh Semester GPA"
+                                                />
+                                                <input
+                                                    type="number"
+                                                    name="eighth_sem_score"
+                                                    id="eighth_sem_score"
+                                                    placeholder="Enter eighth Semester GPA"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            class="update-grad-btn"
+                                            type="submit"
+                                        >
+                                            Update Graduation
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!----- Edit Diploma Poppup -->
+                                <div
+                                    class="edit-education-modal"
+                                    id="edit-diploma-modal"
+                                >
+                                    <form
+                                        action=""
+                                        id="edit-diploma-form"
+                                        class="edit-education-form"
+                                    >
+                                        <div class="create-modal-head">
+                                            <h2>Edit Diploma Detail</h2>
+                                            <a
+                                                href="#"
+                                                id="close-diploma-modal"
+                                                onclick="closeDiplomaModal(event);"
+                                                ><i
+                                                    class="fa-solid fa-xmark"
+                                                ></i
+                                            ></a>
+                                        </div>
+
+                                        <div class="form-control">
+                                            <label for="diploma_year"
+                                                >Diploma Year</label
+                                            >
+                                            <input
+                                                type="number"
+                                                name="diploma_year"
+                                                id="diploma_year"
+                                                placeholder="Enter Diploma Year"
+                                                required
+                                            />
+                                        </div>
+
+                                        <div class="form-control">
+                                            <label for="diploma_score"
+                                                >Diploma Score</label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="diploma_score"
+                                                id="diploma_score"
+                                                placeholder="Enter Diploma Score"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="form-control">
+                                            <label for="diploma_board"
+                                                >Diploma Board</label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="diploma_board"
+                                                id="diploma_board"
+                                                placeholder="Enter Diploma Board"
+                                                required
+                                            />
+                                        </div>
+
+                                        <button
+                                            class="update-grad-btn"
+                                            type="submit"
+                                        >
+                                            Update Diploma
+                                        </button>
+                                    </form>
+                                </div>
+
+
+                                 <!----- Edit High Poppup -->
+                                 <div class="edit-education-modal" id="edit-highSchool-modal">
+                                    <form
+                                        action=""
+                                        id="edit-highSchool-form"
+                                        class="edit-education-form"
+                                    >
+                                        <div class="create-modal-head">
+                                            <h2>Edit High Detail</h2>
+                                            <a href="#" id="close-highSchool-modal" onclick="closeHighSchoolModal(event);"
+                                                ><i
+                                                    class="fa-solid fa-xmark"
+                                                ></i
+                                            ></a>
+                                        </div>
+                                        <div id="highSchool-err-msg"></div>
+                                        <div class="form-control">
+                                            <label for="high_school_year"
+                                                >High School Year</label
+                                            >
+                                            <input
+                                                type="number"
+                                                name="high_school_year"
+                                                id="high_school_year"
+                                                placeholder="Enter High School Year"
+                                                required
+                                            />
+                                        </div>
+                                        
+                                        <div class="form-control">
+                                            <label for="high_school_score"
+                                                >High School Score</label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="high_school_score"
+                                                id="high_school_score"
+                                                placeholder="Enter High School Score"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="form-control">
+                                            <label for="high_school_board"
+                                                >High School Board</label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="high_school_board"
+                                                id="high_school_board"
+                                                placeholder="Enter High School Board"
+                                                required
+                                            />
+                                        </div>
+                                        
+                                        <button
+                                            class="update-grad-btn"
+                                            type="submit"
+                                        >
+                                            Update High School
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
 

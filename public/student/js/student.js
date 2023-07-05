@@ -16,7 +16,8 @@ function checkAlreadyLogged() {
                 window.location.href = "/";
             }
             // console.log(JSON.stringify(data))
-            document.getElementById('student-name-top').innerText=data.user.name
+            document.getElementById("student-name-top").innerText =
+                data.user.name;
         })
         .catch((error) => {
             // console.log('error', error)
@@ -29,24 +30,32 @@ async function fetchPersonalDetail() {
         const response = await fetch("/api/v1/student/personal");
         const data = await response.json();
 
-        const { personalData } = data;
+        const { student } = data;
+        const { personal_details } = student;
         // console.log(data);
-        const personalDetailParent = document.getElementById("personal-info-container");
+        const personalDetailParent = document.getElementById(
+            "personal-info-container"
+        );
+        const studentProfile = document.getElementById("student-profile-pic");
 
+        let { name, email, photo } = student;
         let {
             address,
             contactNumber,
             district,
-            email,
             fatherName,
             motherName,
             state,
             _id,
-        } = personalData;
+        } = personal_details;
 
         let html = `
             <div class="pd-text-wrapper">
                 <div class="pd-text-group">
+                    <div class="pd-text-main">
+                        <h3>Name:</h3>
+                        <span>${name}</span>
+                    </div>
                     <div class="pd-text-main">
                         <h3>Father's Name:</h3>
                         <span>${fatherName}</span>
@@ -81,8 +90,10 @@ async function fetchPersonalDetail() {
             </div>
             `;
 
-    
-            personalDetailParent.innerHTML += html;
+        if (photo) {
+            studentProfile.src = photo;
+        }
+        personalDetailParent.innerHTML += html;
     } catch (error) {
         // console.log("failed to fetch error", error);
     }
@@ -92,16 +103,15 @@ async function fetchPersonalDetail() {
 async function fetchEducation() {
     try {
         const response = await fetch("/api/v1/student/education");
-        const data = await response.json();
+        const dataItem = await response.json();
 
+        const { data } = dataItem;
         const { education_details } = data;
 
         const educationParent = document.getElementById("education-container");
-
+        let { batchId, courseId, departmentId, roll_no, _id } = data;
         let {
-            batchId,
             btech_scores,
-            departmentId,
             diploma_board,
             diploma_score,
             diploma_year,
@@ -109,20 +119,34 @@ async function fetchEducation() {
             highschool_score,
             highschool_year,
             is_lateral_entry,
-            _id,
         } = education_details;
 
         let html = `
             <div class="prof-qual-item">
-                <h2>Graduation</h2>
+                <div class="qual-head-wrap">
+                    <h2>Graduation</h2>
+                    <a href="#" id="edit-grad-poppup" onclick="editGradPoppup(event);">Edit Graduation<i class="fa-regular fa-pen-to-square"></i></a>
+                </div>
                 <div class="course-det">
                     <div>
                         <h3>Course:</h3>
-                        <span>${batchId.batchName}</span>
+                        <span>${courseId.courseName}</span>
                     </div>
                     <div>
                         <h3>Branch:</h3>
                         <span>${departmentId.departmentName}</span>
+                    </div>
+                </div>
+                <div class="course-det">
+                    <div>
+                        <h3>Passing Year:</h3>
+                        <span>${batchId.batchYear}</span>
+                    </div>
+                </div>
+                <div class="course-det">
+                    <div>
+                        <h3>1st Year:</h3>
+                        <span>${batchId.batchYear}</span>
                     </div>
                 </div>
             </div>
@@ -130,9 +154,14 @@ async function fetchEducation() {
        
             `;
 
-            if(is_lateral_entry){
-                html+=`<div class="prof-qual-item">
-                <h2>Diploma</h2>
+        if (is_lateral_entry) {
+            document.getElementById("lateral-hide").style.display = "none";
+
+            html += `<div class="prof-qual-item id=${_id}">
+                <div class="qual-head-wrap">
+                    <h2>Diploma</h2>
+                    <a href="#" id="edit-diploma-poppup" onclick="editDiplomaPoppup(event);">Edit Diploma<i class="fa-regular fa-pen-to-square"></i></a>
+                </div>
                 <div class="course-det">
                     <div>
                         <h3>Board:</h3>
@@ -149,11 +178,14 @@ async function fetchEducation() {
                         <span>${diploma_score}%</span>
                     </div>
                 </div>
-            </div>`
-            }
+            </div>`;
+        }
 
-            html+=`<div class="prof-qual-item">
-                <h2>High School</h2>
+        html += `<div class="prof-qual-item">
+                <div class="qual-head-wrap">
+                    <h2>High School</h2>
+                    <a href="#" id="edit-grad-poppup" onclick="editHighSchoolPoppup(event);">Edit High School<i class="fa-regular fa-pen-to-square"></i></a>
+                </div>
                 <div class="course-det">
                     <div>
                         <h3>Board:</h3>
@@ -167,17 +199,144 @@ async function fetchEducation() {
                 
                 <div class="course-det">
                     <div>
-                        <h3>High School Year:</h3>
+                        <h3>Passing Year:</h3>
                         <span>${highschool_year}</span>
                     </div>
                 </div>
             </div>
-        </div>`
+        </div>`;
 
+        let high_school_year = (document.getElementById(
+            "high_school_year"
+        ).value = highschool_year);
+        let high_school_score = (document.getElementById(
+            "high_school_score"
+        ).value = highschool_score);
+        let high_school_board = (document.getElementById(
+            "high_school_board"
+        ).value = highschool_board);
 
         educationParent.innerHTML += html;
     } catch (error) {
         // console.log("failed to fetch error", error);
+    }
+}
+
+// Update Education Details
+
+// Update Graduation Details
+document
+    .getElementById("edit-grad-form")
+    .addEventListener("submit", updateGradForm);
+function updateGradForm(e) {
+    e.preventDefault();
+    let first_sem_score = document.getElementById("first_sem_score").value;
+    let second_sem_score = document.getElementById("second_sem_score").value;
+    let third_sem_score = document.getElementById("third_sem_score").value;
+    let fourth_sem_score = document.getElementById("fourth_sem_score").value;
+    let fifth_sem_score = document.getElementById("fifth_sem_score").value;
+    let sixth_sem_score = document.getElementById("sixth_sem_score").value;
+    let seventh_sem_score = document.getElementById("seventh_sem_score").value;
+    let eighth_sem_score = document.getElementById("eighth_sem_score").value;
+}
+
+// Update High School Details
+document
+    .getElementById("edit-highSchool-form")
+    .addEventListener("submit", updateHighSchoolForm);
+
+async function updateHighSchoolForm(e) {
+    e.preventDefault();
+    let high_school_year = document.getElementById("high_school_year").value;
+    let high_school_score = document.getElementById("high_school_score").value;
+    let high_school_board = document.getElementById("high_school_board").value;
+
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            highschool_year: high_school_year,
+            highschool_score: high_school_score,
+            highschool_board: high_school_board,
+        });
+        
+        console.log(raw)
+
+        var requestOptions = {
+            method: 'PATCH',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+          
+        Loader.open();
+        const response = await fetch(
+            "/api/v1/student/education",
+            requestOptions
+        );
+        const data = await response.json();
+        Loader.close();
+
+        if (data.success) {
+            window.location.reload();
+        } else {
+            document.getElementById(
+                "highSchool-err-msg"
+            ).innerHTML = `${data.message}`;
+        }
+    } catch (error) {
+        // console.log("failed to fetch error", error);
+    }
+}
+
+// Update Diploma  Details
+document
+    .getElementById("edit-diploma-form")
+    .addEventListener("submit", updateDiplomaForm);
+
+async function updateDiplomaForm(e) {
+    e.preventDefault();
+    let diploma_year = document.getElementById("diploma_year").value;
+    let diploma_score = document.getElementById("diploma_score").value;
+    let diploma_board = document.getElementById("diploma_board").value;
+
+    try {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            diploma_year: diploma_year,
+            diploma_score: diploma_score,
+            diploma_board: diploma_board,
+        });
+        
+        console.log(raw)
+
+        var requestOptions = {
+            method: 'PATCH',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+          
+        Loader.open();
+        const response = await fetch(
+            "/api/v1/student/education",
+            requestOptions
+        );
+        const data = await response.json();
+        Loader.close();
+
+        if (data.success) {
+            window.location.reload();
+        } else {
+            document.getElementById(
+                "highSchool-err-msg"
+            ).innerHTML = `${data.message}`;
+        }
+    } catch (error) {
+        console.log("failed to fetch error", error);
     }
 }
 
@@ -419,6 +578,42 @@ async function logoutFunc(e) {
 }
 
 // JAVASCRIPT CODE FOR OTHER THAN API CALLS
+
+function editGradPoppup(e) {
+    e.preventDefault();
+    const editGradModal = document.getElementById("edit-grad-modal");
+    editGradModal.style.display = "block";
+}
+function closeGradModal(e) {
+    e.preventDefault();
+    const editGradModal = document.getElementById("edit-grad-modal");
+    editGradModal.style.display = "none";
+}
+function editDiplomaPoppup(e) {
+    e.preventDefault();
+    const editDiplomaModal = document.getElementById("edit-diploma-modal");
+    editDiplomaModal.style.display = "block";
+}
+function closeDiplomaModal(e) {
+    e.preventDefault();
+    const editDiplomaModal = document.getElementById("edit-diploma-modal");
+    editDiplomaModal.style.display = "none";
+}
+function editHighSchoolPoppup(e) {
+    e.preventDefault();
+
+    const editHighSchoolModal = document.getElementById(
+        "edit-highSchool-modal"
+    );
+    editHighSchoolModal.style.display = "block";
+}
+function closeHighSchoolModal(e) {
+    e.preventDefault();
+    const editHighSchoolModal = document.getElementById(
+        "edit-highSchool-modal"
+    );
+    editHighSchoolModal.style.display = "none";
+}
 
 const curr_working = document.getElementById("exp-curr-work");
 curr_working.addEventListener("click", toggleEndDate);
