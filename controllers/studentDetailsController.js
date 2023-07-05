@@ -13,6 +13,9 @@ const {
   BatchModel,
 } = require("../models/Course");
 
+const TrainingModel = require("../models/Training");
+const AwardModel = require("../models/Award");
+
 const CustomAPIError = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 const { fileUpload } = require("../utils/fileUpload");
@@ -97,7 +100,7 @@ const updateEducationData = async (req, res) => {
     );
   }
 
-  if (!Array.isArray(btech_scores))
+  if (btech_scores && !Array.isArray(btech_scores))
     throw new CustomAPIError.BadRequestError("Invalid B. Tech. scores!");
 
   if (is_lateral_entry) {
@@ -322,6 +325,73 @@ const getPlacements = async (req, res) => {
   });
 };
 
+const createTraining = async (req, res) => {
+  let { trainingName, organisation, startDate, endDate } = req.body;
+  const student_id = req.user.userId;
+
+  startDate = new Date(startDate);
+  if (startDate == "Invalid Date")
+    throw new CustomAPIError.BadRequestError("Invalid start date!");
+
+  if (endDate) {
+    endDate = new Date(endDate);
+    if (endDate == "Invalid Date")
+      throw new CustomAPIError.BadRequestError("Invalid end date!");
+  }
+
+  const training = await TrainingModel.create({
+    student_id,
+    trainingName,
+    organisation,
+    startDate,
+    endDate,
+  });
+
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    message: "Training Created!",
+    id: training._id,
+  });
+};
+
+const getTrainings = async (req, res) => {
+  const student_id = req.user.userId;
+  const trainings = await TrainingModel.find({ student_id });
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: "Found trainings!",
+    trainings,
+  });
+};
+
+const createAward = async (req, res) => {
+  let { awardName, organisation, description } = req.body;
+  const student_id = req.user.userId;
+
+  const award = await AwardModel.create({
+    student_id,
+    awardName,
+    organisation,
+    description,
+  });
+
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    message: "Award Created!",
+    id: award._id,
+  });
+};
+
+const getAwards = async (req, res) => {
+  const student_id = req.user.userId;
+  const awards = await AwardModel.find({ student_id });
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: "Found Awards!",
+    awards,
+  });
+};
+
 module.exports = {
   getEducationData,
   updateEducationData,
@@ -331,4 +401,8 @@ module.exports = {
   createPlacement,
   getPlacements,
   getPersonalData,
+  createTraining,
+  getTrainings,
+  createAward,
+  getAwards,
 };

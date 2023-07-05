@@ -9,6 +9,10 @@ const {
   updateExperience,
   createPlacement,
   getPlacements,
+  createTraining,
+  getTrainings,
+  createAward,
+  getAwards,
 } = require("../controllers/studentDetailsController");
 
 router.get("/personal", getPersonalData);
@@ -22,5 +26,11 @@ router.patch("/experience/:id", updateExperience);
 
 router.post("/placement", createPlacement);
 router.get("/placement", getPlacements);
+
+router.post("/training", createTraining);
+router.get("/training", getTrainings);
+
+router.post("/award", createAward);
+router.get("/award", getAwards);
 
 module.exports = router;
