@@ -4,6 +4,8 @@ window.onload = async function () {
     await fetchPlacement();
     await fetchEducation();
     await fetchPersonalDetail();
+    await fetchTraining();
+    await fetchAward();
 };
 
 function checkAlreadyLogged() {
@@ -121,6 +123,7 @@ async function fetchEducation() {
             is_lateral_entry,
         } = education_details;
 
+        document.getElementById('is_lateral_entry').value=is_lateral_entry;
         let html = `
             <div class="prof-qual-item">
                 <div class="qual-head-wrap">
@@ -153,6 +156,37 @@ async function fetchEducation() {
             
        
             `;
+
+        let remainingDefaultScoresCount;
+
+        if (is_lateral_entry)
+            remainingDefaultScoresCount = 6 - btech_scores.length;
+        else remainingDefaultScoresCount = 8 - btech_scores.length;
+
+        for (let i = 0; i < remainingDefaultScoresCount; i++) {
+            btech_scores.push(0);
+        }
+
+        let bTechScoreCounter = 0;
+        if (!is_lateral_entry) {
+            document.getElementById("first_sem_score").value = btech_scores[0];
+            document.getElementById("second_sem_score").value = btech_scores[1];
+            bTechScoreCounter = 2;
+        }
+
+        document.getElementById("third_sem_score").value =
+            btech_scores[bTechScoreCounter++];
+        document.getElementById("fourth_sem_score").value =
+            btech_scores[bTechScoreCounter++];
+        document.getElementById("fifth_sem_score").value =
+            btech_scores[bTechScoreCounter++];
+        document.getElementById("sixth_sem_score").value =
+            btech_scores[bTechScoreCounter++];
+        document.getElementById("seventh_sem_score").value =
+            btech_scores[bTechScoreCounter++];
+        document.getElementById("eighth_sem_score").value =
+            btech_scores[bTechScoreCounter++];
+
 
         if (is_lateral_entry) {
             document.getElementById("lateral-hide").style.display = "none";
@@ -228,7 +262,7 @@ async function fetchEducation() {
 document
     .getElementById("edit-grad-form")
     .addEventListener("submit", updateGradForm);
-function updateGradForm(e) {
+async function updateGradForm(e) {
     e.preventDefault();
     let first_sem_score = document.getElementById("first_sem_score").value;
     let second_sem_score = document.getElementById("second_sem_score").value;
@@ -238,6 +272,48 @@ function updateGradForm(e) {
     let sixth_sem_score = document.getElementById("sixth_sem_score").value;
     let seventh_sem_score = document.getElementById("seventh_sem_score").value;
     let eighth_sem_score = document.getElementById("eighth_sem_score").value;
+   
+    try {
+        const isLateral = document.getElementById('is_lateral_entry').value;
+        
+        let btechScoreList=[third_sem_score,fourth_sem_score,fifth_sem_score,sixth_sem_score,seventh_sem_score,eighth_sem_score];
+        if(!isLateral){
+            btechScoreList=[first_sem_score,second_sem_score,third_sem_score,fourth_sem_score,fifth_sem_score,sixth_sem_score,seventh_sem_score,eighth_sem_score];
+        }
+        
+        const raw = JSON.stringify({
+            "btech_scores":btechScoreList,
+            "is_lateral_entry":isLateral
+        });
+        console.log(raw)
+        // var myHeaders = new Headers();
+        // myHeaders.append("Content-Type", "application/json");
+
+        var requestOptions = {
+            method: "PATCH",
+            body: raw,
+            redirect: "follow",
+            // headers: myHeaders,
+        };
+
+        Loader.open();
+        const response = await fetch(
+            "/api/v1/student/education",
+            requestOptions
+        );
+        const data = await response.json();
+        Loader.close();
+
+        if (data.success) {
+            window.location.reload();
+        } else {
+            // document.getElementById(
+            //     "highSchool-err-msg"
+            // ).innerHTML = `${data.message}`;
+        }
+    } catch (error) {
+        console.log("failed to fetch error", error);
+    }
 }
 
 // Update High School Details
@@ -250,26 +326,27 @@ async function updateHighSchoolForm(e) {
     let high_school_year = document.getElementById("high_school_year").value;
     let high_school_score = document.getElementById("high_school_score").value;
     let high_school_board = document.getElementById("high_school_board").value;
-
+    let isLateral = document.getElementById('is_lateral_entry').value;
     try {
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+        // var myHeaders = new Headers();
+        // myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify({
+        let raw = JSON.stringify({
+            is_lateral_entry:isLateral,
             highschool_year: high_school_year,
             highschool_score: high_school_score,
             highschool_board: high_school_board,
         });
-        
-        console.log(raw)
+
+        console.log(raw);
 
         var requestOptions = {
-            method: 'PATCH',
-            headers: myHeaders,
+            method: "PATCH",
+            // headers: myHeaders,
             body: raw,
-            redirect: 'follow'
-          };
-          
+            redirect: "follow",
+        };
+
         Loader.open();
         const response = await fetch(
             "/api/v1/student/education",
@@ -310,16 +387,16 @@ async function updateDiplomaForm(e) {
             diploma_score: diploma_score,
             diploma_board: diploma_board,
         });
-        
-        console.log(raw)
+
+        console.log(raw);
 
         var requestOptions = {
-            method: 'PATCH',
+            method: "PATCH",
             headers: myHeaders,
             body: raw,
-            redirect: 'follow'
-          };
-          
+            redirect: "follow",
+        };
+
         Loader.open();
         const response = await fetch(
             "/api/v1/student/education",
@@ -560,6 +637,197 @@ async function fetchPlacement() {
     }
 }
 
+
+//Create Training
+document
+    .getElementById("create-training-form")
+    .addEventListener("submit", createTraining);
+async function createTraining(e) {
+    e.preventDefault();
+    const training_name = document.getElementById("training_name").value;
+    const training_organisation = document.getElementById("training_organisation").value;
+    const training_start_date = document.getElementById("training_start_date").value;
+    const training_end_date = document.getElementById("training_end_date").value;
+
+    // const end_date=document.getElementById('end_date').value;
+    try {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        const raw = {
+            trainingName: training_name,
+            organisation: training_organisation,
+            startDate: training_start_date,
+            end_date:training_end_date
+        };
+        // if (end_date) {
+        //     raw["endDate"] = training_end_date;
+        // }
+        const requestOptions = {
+            method: "POST",
+            body: JSON.stringify(raw),
+            headers: myHeaders,
+            redirect: "follow",
+        };
+
+        Loader.open();
+        const response = await fetch(
+            "/api/v1/student/training",
+            requestOptions
+        );
+        const data = await response.json();
+        Loader.close();
+
+        if (data.success) {
+            window.location.reload();
+        } else {
+            document.getElementById(
+                "training-error-msg"
+            ).innerHTML = `${data.message}`;
+        }
+    } catch (error) {
+        // console.log("failed to fetch error", error);
+    }
+}
+
+// STUDENT TRAINING FETCH
+async function fetchTraining() {
+    try {
+        const response = await fetch("/api/v1/student/training");
+        const data = await response.json();
+
+        const { trainings } = data;
+
+        const trainingParent = document.getElementById(
+            "training-container"
+        );
+        if(trainings.length==0){
+            
+        }
+        for (let training of trainings) {
+            let { trainingName, organisation, startDate, endDate, _id } = training;
+            
+            startDate = startDate.split("T")[0];
+
+            let html = `
+            <div class="exp-info-text">
+                <div class="prof-exp-item" id=${_id}>
+                <div class="exp-inner-wrap">
+                    <div><h3>Training Name:</h3><span>${trainingName}</span></div>  
+                </div>  
+                <div class="exp-inner-wrap">
+                    <div><h3>Training Organization:</h3><span>${organisation}</span></div>  
+                </div>    
+                <div class="exp-inner-wrap">
+                    <div><h3>Start Date:</h3><span>${startDate}</span></div>`;
+
+            if (endDate) {
+                endDate = endDate.split("T")[0];
+                html += ` <div><h3>End Date:</h3><span>${endDate}</span></div>`;
+            } else {
+                html += ` <div><h3>End Date:</h3><span>Currently Working</span></div>`;
+            }
+
+            html += `</div></div></div>`;
+            trainingParent.innerHTML += html;
+        }
+    } catch (error) {
+        console.log("failed to fetch error", error);
+    }
+}
+
+
+// STUDENT AWARD FETCH
+async function fetchAward() {
+    try {
+        const response = await fetch("/api/v1/student/award");
+        const data = await response.json();
+
+        const { awards } = data;
+
+        const awardParent = document.getElementById(
+            "award-container"
+        );
+        if(awards.length==0){
+
+        }
+        for (let award of awards) {
+            let { awardName, organisation, description, _id } = award;
+
+            let html = `
+            <div class="exp-info-text">
+                <div class="prof-exp-item" id=${_id}>
+                    <div class="exp-inner-wrap">
+                        <div><h3>Award Name:</h3><span>${awardName}</span></div>  
+                    </div>  
+                    <div class="exp-inner-wrap">
+                        <div><h3>Award Organization:</h3><span>${organisation}</span></div>  
+                    </div>    
+                    <div class="exp-inner-wrap">
+                        <div><h3>Award Description:</h3><span>${description}</span></div>
+                    </div>
+                </div>
+            </div>`;
+
+            awardParent.innerHTML += html;
+        }
+    } catch (error) {
+        console.log("failed to fetch error", error);
+    }
+}
+
+
+
+//Create Award
+document
+    .getElementById("award-detail-form")
+    .addEventListener("submit", createAward);
+async function createAward(e) {
+    e.preventDefault();
+    const award_name = document.getElementById("award-name").value;
+    const award_organisation = document.getElementById("award-organization").value;
+    const award_description = document.getElementById("award-description").value;
+
+
+    // const end_date=document.getElementById('end_date').value;
+    try {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        const raw = {
+            awardName: award_name,
+            organisation: award_organisation,
+            description: award_description,
+        };
+
+        const requestOptions = {
+            method: "POST",
+            body: JSON.stringify(raw),
+            headers: myHeaders,
+            redirect: "follow",
+        };
+
+        Loader.open();
+        const response = await fetch(
+            "/api/v1/student/award",
+            requestOptions
+        );
+        const data = await response.json();
+        Loader.close();
+
+        if (data.success) {
+            window.location.reload();
+        } else {
+            document.getElementById(
+                "award-error-msg"
+            ).innerHTML = `${data.message}`;
+        }
+    } catch (error) {
+        // console.log("failed to fetch error", error);
+    }
+}
+
+
+
+
 // LOGOUT
 document.getElementById("logout").addEventListener("click", logoutFunc);
 async function logoutFunc(e) {
@@ -617,6 +885,7 @@ function closeHighSchoolModal(e) {
 
 const curr_working = document.getElementById("exp-curr-work");
 curr_working.addEventListener("click", toggleEndDate);
+
 function toggleEndDate() {
     if (curr_working.checked == true) {
         document.getElementById("exp_end_date").style.display = "none";
@@ -624,6 +893,17 @@ function toggleEndDate() {
         document.getElementById("exp_end_date").style.display = "block";
     }
 }
+
+// const training_curr_working = document.getElementById("training-curr-work");
+// training_curr_working.addEventListener("click", toggleTrainEndDate);
+// function toggleTrainEndDate() {
+//     if (training_curr_working.checked == true) {
+//         document.getElementById("training_end_date").style.display = "none";
+//     } else {
+//         document.getElementById("training_end_date").style.display = "block";
+//     }
+// }
+
 
 //main menu in mobile
 document.getElementById("hamburger").addEventListener("click", mobMenuToggle);
@@ -684,6 +964,35 @@ function showPlacModal(event) {
 function hidePlacModal(event) {
     event.preventDefault();
     document.getElementById("create-plac-modal").style.display = "none";
+}
+
+//Create Training poppup
+const createTrainingBtn = document.getElementById("create-training-btn");
+const closeTrainingBtn = document.getElementById("close-training-modal");
+createTrainingBtn.addEventListener("click", showTrainingModal);
+closeTrainingBtn.addEventListener("click", hideTrainingModal);
+function showTrainingModal(event) {
+    event.preventDefault();
+    document.getElementById("create-training-modal").style.display = "block";
+}
+function hideTrainingModal(event) {
+    event.preventDefault();
+    document.getElementById("create-training-modal").style.display = "none";
+}
+
+//Create Experience poppup
+const createAwardBtn = document.getElementById("create-award-btn");
+const closeAwardBtn = document.getElementById("close-award-modal");
+
+createAwardBtn.addEventListener("click", showAwardModal);
+closeAwardBtn.addEventListener("click", hideAwardModal);
+function showAwardModal(event) {
+    event.preventDefault();
+    document.getElementById("create-award-modal").style.display = "block";
+}
+function hideAwardModal(event) {
+    event.preventDefault();
+    document.getElementById("create-award-modal").style.display = "none";
 }
 
 // Profile Tabs Switching

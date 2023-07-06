@@ -22,12 +22,16 @@
     <body>
         <div class="profile-container">
             <div class="main-header">
-                <div class="logo">Placement Portal</div>
+                <a href="/" class="logo">Placement Portal</a>
                 <div id="hamburger"><i class="fa-solid fa-bars"></i></div>
                 <div class="main-menu">
                     <div>
+                        <i class="fa-solid fa-house"></i>
+                        <a href="/">Home</a>
+                    </div>
+                    <div>
                         <i class="fa-regular fa-bell"></i>
-                        <a href="#">Notification</a>
+                        <a href="/student/all-notice.html">Notification</a>
                     </div>
                     <div>
                         <i class="fa-regular fa-circle-play"></i>
@@ -160,15 +164,16 @@
                                     <div class="create-info-head">
                                         Education Details
                                     </div>
-                                    <a href="#" id="create-education-btn"
-                                        ><i class="fa-solid fa-plus"></i> Update
-                                        Education</a
-                                    >
+                                    
                                 </div>
 
                                 <!--- Education Details -->
                                 <div id="education-container"></div>
-
+                                <input
+                                    type="hidden"
+                                    id="is_lateral_entry"
+                                    value="false"
+                                />
                                 <!----- Edit Graduation Poppup -->
                                 <div
                                     class="edit-education-modal"
@@ -197,6 +202,9 @@
                                         >
                                             <h3>1st year</h3>
                                             <div class="form-control">
+                                                <label for="first_sem_score"
+                                                    >first sem:</label
+                                                >
                                                 <input
                                                     type="number"
                                                     name="first_sem_score"
@@ -215,12 +223,18 @@
                                         <div class="edu-form-group">
                                             <h3>2nd year</h3>
                                             <div class="form-control">
+                                                <label for="third_sem_score"
+                                                    >Second Sem Sgpa:</label
+                                                >
                                                 <input
                                                     type="number"
                                                     name="third_sem_score"
                                                     id="third_sem_score"
                                                     placeholder="Enter third Semester GPA"
                                                 />
+                                                <label for="fourth_sem_score"
+                                                    >Third Sem Sgpa:</label
+                                                >
                                                 <input
                                                     type="number"
                                                     name="fourth_sem_score"
@@ -233,12 +247,18 @@
                                         <div class="edu-form-group">
                                             <h3>3rd year</h3>
                                             <div class="form-control">
+                                                <label for="fifth_sem_score"
+                                                    >Fifth Sem Sgpa:</label
+                                                >
                                                 <input
                                                     type="number"
                                                     name="fifth_sem_score"
                                                     id="fifth_sem_score"
                                                     placeholder="Enter fifth Semester GPA"
                                                 />
+                                                <label for="sixth_sem_score"
+                                                    >Sixth Sem Sgpa:</label
+                                                >
                                                 <input
                                                     type="number"
                                                     name="sixth_sem_score"
@@ -250,12 +270,18 @@
                                         <div class="edu-form-group">
                                             <h3>4th year</h3>
                                             <div class="form-control">
+                                                <label for="seventh_sem_score"
+                                                    >Seventh Sem Sgpa:</label
+                                                >
                                                 <input
                                                     type="number"
                                                     name="seventh_sem_score"
                                                     id="seventh_sem_score"
                                                     placeholder="Enter seventh Semester GPA"
                                                 />
+                                                <label for="eighth_sem_score"
+                                                    >Eighth Sem Sgpa:</label
+                                                >
                                                 <input
                                                     type="number"
                                                     name="eighth_sem_score"
@@ -343,9 +369,11 @@
                                     </form>
                                 </div>
 
-
-                                 <!----- Edit High Poppup -->
-                                 <div class="edit-education-modal" id="edit-highSchool-modal">
+                                <!----- Edit High Poppup -->
+                                <div
+                                    class="edit-education-modal"
+                                    id="edit-highSchool-modal"
+                                >
                                     <form
                                         action=""
                                         id="edit-highSchool-form"
@@ -353,7 +381,10 @@
                                     >
                                         <div class="create-modal-head">
                                             <h2>Edit High Detail</h2>
-                                            <a href="#" id="close-highSchool-modal" onclick="closeHighSchoolModal(event);"
+                                            <a
+                                                href="#"
+                                                id="close-highSchool-modal"
+                                                onclick="closeHighSchoolModal(event);"
                                                 ><i
                                                     class="fa-solid fa-xmark"
                                                 ></i
@@ -372,7 +403,7 @@
                                                 required
                                             />
                                         </div>
-                                        
+
                                         <div class="form-control">
                                             <label for="high_school_score"
                                                 >High School Score</label
@@ -397,7 +428,7 @@
                                                 required
                                             />
                                         </div>
-                                        
+
                                         <button
                                             class="update-grad-btn"
                                             type="submit"
@@ -422,11 +453,14 @@
                                 </div>
                                 <div id="experience-container"></div>
 
-                                <div id="create-exp-modal">
+                                <div
+                                    id="create-exp-modal"
+                                    class="create-modal-outer"
+                                >
                                     <form
                                         action=""
                                         id="create-exp-form"
-                                        class="create-exp-form"
+                                        class="create-form-modal"
                                     >
                                         <div class="create-modal-head">
                                             <h2>Add Experience Form</h2>
@@ -497,7 +531,7 @@
                                             >
                                         </div>
                                         <button
-                                            class="add-exp-btn"
+                                            class="create-form-btn"
                                             type="submit"
                                         >
                                             Add Experience
@@ -681,6 +715,182 @@
 
                         <div id="training-info" class="prof-tab-content">
                             <div class="pd-info-item">
+                                <div class="create-head-wrap">
+                                    <div class="create-info-head">Training</div>
+                                    <a href="#" id="create-training-btn"
+                                        ><i class="fa-solid fa-plus"></i> Add
+                                        Training</a
+                                    >
+                                </div>
+                                <div id="training-container">
+                                  
+                                </div>
+
+                                <div
+                                    id="create-training-modal"
+                                    class="create-modal-outer"
+                                >
+                                    <form
+                                        action=""
+                                        id="create-training-form"
+                                        class="create-form-modal"
+                                    >
+                                        <div class="create-modal-head">
+                                            <h2>Add Training Form</h2>
+                                            <a
+                                                href="#"
+                                                id="close-training-modal"
+                                                ><i
+                                                    class="fa-solid fa-xmark"
+                                                ></i
+                                            ></a>
+                                        </div>
+                                        <div id="training-error-msg"></div>
+                                        <div class="form-control">
+                                            <label for="training_name"
+                                                >Training Name</label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="training_name"
+                                                id="training_name"
+                                                placeholder="Enter Training Name"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="form-control">
+                                            <label for="training_organisation"
+                                                >Training Organization</label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="training_organisation"
+                                                id="training_organisation"
+                                                placeholder="Enter Training Organization"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="form-control">
+                                            <label for="training_start_date"
+                                                >Enter Start Date</label
+                                            >
+                                            <input
+                                                type="date"
+                                                name="training_start_date"
+                                                id="training_start_date"
+                                                placeholder="Enter Start Date"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="form-control">
+                                            <label for="training_end_date"
+                                                >Enter End Date</label
+                                            >
+                                            <input
+                                                type="date"
+                                                name="training_end_date"
+                                                id="training_end_date"
+                                                placeholder="Enter End Date"
+                                                required
+                                            />
+                                        </div>
+                                        <!-- <div>
+                                            <input
+                                                type="checkbox"
+                                                id="training-curr-work"
+                                            />
+                                            <label for="training-curr-work"
+                                                >Curently Working</label
+                                            >
+                                        </div> -->
+                                        <button
+                                            class="create-form-btn"
+                                            type="submit"
+                                        >
+                                            Add Training
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="pd-info-item">
+                                <div class="create-head-wrap">
+                                    <div class="create-info-head">Award</div>
+                                    <a href="#" id="create-award-btn"
+                                        ><i class="fa-solid fa-plus"></i> Add
+                                        Award</a
+                                    >
+                                </div>
+                                <div id="award-container"></div>
+
+                                <div
+                                    id="create-award-modal"
+                                    class="create-modal-outer"
+                                >
+                                    <form
+                                        action=""
+                                        id="award-detail-form"
+                                        class="create-form-modal"
+                                        class=""
+                                    >
+                                        <div class="create-modal-head">
+                                            <h2>Award Details</h2>
+                                            <a href="#" id="close-award-modal"
+                                                ><i
+                                                    class="fa-solid fa-xmark"
+                                                ></i
+                                            ></a>
+                                        </div>
+                                        <div id="award-error-msg"></div>
+                                        <div class="fuser-details">
+                                            <div class="finput-box">
+                                                <span class="form-details"
+                                                    >Award Name</span
+                                                >
+                                                <input
+                                                    type="text"
+                                                    id="award-name"
+                                                    placeholder="Enter Award Name"
+                                                    required
+                                                />
+                                            </div>
+                                            <div class="finput-box">
+                                                <span class="form-details"
+                                                    >Award Organization
+                                                    Name</span
+                                                >
+                                                <input
+                                                    type="text"
+                                                    id="award-organization"
+                                                    placeholder="Enter Award Organization"
+                                                    required
+                                                />
+                                            </div>
+                                            <div class="finput-box">
+                                                <span class="form-details"
+                                                    >Award Description</span
+                                                >
+                                                <input
+                                                    type="text"
+                                                    id="award-description"
+                                                    placeholder="Enter Award Description"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="form-button">
+                                            <input
+                                                type="submit"
+                                                value="Save Details"
+                                            />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div id="training-info" class="prof-tab-content">
+                            <div class="pd-info-item">
                                 <div class="pd-info-head">
                                     Training & Certificates
                                 </div>
@@ -688,8 +898,7 @@
                                     <p>No Information Available</p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </div> -->
                 </div>
             </div>
         </div>

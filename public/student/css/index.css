@@ -23,6 +23,7 @@ body {
     font-size: 22px;
     color: #00a885;
     font-weight: 700;
+    text-decoration: none;
 }
 .main-menu {
     width: 30%;
@@ -339,6 +340,10 @@ body {
 
 /********** ADD EXPERIENCE FORM *********/
 #create-exp-modal {
+    
+
+}
+.create-modal-outer{
     position: fixed;
     top: 0%;
     left: 0%;
@@ -350,9 +355,8 @@ body {
     z-index: 999;
     overflow-x: hidden;
     overflow-y: auto;
-
 }
-.create-exp-form {
+.create-form-modal {
     z-index: 9999;
     background-color: #fff;
     padding: 25px 30px;
@@ -392,7 +396,7 @@ body {
     border-radius: 5px;
     margin-top: 3px;
 }
-.add-exp-btn {
+.create-form-btn{
     width: 100%;
     padding: 10px;
     border: none;
@@ -555,6 +559,7 @@ form .fuser-details .finput-box {
 }
 form .finput-box span.form-details {
     display: block;
+    font-size: 14px;
     font-weight: 500;
     margin-bottom: 5px;
 }

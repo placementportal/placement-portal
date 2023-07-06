@@ -320,24 +320,75 @@ body {
         left: initial;
     }
 }
+/************** Notice Fetch *****************/
+.notices-disp-wrapper{
+    padding:30px;
+}
+.notice-disp-head{
+    margin:40px 0;
+}
+#notices-disp-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+.exp-info-text {
+    width: 390px;
+    box-shadow: 1px 1px 10px 5px rgba(224, 224, 224, 0.518);
+    padding: 30px 30px 30px 20px;
+    border-radius: 5px;
+    margin: 0 15px 10px 0;
+}
 
-/************ STUDENT FORM CSS ***********/
-.student-form {
+.prof-exp-item > h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+.exp-inner-wrap > div {
+    display: flex;
+    align-items: center;
+}
+.exp-inner-wrap > div > h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-right: 8px;
+}
+.exp-inner-wrap > div > span {
+    font-size: 14px;
+}
+.pd-info-item {
+    margin: 25px 0;
+    color: rgb(105, 105, 105);
+}
+
+.exp-inner-wrap {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+
+
+/************ Notice FORM CSS ***********/
+.notice-wrapper{
+    width: 100%;
+    padding:0 20px;
+}
+.notice-form {
     max-width: 600px;
-    margin: 0 auto;
+    margin: 40px auto;
     width: 100%;
     background-color: #fff;
     padding: 25px 30px;
     border-radius: 5px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
 }
-.student-form .form-title {
+.notice-form .form-title {
     font-size: 25px;
     font-weight: 500;
     position: relative;
     margin-bottom: 20px;
 }
-.student-form .form-title::before {
+.notice-form .form-title::before {
     content: "";
     position: absolute;
     left: 0;
@@ -354,8 +405,8 @@ body {
     margin: 20px 0 12px 0;
 }
 form .fuser-details .finput-box {
-    display: flex;
-    justify-content: space-between;
+    /* display: flex;
+    justify-content: space-between; */
     width: 100%;
     margin-bottom: 15px;
     /* width: calc(100% / 2 - 20px); */
@@ -365,7 +416,18 @@ form .finput-box span.form-details {
     font-weight: 500;
     margin-bottom: 5px;
 }
-.fuser-details .finput-box input {
+.fuser-details .finput-box input[type=text] {
+    height: 40px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    padding-left: 15px;
+    border: 1px solid #ccc;
+    border-bottom-width: 2px;
+    transition: all 0.3s ease;
+}
+#course_name_select{
     height: 40px;
     width: 100%;
     outline: none;
@@ -407,15 +469,7 @@ form .form-category label .dot {
     border: 5px solid transparent;
     transition: all 0.3s ease;
 }
-#dot-1:checked ~ .form-category label .one,
-#dot-2:checked ~ .form-category label .two,
-#dot-3:checked ~ .form-category label .three {
-    background: #00634f;
-    border-color: #009274;
-}
-form input[type="radio"] {
-    display: none;
-}
+
 form .form-button {
     height: 45px;
     margin: 35px 0;
@@ -438,7 +492,7 @@ form .form-button input:hover {
     background: linear-gradient(-135deg, #3cffd8, #0d5b4c);
 }
 @media (max-width: 584px) {
-    .student-form {
+    .notice-form {
         max-width: 100%;
     }
     form .fuser-details .finput-box {
@@ -448,16 +502,16 @@ form .form-button input:hover {
     form .form-category {
         width: 100%;
     }
-    .form-content form .fuser-details {
+    /* .form-content form .fuser-details {
         max-height: 300px;
         overflow-y: scroll;
-    }
+    } */
     .fuser-details::-webkit-scrollbar {
         width: 5px;
     }
 }
 @media (max-width: 459px) {
-    .student-form .form-content .form-category {
+    .notice-form .form-content .form-category {
         flex-direction: column;
     }
 }
