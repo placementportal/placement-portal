@@ -16,19 +16,16 @@ const StudentEducationDataSchema = new mongoose.Schema(
 
     highschool_year: {
       type: Number,
-      required: [true, "Highschool passing year is required!"],
     },
 
     highschool_score: {
       type: Number,
       min: 0,
       max: 100,
-      required: [true, "Highschool score is required!"],
     },
 
     highschool_board: {
       type: String,
-      required: [true, "Highschool baord is required!"],
       trim: true,
     },
 

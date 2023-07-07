@@ -139,7 +139,7 @@ const getMyNotices = async (req, res) => {
     receivingCourse: courseId,
     receivingBatches: batchId,
     receivingDepartments: departmentId,
-    createdAt: { $gte: lastNoticeFetched },
+    // createdAt: { $gte: lastNoticeFetched },
   }).select("noticeTitle noticeBody noticeFile createdAt");
 
   res.status(StatusCodes.OK).json({

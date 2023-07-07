@@ -119,7 +119,7 @@
                     <div class="prof-info-list">
                         <div class="prof-info-tab">
                             <a
-                                href="#"
+                                href=""
                                 class="prof-tab-links active"
                                 data-tab="personal-details"
                                 class="active"
@@ -130,6 +130,8 @@
                                 href="#"
                                 class="prof-tab-links"
                                 data-tab="education-info"
+                                onclick="fetchEducation()"
+                                
                                 ><i class="fa-solid fa-graduation-cap"></i
                                 >&ensp;Education</a
                             >
@@ -137,6 +139,7 @@
                                 href="#"
                                 class="prof-tab-links"
                                 data-tab="experience-info"
+                                onclick="fetchExperience(); fetchPlacement();"
                                 ><i class="fa-solid fa-briefcase"></i
                                 >&ensp;Experience & Placement</a
                             >
@@ -144,6 +147,7 @@
                                 href="#"
                                 class="prof-tab-links"
                                 data-tab="training-info"
+                                onclick="fetchTraining(); fetchAward();"
                                 ><i class="fa-solid fa-certificate"></i
                                 >&ensp;Training and certificates</a
                             >
@@ -195,7 +199,7 @@
                                                 ></i
                                             ></a>
                                         </div>
-
+                                        <input type="hidden" id="gradUpdateBody" value="btech">
                                         <div
                                             class="edu-form-group"
                                             id="lateral-hide"
@@ -321,7 +325,7 @@
                                                 ></i
                                             ></a>
                                         </div>
-
+                                        <input type="hidden" id="diplomaUpdateBody" value="diploma">
                                         <div class="form-control">
                                             <label for="diploma_year"
                                                 >Diploma Year</label

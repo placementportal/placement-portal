@@ -65,19 +65,18 @@ const getEducationData = async (req, res) => {
 const updateEducationData = async (req, res) => {
   const student_id = req.user.userId;
 
-  let {
-    is_lateral_entry,
-    highschool_year,
-    highschool_score,
-    highschool_board,
-    intermediate_year,
-    intermediate_score,
-    intermediate_board,
-    diploma_year,
-    diploma_score,
-    diploma_board,
-    btech_scores,
-  } = req.body;
+  let { is_lateral_entry, updateBody, update } = req.body;
+
+  const validUpdates = ["highschool", "intermediate", "diploma", "btech"];
+  if (!update?.trim() || !validUpdates.includes(update) || !updateBody) {
+    throw new CustomAPIError.BadRequestError("Invalid Update Request!");
+  }
+
+  if (is_lateral_entry && update == "intermediate") {
+    throw new CustomAPIError.BadRequestError("Invalid Update Request!");
+  } else if (!is_lateral_entry && update == "diploma") {
+    throw new CustomAPIError.BadRequestError("Invalid Update Request!");
+  }
 
   let currentDetails;
   currentDetails = await StudentEducationDataModel.findOne({
@@ -88,9 +87,6 @@ const updateEducationData = async (req, res) => {
     currentDetails = await StudentEducationDataModel.create({
       student_id,
       is_lateral_entry,
-      highschool_year,
-      highschool_score,
-      highschool_board,
     });
     await UserModel.findOneAndUpdate(
       { role: "student", _id: student_id },
@@ -100,39 +96,40 @@ const updateEducationData = async (req, res) => {
     );
   }
 
-  if (btech_scores && !Array.isArray(btech_scores))
-    throw new CustomAPIError.BadRequestError("Invalid B. Tech. scores!");
+  if (update == "highschool") {
+    const { highschool_board, highschool_score, highschool_year } = updateBody;
+    if (!highschool_board?.trim() || !highschool_year || !highschool_score) {
+      throw new CustomAPIError.BadRequestError("Invalid HighSchool Data!");
+    }
+  } else if (update == "intermediate") {
+    const { intermediate_board, intermediate_score, intermediate_year } =
+      updateBody;
+    if (
+      !intermediate_board?.trim() ||
+      !intermediate_year ||
+      !intermediate_score
+    ) {
+      throw new CustomAPIError.BadRequestError("Invalid Intermediate Data!");
+    }
+  } else if (update == "diploma") {
+    const { diploma_board, diploma_score, diploma_year } = updateBody;
+    if (!diploma_board?.trim() || !diploma_score || !diploma_year) {
+      throw new CustomAPIError.BadRequestError("Invalid Diploma Data!");
+    }
+  } else if (update == "btech") {
+    const { btech_scores } = updateBody;
+    let scoresMaxCount = is_lateral_entry ? 6 : 8;
 
-  if (is_lateral_entry) {
-    intermediate_year = intermediate_score = undefined;
-
-    if (!diploma_score || !diploma_year || !diploma_board)
-      throw new CustomAPIError.BadRequestError("Enter Diploma Details!");
-
-    if (btech_scores.length > 6)
-      throw new CustomAPIError.BadRequestError("Invalid B. Tech. scores!");
-  } else {
-    diploma_year = diploma_score = undefined;
-
-    if (!intermediate_score || !intermediate_year || !intermediate_board)
-      throw new CustomAPIError.BadRequestError("Enter Intermediate Details!");
-
-    if (btech_scores.length > 8)
+    if (
+      !btech_scores ||
+      !Array.isArray(btech_scores) ||
+      btech_scores.length > scoresMaxCount
+    )
       throw new CustomAPIError.BadRequestError("Invalid B. Tech. scores!");
   }
 
   await StudentEducationDataModel.findByIdAndUpdate(currentDetails._id, {
-    is_lateral_entry,
-    highschool_year,
-    highschool_score,
-    highschool_board,
-    intermediate_year,
-    intermediate_score,
-    intermediate_board,
-    diploma_year,
-    diploma_score,
-    diploma_board,
-    btech_scores,
+    ...updateBody,
   });
 
   res.status(StatusCodes.CREATED).json({
@@ -244,6 +241,23 @@ const updateExperience = async (req, res) => {
   });
 };
 
+const deleteExperience = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id?.trim()) {
+    const experience = await StudentExperienceDataModel.findById(id);
+    if (!experience) {
+      throw new CustomAPIError.NotFoundError(`No Experience found with ${id}`);
+    }
+
+    await StudentExperienceDataModel.findByIdAndDelete(id);
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Experience deleted!",
+    });
+  }
+};
+
 const createPlacement = async (req, res) => {
   let { jobProfile, company, location, package, joiningDate } = req.body;
   let { offerLetter, joiningLetter } = req?.files;
@@ -325,6 +339,23 @@ const getPlacements = async (req, res) => {
   });
 };
 
+const deletePlacement = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id?.trim()) {
+    const placement = await StudentPlacementDataModel.findById(id);
+    if (!placement) {
+      throw new CustomAPIError.NotFoundError(`No Placement found with ${id}`);
+    }
+
+    await StudentPlacementDataModel.findByIdAndDelete(id);
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Placement deleted!",
+    });
+  }
+};
+
 const createTraining = async (req, res) => {
   let { trainingName, organisation, startDate, endDate } = req.body;
   const student_id = req.user.userId;
@@ -364,6 +395,23 @@ const getTrainings = async (req, res) => {
   });
 };
 
+const deleteTraining = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id?.trim()) {
+    const training = await TrainingModel.findById(id);
+    if (!training) {
+      throw new CustomAPIError.NotFoundError(`No Training found with ${id}`);
+    }
+
+    await TrainingModel.findByIdAndDelete(id);
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Training deleted!",
+    });
+  }
+};
+
 const createAward = async (req, res) => {
   let { awardName, organisation, description } = req.body;
   const student_id = req.user.userId;
@@ -392,6 +440,23 @@ const getAwards = async (req, res) => {
   });
 };
 
+const deleteAward = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id?.trim()) {
+    const award = await AwardModel.findById(id);
+    if (!award) {
+      throw new CustomAPIError.NotFoundError(`No award found with ${id}`);
+    }
+
+    await AwardModel.findByIdAndDelete(id);
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Award deleted!",
+    });
+  }
+};
+
 module.exports = {
   getEducationData,
   updateEducationData,
@@ -405,4 +470,8 @@ module.exports = {
   getTrainings,
   createAward,
   getAwards,
+  deleteAward,
+  deletePlacement,
+  deleteExperience,
+  deleteTraining
 };

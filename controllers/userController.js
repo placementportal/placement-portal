@@ -28,7 +28,7 @@ const showCurrentUser = async (req, res) => {
 
     const notification = lastNoticeFetched < minLastNotice;
 
-    user["notification"] = notification;
+    user["noticeNotification"] = notification;
   }
 
   res.status(StatusCodes.OK).json({ success: true, user });

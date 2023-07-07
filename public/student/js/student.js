@@ -1,11 +1,7 @@
 window.onload = async function () {
     checkAlreadyLogged();
-    await fetchExperience();
-    await fetchPlacement();
-    await fetchEducation();
+    // await ();
     await fetchPersonalDetail();
-    await fetchTraining();
-    await fetchAward();
 };
 
 function checkAlreadyLogged() {
@@ -29,9 +25,10 @@ function checkAlreadyLogged() {
 // PERSONAL DETAIL FETCH
 async function fetchPersonalDetail() {
     try {
+        Loader.open();
         const response = await fetch("/api/v1/student/personal");
         const data = await response.json();
-
+        Loader.close();
         const { student } = data;
         const { personal_details } = student;
         // console.log(data);
@@ -104,13 +101,16 @@ async function fetchPersonalDetail() {
 // EDUCATION FETCH
 async function fetchEducation() {
     try {
+        Loader.open();
         const response = await fetch("/api/v1/student/education");
         const dataItem = await response.json();
+        Loader.close();
 
         const { data } = dataItem;
         const { education_details } = data;
 
         const educationParent = document.getElementById("education-container");
+        educationParent.innerHTML = "";
         let { batchId, courseId, departmentId, roll_no, _id } = data;
         let {
             btech_scores,
@@ -123,7 +123,7 @@ async function fetchEducation() {
             is_lateral_entry,
         } = education_details;
 
-        document.getElementById('is_lateral_entry').value=is_lateral_entry;
+        document.getElementById("is_lateral_entry").value = is_lateral_entry;
         let html = `
             <div class="prof-qual-item">
                 <div class="qual-head-wrap">
@@ -187,7 +187,6 @@ async function fetchEducation() {
         document.getElementById("eighth_sem_score").value =
             btech_scores[bTechScoreCounter++];
 
-
         if (is_lateral_entry) {
             document.getElementById("lateral-hide").style.display = "none";
 
@@ -213,6 +212,10 @@ async function fetchEducation() {
                     </div>
                 </div>
             </div>`;
+
+            document.getElementById("diploma_board").value = diploma_board;
+            document.getElementById("diploma_year").value = diploma_year;
+            document.getElementById("diploma_score").value = diploma_score;
         }
 
         html += `<div class="prof-qual-item">
@@ -240,15 +243,9 @@ async function fetchEducation() {
             </div>
         </div>`;
 
-        let high_school_year = (document.getElementById(
-            "high_school_year"
-        ).value = highschool_year);
-        let high_school_score = (document.getElementById(
-            "high_school_score"
-        ).value = highschool_score);
-        let high_school_board = (document.getElementById(
-            "high_school_board"
-        ).value = highschool_board);
+        document.getElementById("high_school_year").value = highschool_year;
+        document.getElementById("high_school_score").value = highschool_score;
+        document.getElementById("high_school_board").value = highschool_board;
 
         educationParent.innerHTML += html;
     } catch (error) {
@@ -264,36 +261,71 @@ document
     .addEventListener("submit", updateGradForm);
 async function updateGradForm(e) {
     e.preventDefault();
-    let first_sem_score = document.getElementById("first_sem_score").value;
-    let second_sem_score = document.getElementById("second_sem_score").value;
-    let third_sem_score = document.getElementById("third_sem_score").value;
-    let fourth_sem_score = document.getElementById("fourth_sem_score").value;
-    let fifth_sem_score = document.getElementById("fifth_sem_score").value;
-    let sixth_sem_score = document.getElementById("sixth_sem_score").value;
-    let seventh_sem_score = document.getElementById("seventh_sem_score").value;
-    let eighth_sem_score = document.getElementById("eighth_sem_score").value;
-   
-    try {
-        const isLateral = document.getElementById('is_lateral_entry').value;
-        
-        let btechScoreList=[third_sem_score,fourth_sem_score,fifth_sem_score,sixth_sem_score,seventh_sem_score,eighth_sem_score];
-        if(!isLateral){
-            btechScoreList=[first_sem_score,second_sem_score,third_sem_score,fourth_sem_score,fifth_sem_score,sixth_sem_score,seventh_sem_score,eighth_sem_score];
-        }
-        
-        const raw = JSON.stringify({
-            "btech_scores":btechScoreList,
-            "is_lateral_entry":isLateral
-        });
-        console.log(raw)
-        // var myHeaders = new Headers();
-        // myHeaders.append("Content-Type", "application/json");
+    const first_sem_score = parseInt(
+        document.getElementById("first_sem_score").value
+    );
+    const second_sem_score = parseInt(
+        document.getElementById("second_sem_score").value
+    );
+    const third_sem_score = parseInt(
+        document.getElementById("third_sem_score").value
+    );
+    const fourth_sem_score = parseInt(
+        document.getElementById("fourth_sem_score").value
+    );
+    const fifth_sem_score = parseInt(
+        document.getElementById("fifth_sem_score").value
+    );
+    const sixth_sem_score = parseInt(
+        document.getElementById("sixth_sem_score").value
+    );
+    const seventh_sem_score = parseInt(
+        document.getElementById("seventh_sem_score").value
+    );
+    const eighth_sem_score = parseInt(
+        document.getElementById("eighth_sem_score").value
+    );
+    const gradUpdateBody = document.getElementById("gradUpdateBody").value;
 
-        var requestOptions = {
+    try {
+        const isLateral = document.getElementById("is_lateral_entry").value;
+
+        let btechScoreList = [
+            third_sem_score,
+            fourth_sem_score,
+            fifth_sem_score,
+            sixth_sem_score,
+            seventh_sem_score,
+            eighth_sem_score,
+        ];
+        if (!isLateral) {
+            btechScoreList = [
+                first_sem_score,
+                second_sem_score,
+                third_sem_score,
+                fourth_sem_score,
+                fifth_sem_score,
+                sixth_sem_score,
+                seventh_sem_score,
+                eighth_sem_score,
+            ];
+        }
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = {
+            is_lateral_entry: isLateral === "true",
+            update: gradUpdateBody,
+            updateBody: {
+                btech_scores: btechScoreList,
+            },
+        };
+
+        let requestOptions = {
             method: "PATCH",
-            body: raw,
+            body: JSON.stringify(raw),
+            headers: myHeaders,
             redirect: "follow",
-            // headers: myHeaders,
         };
 
         Loader.open();
@@ -326,23 +358,26 @@ async function updateHighSchoolForm(e) {
     let high_school_year = document.getElementById("high_school_year").value;
     let high_school_score = document.getElementById("high_school_score").value;
     let high_school_board = document.getElementById("high_school_board").value;
-    let isLateral = document.getElementById('is_lateral_entry').value;
+    let isLateral = document.getElementById("is_lateral_entry").value;
+    const highUpdateBody = document.getElementById("hsUpdateBody").value;
     try {
-        // var myHeaders = new Headers();
-        // myHeaders.append("Content-Type", "application/json");
-
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
         let raw = JSON.stringify({
-            is_lateral_entry:isLateral,
-            highschool_year: high_school_year,
-            highschool_score: high_school_score,
-            highschool_board: high_school_board,
+            is_lateral_entry: isLateral,
+            update: highUpdateBody,
+            updateBody: {
+                highschool_year: high_school_year,
+                highschool_score: high_school_score,
+                highschool_board: high_school_board,
+            },
         });
 
         console.log(raw);
 
-        var requestOptions = {
+        let requestOptions = {
             method: "PATCH",
-            // headers: myHeaders,
+            headers: myHeaders,
             body: raw,
             redirect: "follow",
         };
@@ -377,20 +412,24 @@ async function updateDiplomaForm(e) {
     let diploma_year = document.getElementById("diploma_year").value;
     let diploma_score = document.getElementById("diploma_score").value;
     let diploma_board = document.getElementById("diploma_board").value;
-
+    let isLateral = document.getElementById("is_lateral_entry").value;
+    const diplomaUpdateBody =
+        document.getElementById("diplomaUpdateBody").value;
     try {
-        var myHeaders = new Headers();
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify({
-            diploma_year: diploma_year,
-            diploma_score: diploma_score,
-            diploma_board: diploma_board,
+        let raw = JSON.stringify({
+            is_lateral_entry: isLateral,
+            update: diplomaUpdateBody,
+            updateBody: {
+                diploma_year: diploma_year,
+                diploma_score: diploma_score,
+                diploma_board: diploma_board,
+            },
         });
 
-        console.log(raw);
-
-        var requestOptions = {
+        let requestOptions = {
             method: "PATCH",
             headers: myHeaders,
             body: raw,
@@ -470,23 +509,27 @@ async function createExperience(e) {
 // STUDENT EXPERIENCE FETCH
 async function fetchExperience() {
     try {
+        Loader.open();
         const response = await fetch("/api/v1/student/experience");
         const data = await response.json();
-
+        Loader.close();
         const { experiences } = data;
 
         const experienceParent = document.getElementById(
             "experience-container"
         );
+        experienceParent.innerHTML = "";
         for (let experience of experiences) {
             let { jobProfile, company, startDate, endDate, _id } = experience;
-
             startDate = startDate.split("T")[0];
 
             let html = `
       <div class="exp-info-text">
         <div class="prof-exp-item" id=${_id}>
-          <h2>${company}</h2>
+          <div class="box-head-wrap">
+            <h2>${company}</h2>
+            <a href="" id="delete-exp-item" onclick="deleteExpItem(e);"><i class="fa-solid fa-trash"></i></a>
+          </div>
           <div class="exp-inner-wrap">
             <div><h3>Job Role:</h3><span>${jobProfile}</span></div>  
           </div>    
@@ -507,6 +550,30 @@ async function fetchExperience() {
         console.log("failed to fetch error", error);
     }
 }
+//Delete Experience
+
+
+const deleteExpItem = async (e) => {
+    e.preventDefault();
+    const delItem=document
+    .getElementById("delete-exp-item");
+    console.log(delItem)
+    try {
+        let requestOptions = {
+            method: "DELETE",
+            redirect: "follow",
+        };
+
+        // const response = await fetch("/api/v1/experience/", requestOptions);
+        // const data = await response.json();
+        // if(response?.status=='200'){
+        //     window.location.reload();
+        // }
+    } catch (error) {
+        // console.log("failed to fetch error", error);
+    }
+    
+};
 
 //Create Placement
 
@@ -531,13 +598,13 @@ async function createPlacement(e) {
 
     // const end_date=document.getElementById('end_date').value;
     try {
-        var formdata = new FormData();
+        let formdata = new FormData();
         formdata.append("jobProfile", placed_job_profile);
         formdata.append("company", placed_company);
         formdata.append("location", placed_company_loc);
         formdata.append("package", placed_package);
 
-        var requestOptions = {
+        let requestOptions = {
             method: "POST",
             body: formdata,
             redirect: "follow",
@@ -580,7 +647,7 @@ async function fetchPlacement() {
         const { placements } = data;
 
         const placementParent = document.getElementById("placement-container");
-
+        placementParent.innerHTML = "";
         for (let placement of placements) {
             let {
                 company,
@@ -619,12 +686,12 @@ async function fetchPlacement() {
             }
             if (offerLetter) {
                 html += `<div class="exp-inner-wrap">
-                          <div><h3>Start Date:</h3><a href=${offerLetter}>Click to view offer letter</a></div>
+                          <div><h3>Offer Letter:</h3><a href=${offerLetter} target='_blank'>Click to view offer letter</a></div>
                       </div>`;
             }
             if (joiningLetter) {
                 html += `<div class="exp-inner-wrap">
-                          <div><h3>Start Date:</h3><a href=${joiningLetter}>Click to view joining letter</a></div>
+                          <div><h3>Joining Letter:</h3><a href=${joiningLetter} target='_blank'>Click to view joining letter</a></div>
                       </div>`;
             }
 
@@ -637,7 +704,6 @@ async function fetchPlacement() {
     }
 }
 
-
 //Create Training
 document
     .getElementById("create-training-form")
@@ -645,9 +711,14 @@ document
 async function createTraining(e) {
     e.preventDefault();
     const training_name = document.getElementById("training_name").value;
-    const training_organisation = document.getElementById("training_organisation").value;
-    const training_start_date = document.getElementById("training_start_date").value;
-    const training_end_date = document.getElementById("training_end_date").value;
+    const training_organisation = document.getElementById(
+        "training_organisation"
+    ).value;
+    const training_start_date = document.getElementById(
+        "training_start_date"
+    ).value;
+    const training_end_date =
+        document.getElementById("training_end_date").value;
 
     // const end_date=document.getElementById('end_date').value;
     try {
@@ -657,7 +728,7 @@ async function createTraining(e) {
             trainingName: training_name,
             organisation: training_organisation,
             startDate: training_start_date,
-            end_date:training_end_date
+            end_date: training_end_date,
         };
         // if (end_date) {
         //     raw["endDate"] = training_end_date;
@@ -692,20 +763,19 @@ async function createTraining(e) {
 // STUDENT TRAINING FETCH
 async function fetchTraining() {
     try {
+        Loader.open();
         const response = await fetch("/api/v1/student/training");
         const data = await response.json();
-
+        Loader.close();
         const { trainings } = data;
 
-        const trainingParent = document.getElementById(
-            "training-container"
-        );
-        if(trainings.length==0){
-            
-        }
+        const trainingParent = document.getElementById("training-container");
+
+        trainingParent.innerHTML = "";
         for (let training of trainings) {
-            let { trainingName, organisation, startDate, endDate, _id } = training;
-            
+            let { trainingName, organisation, startDate, endDate, _id } =
+                training;
+
             startDate = startDate.split("T")[0];
 
             let html = `
@@ -735,7 +805,6 @@ async function fetchTraining() {
     }
 }
 
-
 // STUDENT AWARD FETCH
 async function fetchAward() {
     try {
@@ -744,12 +813,9 @@ async function fetchAward() {
 
         const { awards } = data;
 
-        const awardParent = document.getElementById(
-            "award-container"
-        );
-        if(awards.length==0){
+        const awardParent = document.getElementById("award-container");
 
-        }
+        awardParent.innerHTML = "";
         for (let award of awards) {
             let { awardName, organisation, description, _id } = award;
 
@@ -775,8 +841,6 @@ async function fetchAward() {
     }
 }
 
-
-
 //Create Award
 document
     .getElementById("award-detail-form")
@@ -784,9 +848,10 @@ document
 async function createAward(e) {
     e.preventDefault();
     const award_name = document.getElementById("award-name").value;
-    const award_organisation = document.getElementById("award-organization").value;
-    const award_description = document.getElementById("award-description").value;
-
+    const award_organisation =
+        document.getElementById("award-organization").value;
+    const award_description =
+        document.getElementById("award-description").value;
 
     // const end_date=document.getElementById('end_date').value;
     try {
@@ -806,10 +871,7 @@ async function createAward(e) {
         };
 
         Loader.open();
-        const response = await fetch(
-            "/api/v1/student/award",
-            requestOptions
-        );
+        const response = await fetch("/api/v1/student/award", requestOptions);
         const data = await response.json();
         Loader.close();
 
@@ -825,15 +887,12 @@ async function createAward(e) {
     }
 }
 
-
-
-
 // LOGOUT
 document.getElementById("logout").addEventListener("click", logoutFunc);
 async function logoutFunc(e) {
     e.preventDefault();
     try {
-        var requestOptions = {
+        let requestOptions = {
             method: "GET",
             redirect: "follow",
         };
@@ -845,7 +904,7 @@ async function logoutFunc(e) {
     }
 }
 
-// JAVASCRIPT CODE FOR OTHER THAN API CALLS
+// JAVASCRIPT CODE FOR OTHER FUNCTIONALITY THAN NON API CALLS
 
 function editGradPoppup(e) {
     e.preventDefault();
@@ -903,7 +962,6 @@ function toggleEndDate() {
 //         document.getElementById("training_end_date").style.display = "block";
 //     }
 // }
-
 
 //main menu in mobile
 document.getElementById("hamburger").addEventListener("click", mobMenuToggle);
