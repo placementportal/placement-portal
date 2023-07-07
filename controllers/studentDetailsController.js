@@ -238,6 +238,7 @@ const updateExperience = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Experience updated!",
+    id,
   });
 };
 
@@ -259,7 +260,12 @@ const deleteExperience = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Experience deleted!",
+    id,
   });
+
+  const jobData = await StudentJobDataModel.findOne({ student_id });
+  jobData.experiences = jobData.experiences.filter((ele) => ele != id);
+  await jobData.save();
 };
 
 const createPlacement = async (req, res) => {
@@ -420,7 +426,12 @@ const deletePlacement = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Placement deleted!",
+    id,
   });
+
+  const jobData = await StudentJobDataModel.findOne({ student_id });
+  jobData.placements = jobData.placements.filter(ele => ele != id);
+  await jobData.save();
 };
 
 const createTraining = async (req, res) => {
@@ -517,6 +528,7 @@ const deleteTraining = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Training deleted!",
+    id,
   });
 };
 
@@ -592,6 +604,7 @@ const deleteAward = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Award deleted!",
+    id,
   });
 };
 
