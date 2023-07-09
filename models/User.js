@@ -42,6 +42,10 @@ const UserSchema = new mongoose.Schema(
 
     roll_no: {
       type: String,
+      index: {
+        unique: true,
+        partialFilterExpression: { roll_no: { $type: "string" } },
+      },
     },
 
     courseId: {
@@ -61,33 +65,26 @@ const UserSchema = new mongoose.Schema(
 
     personal_details: {
       type: mongoose.Types.ObjectId,
-      unique: true,
       ref: "StudentPersonalData",
+      index: {
+        unique: true,
+        partialFilterExpression: { personal_details: { $type: "objectId" } },
+      },
     },
 
     education_details: {
       type: mongoose.Types.ObjectId,
-      unique: true,
       ref: "StudentEducationData",
-    },
-
-    placement_details: {
-      type: mongoose.Types.ObjectId,
-      unique: true,
-      ref: "StudentPlacementData",
-    },
-
-    experience_details: {
-      type: mongoose.Types.ObjectId,
-      unique: true,
-      ref: "StudentExperienceData",
+      index: {
+        unique: true,
+        partialFilterExpression: { education_details: { $type: "objectId" } },
+      },
     },
 
     lastNoticeFetched: {
       type: Date,
       default: new Date(),
     },
-
   },
   { timestamps: true, versionKey: false }
 );

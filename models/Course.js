@@ -23,6 +23,7 @@ const CourseSchema = new mongoose.Schema(
 
     lastNoticeTime: {
       type: Date,
+      default: new Date(),
     },
   },
   { versionKey: false, timestamps: true }
@@ -44,6 +45,7 @@ const BatchSchema = new mongoose.Schema(
 
     lastNoticeTime: {
       type: Date,
+      default: new Date(),
     },
   },
   { versionKey: false, timestamps: true }
@@ -59,6 +61,12 @@ const DepartmentSchema = new mongoose.Schema(
       required: [true, "Department name is required!"],
     },
 
+    departmentCode: {
+      type: String,
+      trim: true,
+      required: [true, "Department Code is required!"],
+    },
+
     courseId: {
       type: mongoose.Types.ObjectId,
       required: [true, "Course Id is required!"],
@@ -67,12 +75,14 @@ const DepartmentSchema = new mongoose.Schema(
 
     lastNoticeTime: {
       type: Date,
+      default: new Date(),
     },
   },
   { versionKey: false, timestamps: true }
 );
 
 DepartmentSchema.index({ courseId: 1, departmentName: 1 }, { unique: true });
+DepartmentSchema.index({ courseId: 1, departmentCode: 1 }, { unique: true });
 
 const CourseModel = mongoose.model("Course", CourseSchema);
 const BatchModel = mongoose.model("Batch", BatchSchema);

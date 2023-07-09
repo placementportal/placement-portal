@@ -64,7 +64,7 @@ const StudentEducationDataSchema = new mongoose.Schema(
       default: [],
     },
   },
-  { timestamps: true, versionKey: false }
+  { timestamps: true, versionKey: false, collection: "StudentEducationData" }
 );
 
 const StudentEducationDataModel = mongoose.model(

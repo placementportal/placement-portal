@@ -29,7 +29,7 @@ const ExperienceDataSchema = new mongoose.Schema(
       type: Date,
     },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true, collection: "StudentExperienceData" }
 );
 
 const PlacementDataSchema = new mongoose.Schema(
@@ -72,10 +72,10 @@ const PlacementDataSchema = new mongoose.Schema(
     },
 
     joiningDate: {
-      type: Date
-    }
+      type: Date,
+    },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true, collection: "StudentPlacementData" }
 );
 
 const StudentJobDataSchema = new mongoose.Schema(
@@ -84,7 +84,7 @@ const StudentJobDataSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       required: true,
       unique: true,
-      ref: "User"
+      ref: "User",
     },
 
     placements: {
@@ -97,7 +97,7 @@ const StudentJobDataSchema = new mongoose.Schema(
       default: [],
     },
   },
-  { timestamps: true, versionKey: false }
+  { versionKey: false, timestamps: true, collection: "StudentJobData" }
 );
 
 const StudentPlacementDataModel = mongoose.model(

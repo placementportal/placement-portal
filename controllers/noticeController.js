@@ -23,7 +23,7 @@ const createNotice = async (req, res) => {
   receivingBatches = JSON.parse(receivingBatches);
   receivingDepartments = JSON.parse(receivingDepartments);
 
-  let { noticeFile } = req?.files;
+  let noticeFile = req?.files?.noticeFile;
   if (!noticeTitle?.trim() || !noticeBody?.trim() || !noticeFile)
     throw new CustomAPIError.BadRequestError(
       "Notice title, body and file is required!"
@@ -83,14 +83,14 @@ const updateNotice = async (req, res) => {
   receivingBatches = JSON.parse(receivingBatches);
   receivingDepartments = JSON.parse(receivingDepartments);
 
-  let { noticeFile } = req?.files;
+  let noticeFile = req?.files?.noticeFile;
 
   const createdBy = req.user?.userId;
   const id = req?.params?.id;
 
   if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required");
 
-  if (!noticeTitle?.trim() || !noticeBody?.trim() || !noticeFile)
+  if (!noticeTitle?.trim() || !noticeBody?.trim())
     throw new CustomAPIError.BadRequestError(
       "Notice title, body and file is required!"
     );
@@ -105,8 +105,10 @@ const updateNotice = async (req, res) => {
     receivingDepartments,
   });
 
-  const fileUploadResp = await fileUpload(noticeFile, "notices", "document");
-  noticeFile = fileUploadResp?.fileURL;
+  if (noticeFile) {
+    const fileUploadResp = await fileUpload(noticeFile, "notices", "document");
+    noticeFile = fileUploadResp?.fileURL;
+  }
 
   const updatedNotice = await NoticeModel.findByIdAndUpdate(id, {
     noticeTitle,

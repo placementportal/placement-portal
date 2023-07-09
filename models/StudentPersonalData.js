@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 
 const StudentPersonalDataSchema = new mongoose.Schema(
   {
@@ -15,22 +14,25 @@ const StudentPersonalDataSchema = new mongoose.Schema(
       required: [true, "Father's Name is required"],
       trim: true,
       minlength: [3, "Father's Name should be of atleast 3 characters"],
-      maxlength: [30, "Father's Name should be of maximum 30 characters"],
+      maxlength: [50, "Father's Name should be of maximum 50 characters"],
     },
 
     motherName: {
       type: String,
-      required: [true, "Mother's Name is required"],
+      // required: [true, "Mother's Name is required"],
       trim: true,
       minlength: [3, "Mother's Name should be of atleast 3 characters"],
-      maxlength: [30, "Mother's Name should be of maximum 30 characters"],
+      maxlength: [50, "Mother's Name should be of maximum 50 characters"],
     },
 
     contactNumber: {
       type: String,
-      required: [true, "Contact Number is required"],
+      // required: [true, "Contact Number is required"],
       trim: true,
-      unique: true,
+      index: {
+        unique: true,
+        partialFilterExpression: { contactNumber: {$type: "string"} }
+      }
     },
 
     address: {
@@ -47,11 +49,11 @@ const StudentPersonalDataSchema = new mongoose.Schema(
 
     state: {
       type: String,
-      required: [true, "State is required"],
+      // required: [true, "State is required"],
       trim: true,
     },
   },
-  { timestamps: true, versionKey: false }
+  { versionKey: false, timestamps: true, collection: "StudentPersonalData" }
 );
 
 const StudentPersonalDataModel = mongoose.model(

@@ -143,10 +143,6 @@ const getExperiences = async (req, res) => {
 
   const experiences = await StudentExperienceDataModel.find({ student_id });
 
-  if (!experiences || !experiences.length) {
-    throw new CustomAPIError.NotFoundError("No experiences found!");
-  }
-
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Experiences found!",
@@ -197,7 +193,7 @@ const createExperience = async (req, res) => {
 
 const updateExperience = async (req, res) => {
   const student_id = req.user.userId;
-  const experienceId = req.params?.id;
+  const experienceId = req?.params?.id;
 
   let { jobProfile, company, startDate, endDate } = req.body;
 
@@ -238,7 +234,7 @@ const updateExperience = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Experience updated!",
-    id,
+    id: experienceId,
   });
 };
 
@@ -270,7 +266,8 @@ const deleteExperience = async (req, res) => {
 
 const createPlacement = async (req, res) => {
   let { jobProfile, company, location, package, joiningDate } = req.body;
-  let { offerLetter, joiningLetter } = req?.files;
+  let offerLetter = req?.files?.offerLetter;
+  let joiningLetter = req?.files?.joiningLetter;
   const student_id = req.user.userId;
 
   if (joiningDate) {
@@ -334,10 +331,6 @@ const getPlacements = async (req, res) => {
 
   const placements = await StudentPlacementDataModel.find({ student_id });
 
-  if (!placements || !placements.length) {
-    throw new CustomAPIError.NotFoundError("No placements found!");
-  }
-
   res.status(StatusCodes.OK).json({
     success: true,
     message: "Placements found!",
@@ -347,7 +340,8 @@ const getPlacements = async (req, res) => {
 
 const updatePlacement = async (req, res) => {
   let { jobProfile, company, location, package, joiningDate } = req.body;
-  let { offerLetter, joiningLetter } = req?.files;
+  let offerLetter = req?.files?.offerLetter;
+  let joiningLetter = req?.files?.joiningLetter;
   const student_id = req.user.userId;
   const id = req?.params?.id;
 
