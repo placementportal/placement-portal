@@ -454,6 +454,7 @@
                                         ><i class="fa-solid fa-plus"></i> Add
                                         Experience</a
                                     >
+                                    
                                 </div>
                                 <div id="experience-container"></div>
 
@@ -522,6 +523,92 @@
                                                 type="date"
                                                 name="end_date"
                                                 id="end_date"
+                                                placeholder="Enter End Date"
+                                            />
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                id="exp-curr-work"
+                                            />
+                                            <label for="exp-curr-work"
+                                                >Curently Working</label
+                                            >
+                                        </div>
+                                        <button
+                                            class="create-form-btn"
+                                            type="submit"
+                                        >
+                                            Add Experience
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div
+                                    id="edit-exp-modal"
+                                    class="create-modal-outer"
+                                >
+                                    <form
+                                        action=""
+                                        id="edit-exp-form"
+                                        class="create-form-modal"
+                                    >
+                                        <div class="create-modal-head">
+                                            <h2>Edit Experience Form</h2>
+                                            <a href="#" class="close-modal-form" data-id="edit-exp-modal" onclick="closeModalForm(event);"
+                                                ><i
+                                                    class="fa-solid fa-xmark"
+                                                ></i
+                                            ></a>
+                                        </div>
+                                        <div id="exp-error-msg"></div>
+                                        <div class="form-control">
+                                            <label for="edit_company_name"
+                                                >Company Name</label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="edit_company_name"
+                                                id="edit_company_name"
+                                                placeholder="Enter Company Name"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="form-control">
+                                            <label for="edit_job_profile"
+                                                >Job Profile</label
+                                            >
+                                            <input
+                                                type="text"
+                                                name="edit_job_profile"
+                                                id="edit_job_profile"
+                                                placeholder="Enter Job Profile"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="form-control">
+                                            <label for="edit_start_date"
+                                                >Enter Start Date</label
+                                            >
+                                            <input
+                                                type="date"
+                                                name="edit_start_date"
+                                                id="edit_start_date"
+                                                placeholder="Enter Start Date"
+                                                required
+                                            />
+                                        </div>
+                                        <div
+                                            class="form-control"
+                                            id="exp_end_date"
+                                        >
+                                            <label for="edit_end_date"
+                                                >Enter End Date</label
+                                            >
+                                            <input
+                                                type="date"
+                                                name="edit_end_date"
+                                                id="edit_end_date"
                                                 placeholder="Enter End Date"
                                             />
                                         </div>

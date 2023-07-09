@@ -519,61 +519,46 @@ async function fetchExperience() {
             "experience-container"
         );
         experienceParent.innerHTML = "";
-        for (let experience of experiences) {
-            let { jobProfile, company, startDate, endDate, _id } = experience;
-            startDate = startDate.split("T")[0];
 
-            let html = `
-      <div class="exp-info-text">
-        <div class="prof-exp-item" id=${_id}>
-          <div class="box-head-wrap">
-            <h2>${company}</h2>
-            <a href="" id="delete-exp-item" onclick="deleteExpItem(e);"><i class="fa-solid fa-trash"></i></a>
-          </div>
-          <div class="exp-inner-wrap">
-            <div><h3>Job Role:</h3><span>${jobProfile}</span></div>  
-          </div>    
-          <div class="exp-inner-wrap">
-            <div><h3>Start Date:</h3><span>${startDate}</span></div>`;
+        if (data.success === true) {
+            for (let experience of experiences) {
+                let { jobProfile, company, startDate, endDate, _id } =
+                    experience;
+                startDate = startDate.split("T")[0];
+       
+                let html = `
+          <div class="exp-info-text">
+            <div class="prof-exp-item" id=${_id}>
+                <div class="box-head-wrap">
+                  <h2>${company}</h2>
+                  <div>
+                    <a href="#"  onclick="deleteItemFunc(event,'experience');" data-id=${_id}><i class="fa-solid fa-trash"></i></a>
+                    <a href="#" onclick="openModalForm(event)" data-id="edit-exp-modal" style="margin-left:10px;"><i class="fa-regular fa-pen-to-square"></i></a>
+                  </div>
+                </div>
+              <div class="exp-inner-wrap">
+                <div><h3>Job Role:</h3><span>${jobProfile}</span></div>  
+              </div>    
+              <div class="exp-inner-wrap">
+                <div><h3>Start Date:</h3><span>${startDate}</span></div>`;
 
-            if (endDate) {
-                endDate = endDate.split("T")[0];
-                html += ` <div><h3>End Date:</h3><span>${endDate}</span></div>`;
-            } else {
-                html += ` <div><h3>End Date:</h3><span>Currently Working</span></div>`;
+                if (endDate) {
+                    endDate = endDate.split("T")[0];
+                    html += ` <div><h3>End Date:</h3><span>${endDate}</span></div>`;
+                } else {
+                    html += ` <div><h3>End Date:</h3><span>Currently Working</span></div>`;
+                }
+
+                html += `</div></div></div>`;
+                experienceParent.innerHTML += html;
             }
-
-            html += `</div></div></div>`;
-            experienceParent.innerHTML += html;
+        } else {
+            experienceParent.innerHTML = "<div>No Experience Found</div>";
         }
-    } catch (error) {
-        console.log("failed to fetch error", error);
-    }
-}
-//Delete Experience
-
-
-const deleteExpItem = async (e) => {
-    e.preventDefault();
-    const delItem=document
-    .getElementById("delete-exp-item");
-    console.log(delItem)
-    try {
-        let requestOptions = {
-            method: "DELETE",
-            redirect: "follow",
-        };
-
-        // const response = await fetch("/api/v1/experience/", requestOptions);
-        // const data = await response.json();
-        // if(response?.status=='200'){
-        //     window.location.reload();
-        // }
     } catch (error) {
         // console.log("failed to fetch error", error);
     }
-    
-};
+}
 
 //Create Placement
 
@@ -597,6 +582,7 @@ async function createPlacement(e) {
     const placed_doj = document.getElementById("placed-doj").value;
 
     // const end_date=document.getElementById('end_date').value;
+    console.log(placed_offer_letter);
     try {
         let formdata = new FormData();
         formdata.append("jobProfile", placed_job_profile);
@@ -604,21 +590,20 @@ async function createPlacement(e) {
         formdata.append("location", placed_company_loc);
         formdata.append("package", placed_package);
 
-        let requestOptions = {
-            method: "POST",
-            body: formdata,
-            redirect: "follow",
-        };
-
-        if (placed_offer_letter[0]) {
+        if (placed_offer_letter.length > 0) {
             formdata.append("offerLetter", placed_offer_letter[0]);
         }
-        if (placed_joining_letter[0]) {
+        if (placed_joining_letter.length > 0) {
             formdata.append("joiningLetter", placed_joining_letter[0]);
         }
         if (placed_doj) {
             formdata.append("joiningDate", placed_doj);
         }
+        let requestOptions = {
+            method: "POST",
+            body: formdata,
+            redirect: "follow",
+        };
         Loader.open();
         const response = await fetch(
             "/api/v1/student/placement",
@@ -638,6 +623,12 @@ async function createPlacement(e) {
     }
 }
 
+// Edit Experience
+function editExpItem(event,currData){
+    event.preventDefault();
+    console.log(currData)
+}
+
 // STUDENT Placement FETCH
 async function fetchPlacement() {
     try {
@@ -648,56 +639,64 @@ async function fetchPlacement() {
 
         const placementParent = document.getElementById("placement-container");
         placementParent.innerHTML = "";
-        for (let placement of placements) {
-            let {
-                company,
-                jobProfile,
-                joiningDate,
-                joiningLetter,
-                location,
-                offerLetter,
-                package,
-                student_id,
-                _id,
-            } = placement;
+        if (data.success === true) {
+            for (let placement of placements) {
+                let {
+                    company,
+                    jobProfile,
+                    joiningDate,
+                    joiningLetter,
+                    location,
+                    offerLetter,
+                    package,
+                    student_id,
+                    _id,
+                } = placement;
 
-            joiningDate = joiningDate.split("T")[0];
+                if (joiningDate) {
+                    joiningDate = joiningDate.split("T")[0];
+                }
 
-            let html = `
-      <div class="exp-info-text">
-        <div class="prof-exp-item" id=${_id}>
-          <h2>${company}</h2>
-          <div class="exp-inner-wrap">
-            <div><h3>Job Role:</h3><span>${jobProfile}</span></div>  
-          </div>    
-          <div class="exp-inner-wrap">
-            <div><h3>Package:</h3><span>${package}</span></div>
-          </div>
-          <div class="exp-inner-wrap">
-            <div><h3>Location:</h3><span>${location}</span></div>
-          </div>
-          
-        `;
+                let html = `
+          <div class="exp-info-text">
+            <div class="prof-exp-item">
+              <h2>${company}</h2>
+              <a href="#"  onclick="deleteItemFunc(event,'placement');" data-id=${_id}><i class="fa-solid fa-trash"></i></a>
+         
+              <div class="exp-inner-wrap">
+                <div><h3>Job Role:</h3><span>${jobProfile}</span></div>  
+              </div>    
+              <div class="exp-inner-wrap">
+                <div><h3>Package:</h3><span>${package}</span></div>
+              </div>
+              <div class="exp-inner-wrap">
+                <div><h3>Location:</h3><span>${location}</span></div>
+              </div>
+              
+            `;
 
-            if (joiningDate) {
-                html += `<div class="exp-inner-wrap">
-                        <div><h3>Start Date:</h3><span>${joiningDate}</span></div>
-                    </div>`;
+                if (joiningDate) {
+                    html += `<div class="exp-inner-wrap">
+                            <div><h3>Start Date:</h3><span>${joiningDate}</span></div>
+                        </div>`;
+                }
+                if (offerLetter) {
+                    html += `<div class="exp-inner-wrap">
+                              <div><h3>Offer Letter:</h3><a href=${offerLetter} target='_blank'>Click to view offer letter</a></div>
+                          </div>`;
+                }
+                if (joiningLetter) {
+                    html += `<div class="exp-inner-wrap">
+                              <div><h3>Joining Letter:</h3><a href=${joiningLetter} target='_blank'>Click to view joining letter</a></div>
+                          </div>`;
+                }
+
+                html += `</div>
+                </div>`;
+                placementParent.innerHTML += html;
             }
-            if (offerLetter) {
-                html += `<div class="exp-inner-wrap">
-                          <div><h3>Offer Letter:</h3><a href=${offerLetter} target='_blank'>Click to view offer letter</a></div>
-                      </div>`;
-            }
-            if (joiningLetter) {
-                html += `<div class="exp-inner-wrap">
-                          <div><h3>Joining Letter:</h3><a href=${joiningLetter} target='_blank'>Click to view joining letter</a></div>
-                      </div>`;
-            }
-
-            html += `</div>
-            </div>`;
-            placementParent.innerHTML += html;
+        } else {
+            placementParent.innerHTML += "<div>No Placement Found</div>";
         }
     } catch (error) {
         console.log("failed to fetch error", error);
@@ -772,33 +771,40 @@ async function fetchTraining() {
         const trainingParent = document.getElementById("training-container");
 
         trainingParent.innerHTML = "";
-        for (let training of trainings) {
-            let { trainingName, organisation, startDate, endDate, _id } =
-                training;
+        // console.log(data)
+        if (trainings.length > 0) {
+            for (let training of trainings) {
+                let { trainingName, organisation, startDate, endDate, _id } =
+                    training;
 
-            startDate = startDate.split("T")[0];
+                startDate = startDate.split("T")[0];
 
-            let html = `
-            <div class="exp-info-text">
-                <div class="prof-exp-item" id=${_id}>
-                <div class="exp-inner-wrap">
-                    <div><h3>Training Name:</h3><span>${trainingName}</span></div>  
-                </div>  
-                <div class="exp-inner-wrap">
-                    <div><h3>Training Organization:</h3><span>${organisation}</span></div>  
-                </div>    
-                <div class="exp-inner-wrap">
-                    <div><h3>Start Date:</h3><span>${startDate}</span></div>`;
+                let html = `
+                <div class="exp-info-text">
+                    <div class="prof-exp-item"}>
+                    <a href="#" onclick="deleteItemFunc(event,'training');" data-id=${_id}><i class="fa-solid fa-trash"></i></a>
+                  
+                    <div class="exp-inner-wrap">
+                        <div><h3>Training Name:</h3><span>${trainingName}</span></div>  
+                    </div>  
+                    <div class="exp-inner-wrap">
+                        <div><h3>Training Organization:</h3><span>${organisation}</span></div>  
+                    </div>    
+                    <div class="exp-inner-wrap">
+                        <div><h3>Start Date:</h3><span>${startDate}</span></div>`;
 
-            if (endDate) {
-                endDate = endDate.split("T")[0];
-                html += ` <div><h3>End Date:</h3><span>${endDate}</span></div>`;
-            } else {
-                html += ` <div><h3>End Date:</h3><span>Currently Working</span></div>`;
+                if (endDate) {
+                    endDate = endDate.split("T")[0];
+                    html += ` <div><h3>End Date:</h3><span>${endDate}</span></div>`;
+                } else {
+                    html += ` <div><h3>End Date:</h3><span>Currently Working</span></div>`;
+                }
+
+                html += `</div></div></div>`;
+                trainingParent.innerHTML += html;
             }
-
-            html += `</div></div></div>`;
-            trainingParent.innerHTML += html;
+        } else {
+            trainingParent.innerHTML += "<div>No Traning Found</div>";
         }
     } catch (error) {
         console.log("failed to fetch error", error);
@@ -814,27 +820,32 @@ async function fetchAward() {
         const { awards } = data;
 
         const awardParent = document.getElementById("award-container");
-
         awardParent.innerHTML = "";
-        for (let award of awards) {
-            let { awardName, organisation, description, _id } = award;
+        if (awards.length > 0) {
+            for (let award of awards) {
+                let { awardName, organisation, description, _id } = award;
 
-            let html = `
-            <div class="exp-info-text">
-                <div class="prof-exp-item" id=${_id}>
-                    <div class="exp-inner-wrap">
-                        <div><h3>Award Name:</h3><span>${awardName}</span></div>  
-                    </div>  
-                    <div class="exp-inner-wrap">
-                        <div><h3>Award Organization:</h3><span>${organisation}</span></div>  
-                    </div>    
-                    <div class="exp-inner-wrap">
-                        <div><h3>Award Description:</h3><span>${description}</span></div>
+                let html = `
+                <div class="exp-info-text">
+                    <div class="prof-exp-item"}>
+                    <a href="#"  onclick="deleteItemFunc(event,'award');" data-id=${_id}><i class="fa-solid fa-trash"></i></a>
+                  
+                        <div class="exp-inner-wrap">
+                            <div><h3>Award Name:</h3><span>${awardName}</span></div>  
+                        </div>  
+                        <div class="exp-inner-wrap">
+                            <div><h3>Award Organization:</h3><span>${organisation}</span></div>  
+                        </div>    
+                        <div class="exp-inner-wrap">
+                            <div><h3>Award Description:</h3><span>${description}</span></div>
+                        </div>
                     </div>
-                </div>
-            </div>`;
+                </div>`;
 
-            awardParent.innerHTML += html;
+                awardParent.innerHTML += html;
+            }
+        } else {
+            awardParent.innerHTML += "<div>No Award Found</div>";
         }
     } catch (error) {
         console.log("failed to fetch error", error);
@@ -887,6 +898,37 @@ async function createAward(e) {
     }
 }
 
+//Delete Experience, Placement, training, award
+async function deleteItemFunc(event, section) {
+    event.preventDefault();
+    const delItem = event.target.parentNode.dataset.id;
+    const validSection = ["experience", "placement", "training", "award"];
+    try {
+        let requestOptions = {
+            method: "DELETE",
+            redirect: "follow",
+        };
+
+        Loader.open();
+        let response;
+
+        if (validSection.includes(section)) {
+            response = await fetch(
+                `/api/v1/student/${section}/${delItem}`,
+                requestOptions
+            );
+        }
+        const data = await response.json();
+        Loader.close();
+
+        if (response?.status == "200") {
+            window.location.reload();
+        }
+    } catch (error) {
+        // console.log("failed to fetch error", error);
+    }
+}
+
 // LOGOUT
 document.getElementById("logout").addEventListener("click", logoutFunc);
 async function logoutFunc(e) {
@@ -905,6 +947,17 @@ async function logoutFunc(e) {
 }
 
 // JAVASCRIPT CODE FOR OTHER FUNCTIONALITY THAN NON API CALLS
+function openModalForm(event,currData){
+    event.preventDefault();
+    const openFormId=document.getElementById(`${event.target.parentNode.dataset.id}`);
+    openFormId.style.display='block';
+}
+function closeModalForm(event){
+    event.preventDefault();
+    const closeFormId=document.getElementById(`${event.target.parentNode.dataset.id}`);
+    closeFormId.style.display='none';
+}
+
 
 function editGradPoppup(e) {
     e.preventDefault();
