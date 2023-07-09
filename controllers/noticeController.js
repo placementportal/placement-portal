@@ -154,6 +154,39 @@ const deleteNotice = async (req, res) => {
     message: "Notice deleted!",
     id,
   });
+  
+  const { receivingCourse, receivingBatches, receivingDepartments } = notice;
+  
+  const course = await CourseModel.findById(receivingCourse);
+  let courseLastNotice = await NoticeModel.find({ receivingCourse })
+    .sort("-updatedAt")
+    .limit(1);
+  courseLastNotice = courseLastNotice[0];
+
+  course.lastNoticeTime = courseLastNotice?.updatedAt || new Date();
+  await course.save();
+
+  for (let receivingBatch of receivingBatches) {
+    const batch = await BatchModel.findById(receivingBatch);
+    let batchLastNotice = await NoticeModel.find({ receivingBatch })
+      .sort("-updatedAt")
+      .limit(1);
+    batchLastNotice = batchLastNotice[0];
+
+    batch.lastNoticeTime = batchLastNotice?.updatedAt || new Date();
+    await batch.save();
+  }
+
+  for (let receivingDepartment of receivingDepartments) {
+    const department = await DepartmentModel.findById(receivingDepartment);
+    let departmentLastNotice = await NoticeModel.find({ receivingDepartment })
+      .sort("-updatedAt")
+      .limit(1);
+    departmentLastNotice = departmentLastNotice[0];
+
+    department.lastNoticeTime = departmentLastNotice?.updatedAt || new Date();
+    await department.save();
+  }
 };
 
 const getAllNotices = async (req, res) => {
