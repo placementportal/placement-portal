@@ -150,6 +150,26 @@ const getExperiences = async (req, res) => {
   });
 };
 
+const getExperienceById = async (req, res) => {
+  const id = req?.params?.id;
+  const student_id = req.user.userId;
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+
+  const experience = await StudentExperienceDataModel.findOne({
+    _id: id,
+    student_id,
+  });
+
+  if (!experience)
+    throw new CustomAPIError.NotFoundError(`No experience found with id: ${id}`);
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: `Experience found with id: ${id}`,
+    experience,
+  });
+};
+
 const createExperience = async (req, res) => {
   const student_id = req.user.userId;
   let { jobProfile, company, startDate, endDate } = req.body;
@@ -338,6 +358,26 @@ const getPlacements = async (req, res) => {
   });
 };
 
+const getPlacementById = async (req, res) => {
+  const id = req?.params?.id;
+  const student_id = req.user.userId;
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+
+  const placement = await StudentPlacementDataModel.findOne({
+    _id: id,
+    student_id,
+  });
+
+  if (!placement)
+    throw new CustomAPIError.NotFoundError(`No placement found with id: ${id}`);
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: `Placement found with id: ${id}`,
+    placement,
+  });
+};
+
 const updatePlacement = async (req, res) => {
   let { jobProfile, company, location, package, joiningDate } = req.body;
   let offerLetter = req?.files?.offerLetter;
@@ -424,7 +464,7 @@ const deletePlacement = async (req, res) => {
   });
 
   const jobData = await StudentJobDataModel.findOne({ student_id });
-  jobData.placements = jobData.placements.filter(ele => ele != id);
+  jobData.placements = jobData.placements.filter((ele) => ele != id);
   await jobData.save();
 };
 
@@ -464,6 +504,26 @@ const getTrainings = async (req, res) => {
     success: true,
     message: "Found trainings!",
     trainings,
+  });
+};
+
+const getTrainingById = async (req, res) => {
+  const id = req?.params?.id;
+  const student_id = req.user.userId;
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+
+  const training = await TrainingModel.findOne({
+    _id: id,
+    student_id,
+  });
+
+  if (!training)
+    throw new CustomAPIError.NotFoundError(`No Training found with id: ${id}`);
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: `Training found with id: ${id}`,
+    training,
   });
 };
 
@@ -554,6 +614,26 @@ const getAwards = async (req, res) => {
   });
 };
 
+const getAwardById = async (req, res) => {
+  const id = req?.params?.id;
+  const student_id = req.user.userId;
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+
+  const award = await AwardModel.findOne({
+    _id: id,
+    student_id,
+  });
+
+  if (!award)
+    throw new CustomAPIError.NotFoundError(`No Award found with id: ${id}`);
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: `Award found with id: ${id}`,
+    award,
+  });
+};
+
 const updateAward = async (req, res) => {
   let { awardName, organisation, description } = req.body;
   const student_id = req.user.userId;
@@ -609,22 +689,26 @@ module.exports = {
   getPersonalData,
 
   getExperiences,
+  getExperienceById,
   createExperience,
   updateExperience,
   deleteExperience,
 
   createPlacement,
   getPlacements,
+  getPlacementById,
   updatePlacement,
   deletePlacement,
 
   createTraining,
   getTrainings,
+  getTrainingById,
   updateTraining,
   deleteTraining,
 
   createAward,
   getAwards,
+  getAwardById,
   updateAward,
   deleteAward,
 };
