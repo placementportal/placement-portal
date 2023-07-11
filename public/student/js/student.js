@@ -525,7 +525,7 @@ async function fetchExperience() {
                 let { jobProfile, company, startDate, endDate, _id } =
                     experience;
                 startDate = startDate.split("T")[0];
-       
+
                 let html = `
           <div class="exp-info-text">
             <div class="prof-exp-item" id=${_id}>
@@ -533,7 +533,7 @@ async function fetchExperience() {
                   <h2>${company}</h2>
                   <div>
                     <a href="#"  onclick="deleteItemFunc(event,'experience');" data-id=${_id}><i class="fa-solid fa-trash"></i></a>
-                    <a href="#" onclick="openModalForm(event)" data-id="edit-exp-modal" style="margin-left:10px;"><i class="fa-regular fa-pen-to-square"></i></a>
+                    <a href="#" onclick="openEditForm(event);" data-id="${_id}" style="margin-left:10px;"><i class="fa-regular fa-pen-to-square"></i></a>
                   </div>
                 </div>
               <div class="exp-inner-wrap">
@@ -557,6 +557,57 @@ async function fetchExperience() {
         }
     } catch (error) {
         // console.log("failed to fetch error", error);
+    }
+}
+//Update Experience
+
+// Update Diploma  Details
+document
+    .getElementById("edit-exp-form")
+    .addEventListener("submit", updateExperienceForm);
+
+async function updateExperienceForm(e) {
+    e.preventDefault();
+    const editCompanyName = document.getElementById("edit_company_name").value;
+    const editJobProfile = document.getElementById("edit_job_profile").value;
+    const editStartDate = document.getElementById("edit_start_date").value;
+    const editEndDate = document.getElementById("edit_end_date").value;
+    const updateItemId=document.getElementById('edit-exp-form').dataset.id;
+    try {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        console.log(editStartDate)
+        var raw = JSON.stringify({
+            company:editCompanyName,
+            jobProfile:editJobProfile,
+            startDate: editStartDate,
+            endDate: editEndDate,
+        });
+
+        let requestOptions = {
+            method: "PATCH",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow",
+        };
+
+        Loader.open();
+        const response = await fetch(
+            `/api/v1/student/experience/${updateItemId}`,
+            requestOptions
+        );
+        const data = await response.json();
+        Loader.close();
+
+        if (data.success) {
+            window.location.reload();
+        } else {
+            // document.getElementById(
+            //     "highSchool-err-msg"
+            // ).innerHTML = `${data.message}`;
+        }
+    } catch (error) {
+        console.log("failed to fetch error", error);
     }
 }
 
@@ -624,9 +675,9 @@ async function createPlacement(e) {
 }
 
 // Edit Experience
-function editExpItem(event,currData){
+function editExpItem(event, currData) {
     event.preventDefault();
-    console.log(currData)
+    console.log(currData);
 }
 
 // STUDENT Placement FETCH
@@ -947,17 +998,51 @@ async function logoutFunc(e) {
 }
 
 // JAVASCRIPT CODE FOR OTHER FUNCTIONALITY THAN NON API CALLS
-function openModalForm(event,currData){
+const openEditForm = async (event) => {
     event.preventDefault();
-    const openFormId=document.getElementById(`${event.target.parentNode.dataset.id}`);
-    openFormId.style.display='block';
-}
-function closeModalForm(event){
-    event.preventDefault();
-    const closeFormId=document.getElementById(`${event.target.parentNode.dataset.id}`);
-    closeFormId.style.display='none';
-}
+    const expItemId = event.target.parentNode.dataset.id;
+    const editCompanyName = document.getElementById("edit_company_name");
+    const editJobProfile = document.getElementById("edit_job_profile");
+    const editStartDate = document.getElementById("edit_start_date");
+    const editEndDate = document.getElementById("edit_end_date");
 
+    document.getElementById('edit-exp-form').setAttribute('data-id' , expItemId);  
+
+    const openFormId = document.getElementById("edit-exp-modal");
+    openFormId.style.display = "block";
+    try {
+        let requestOptions = {
+            method: "GET",
+            redirect: "follow",
+        };
+
+        const response = await fetch(
+            `/api/v1/student/experience/${expItemId}`,
+            requestOptions
+        );
+        const data = await response.json();
+        const { experience } = data;
+        let { company, jobProfile, startDate, endDate } = experience;
+        editCompanyName.value = company;
+        editJobProfile.value = jobProfile;
+        editStartDate.value = startDate.split("T")[0];
+        editEndDate.value = endDate.split("T")[0];
+    } catch (error) {
+        // console.log("failed to fetch error", error);
+    }
+};
+// function openModalForm(event){
+//     event.preventDefault();
+//     const openFormId=document.getElementById(`${event.target.parentNode.dataset.id}`);
+//     openFormId.style.display='block';
+// }
+function closeModalForm(event) {
+    event.preventDefault();
+    const closeFormId = document.getElementById(
+        `${event.target.parentNode.dataset.id}`
+    );
+    closeFormId.style.display = "none";
+}
 
 function editGradPoppup(e) {
     e.preventDefault();

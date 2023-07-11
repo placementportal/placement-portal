@@ -131,7 +131,6 @@
                                 class="prof-tab-links"
                                 data-tab="education-info"
                                 onclick="fetchEducation()"
-                                
                                 ><i class="fa-solid fa-graduation-cap"></i
                                 >&ensp;Education</a
                             >
@@ -168,7 +167,6 @@
                                     <div class="create-info-head">
                                         Education Details
                                     </div>
-                                    
                                 </div>
 
                                 <!--- Education Details -->
@@ -199,7 +197,11 @@
                                                 ></i
                                             ></a>
                                         </div>
-                                        <input type="hidden" id="gradUpdateBody" value="btech">
+                                        <input
+                                            type="hidden"
+                                            id="gradUpdateBody"
+                                            value="btech"
+                                        />
                                         <div
                                             class="edu-form-group"
                                             id="lateral-hide"
@@ -325,7 +327,11 @@
                                                 ></i
                                             ></a>
                                         </div>
-                                        <input type="hidden" id="diplomaUpdateBody" value="diploma">
+                                        <input
+                                            type="hidden"
+                                            id="diplomaUpdateBody"
+                                            value="diploma"
+                                        />
                                         <div class="form-control">
                                             <label for="diploma_year"
                                                 >Diploma Year</label
@@ -454,7 +460,6 @@
                                         ><i class="fa-solid fa-plus"></i> Add
                                         Experience</a
                                     >
-                                    
                                 </div>
                                 <div id="experience-container"></div>
 
@@ -555,7 +560,11 @@
                                     >
                                         <div class="create-modal-head">
                                             <h2>Edit Experience Form</h2>
-                                            <a href="#" class="close-modal-form" data-id="edit-exp-modal" onclick="closeModalForm(event);"
+                                            <a
+                                                href="#"
+                                                class="close-modal-form"
+                                                data-id="edit-exp-modal"
+                                                onclick="closeModalForm(event);"
                                                 ><i
                                                     class="fa-solid fa-xmark"
                                                 ></i
@@ -598,10 +607,7 @@
                                                 required
                                             />
                                         </div>
-                                        <div
-                                            class="form-control"
-                                            id="exp_end_date"
-                                        >
+                                        <div class="form-control">
                                             <label for="edit_end_date"
                                                 >Enter End Date</label
                                             >
@@ -644,7 +650,6 @@
                                 <div id="placement-container"></div>
 
                                 <div id="create-plac-modal">
-                                    <!-- ================= STUDENT TAB  ==================== -->
                                     <div class="student-form">
                                         <div class="create-modal-head">
                                             <div class="form-title">
@@ -801,6 +806,179 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- ===== Edit Placement Details ===== -->
+                                <div
+                                    id="edit-plac-modal"
+                                    class="create-modal-outer"
+                                >
+                                    <div class="student-form">
+                                        <div class="create-modal-head">
+                                            <div class="form-title">
+                                                Edit Placement Details
+                                            </div>
+                                            <a
+                                                href="#"
+                                                class="close-modal-form"
+                                                data-id="edit-plac-modal"
+                                                onclick="closeModalForm(event);"
+                                                ><i
+                                                    class="fa-solid fa-xmark"
+                                                ></i
+                                            ></a>
+                                            <a href="#" id="close-plac-modal"
+                                                ><i
+                                                    class="fa-solid fa-xmark"
+                                                ></i
+                                            ></a>
+                                        </div>
+                                        <div class="form-content">
+                                            <form
+                                                action=""
+                                                id="edit-plac-form"
+                                                class="create-form-modal"
+                                            >
+                                                <div class="fuser-details">
+                                                    <div class="finput-group">
+                                                        <div class="finput-box">
+                                                            <span
+                                                                class="form-details"
+                                                                >Job
+                                                                Pofile</span
+                                                            >
+                                                            <input
+                                                                type="text"
+                                                                id="placed-job-profile"
+                                                                placeholder="Enter Job Profile"
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div class="finput-box">
+                                                            <span
+                                                                class="form-details"
+                                                                >Company
+                                                                Name</span
+                                                            >
+                                                            <input
+                                                                type="text"
+                                                                id="placed-company"
+                                                                placeholder="Enter Placed Company Name"
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div class="finput-group">
+                                                        <div class="finput-box">
+                                                            <span
+                                                                class="form-details"
+                                                                >Company
+                                                                Location</span
+                                                            >
+                                                            <input
+                                                                type="text"
+                                                                id="placed-company-loc"
+                                                                placeholder="Enter Comapny Location"
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div class="finput-box">
+                                                            <span
+                                                                class="form-details"
+                                                                >Package</span
+                                                            >
+                                                            <input
+                                                                type="text"
+                                                                id="placed-package"
+                                                                placeholder="Enter Package (In LPA)"
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="finput-box">
+                                                        <span
+                                                            class="form-details"
+                                                            >Add Offer
+                                                            Letter</span
+                                                        >
+                                                        <label
+                                                            for="placed-offer-letter"
+                                                            ><i
+                                                                class="fa-solid fa-upload"
+                                                            ></i
+                                                            ><span
+                                                                >Click to upload
+                                                                offer
+                                                                letter</span
+                                                            ></label
+                                                        >
+                                                        <input
+                                                            type="file"
+                                                            id="placed-offer-letter"
+                                                            accept=".pdf"
+                                                            style="
+                                                                display: none;
+                                                            "
+                                                        />
+                                                        <div
+                                                            class="plac-form-attached"
+                                                        ></div>
+                                                    </div>
+                                                    <div class="finput-box">
+                                                        <span
+                                                            class="form-details"
+                                                            >Add Joining
+                                                            Letter</span
+                                                        >
+                                                        <label
+                                                            for="placed-joining-letter"
+                                                            ><i
+                                                                class="fa-solid fa-upload"
+                                                            ></i
+                                                            ><span
+                                                                >Click to upload
+                                                                Joining
+                                                                letter</span
+                                                            ></label
+                                                        >
+                                                        <input
+                                                            type="file"
+                                                            id="placed-joining-letter"
+                                                            accept=".pdf"
+                                                            style="
+                                                                display: none;
+                                                            "
+                                                        />
+                                                        <div
+                                                            class="plac-form-attached"
+                                                        ></div>
+                                                    </div>
+                                                    <div class="finput-box">
+                                                        <span
+                                                            class="form-details"
+                                                            >Date of
+                                                            joining</span
+                                                        >
+                                                        <input
+                                                            type="date"
+                                                            id="placed-doj"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-button">
+                                                    <input
+                                                        type="submit"
+                                                        value="Save Details"
+                                                    />
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                 <!-- ====== Edit Placement Details ====== -->
                             </div>
                         </div>
 
@@ -813,9 +991,7 @@
                                         Training</a
                                     >
                                 </div>
-                                <div id="training-container">
-                                  
-                                </div>
+                                <div id="training-container"></div>
 
                                 <div
                                     id="create-training-modal"
