@@ -25,6 +25,11 @@ const CourseSchema = new mongoose.Schema(
       type: Date,
       default: new Date(),
     },
+
+    lastJobOpening: {
+      type: Date,
+      default: new Date(),
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -44,6 +49,11 @@ const BatchSchema = new mongoose.Schema(
     },
 
     lastNoticeTime: {
+      type: Date,
+      default: new Date(),
+    },
+
+    lastJobOpening: {
       type: Date,
       default: new Date(),
     },
@@ -74,6 +84,11 @@ const DepartmentSchema = new mongoose.Schema(
     },
 
     lastNoticeTime: {
+      type: Date,
+      default: new Date(),
+    },
+
+    lastJobOpening: {
       type: Date,
       default: new Date(),
     },

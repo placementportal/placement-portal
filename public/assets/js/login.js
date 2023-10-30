@@ -1,179 +1,89 @@
 +(function ($) {
-    $(".palceholder").click(function () {
-        $(this).siblings("input").focus();
-    });
+  $('.palceholder').click(function () {
+    $(this).siblings('input').focus();
+  });
 
-    $(".form-control").focus(function () {
-        $(this).parent().addClass("focused");
-    });
+  $('.form-control').focus(function () {
+    $(this).parent().addClass('focused');
+  });
 
-    $(".form-control").blur(function () {
-        let $this = $(this);
-        if ($this.val().length == 0) $(this).parent().removeClass("focused");
-    });
-    $(".form-control").blur();
+  $('.form-control').blur(function () {
+    let $this = $(this);
+    if ($this.val().length == 0) $(this).parent().removeClass('focused');
+  });
+  $('.form-control').blur();
 
-    // validation
-    $.validator.setDefaults({
-        errorElement: "span",
-        errorClass: "validate-tooltip",
-    });
+  // validation
+  $.validator.setDefaults({
+    errorElement: 'span',
+    errorClass: 'validate-tooltip',
+  });
 
-    $("#studentFormValidate").validate({
-        rules: {
-            rollNo: {
-                required: true,
-                minlength: 6,
-            },
-            dob: {
-                required: true,
-                minlength: 6,
-            },
-        },
-        messages: {
-            rollNo: {
-                required: "Please enter your Roll No.",
-                minlength: "Please provide valid Roll No.",
-            },
-            dob: {
-                required: "Enter your password to Login.",
-                minlength: "Incorrect login or password.",
-            },
-        },
-    });
-
-    $("#adminFormValidate").validate({
-        rules: {
-            email: {
-                required: true,
-                minlength: 6,
-            },
-            adminPassword: {
-                required: true,
-                minlength: 6,
-            },
-        },
-        messages: {
-            email: {
-                required: "Please enter your email",
-                minlength: "Please provide valid email",
-            },
-            adminPassword: {
-                required: "Enter your password to Login.",
-                minlength: "Incorrect login or password.",
-            },
-        },
-    });
+  $('#login-form').validate({
+    rules: {
+      email: {
+        required: true,
+      },
+      password: {
+        required: true,
+      },
+    },
+    messages: {
+      rollNo: {
+        required: 'Email is required!',
+      },
+      dob: {
+        required: 'Enter your password to Login.',
+      },
+    },
+  });
 })(jQuery);
 
 window.onload = function () {
-    checkAlreadyLogged();
+  checkAlreadyLogged();
 };
 
 function checkAlreadyLogged() {
-  
-    fetch("/api/v1/user/whoami/")
-        .then((response) => response.json())
-        .then((data) => {
-           
-            if (data?.user?.role === "student") {
-                window.location.href = "/student/index.html";
-            } else if (data?.user?.role === "admin") {
-                window.location.href = "/admin/index.html";
-            }
-            // console.log(JSON.stringify(data))
-        })
-        .catch((error) => {
-            // console.log('error', error)
-        });
-}
-
-const stuForm = document.getElementById("studentFormValidate");
-stuForm.addEventListener("submit", studentLogin);
-
-const adminForm = document.getElementById("adminFormValidate");
-adminForm.addEventListener("submit", adminLogin);
-
-function studentLogin(event) {
-    event.preventDefault();
-
-    let roll_no = document.getElementById("rollNo").value;
-    let dob = document.getElementById("dob").value;
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    let raw = JSON.stringify({
-        roll_no: roll_no,
-        password: dob,
+  fetch('/api/v1/user/whoami/')
+    .then((response) => response.json())
+    .then((data) => {
+      if (data?.user?.role === 'student') {
+        window.location.href = '/student/index.html';
+      } else if (data?.user?.role === 'admin') {
+        window.location.href = '/admin/index.html';
+      }
+      // console.log(JSON.stringify(data))
+    })
+    .catch((error) => {
+      // console.log('error', error)
     });
-
-    let requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-    };
-    Loader.open();
-    fetch("/api/v1/auth/login/student", requestOptions)
-        .then((response) => {
-            response.text();
-            Loader.close();
-            if (response.status === 200) {
-                window.location.href = `/student/`;
-            } else {
-                Toastify({
-                    text: "Wrong Credentials! Please enter details correctly",
-                    duration: 3000,
-                    style: {
-                        background: "#cc0000",
-                    },
-                }).showToast();
-            }
-        })
-        .catch((error) => {
-            // console.log('error', error)
-        });
 }
 
-function adminLogin(event) {
-    event.preventDefault();
+const loginForm = document.getElementById('login-form');
+loginForm.addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const formData = new FormData(e.currentTarget);
+  const entries = Object.fromEntries(formData.entries());
 
-    let email = document.getElementById("email").value;
-    let adminPassword = document.getElementById("adminPassword").value;
-
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    let raw = JSON.stringify({
-        email: email,
-        password: adminPassword,
+  try {
+    const response = await fetch('/api/v1/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(entries),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
-
-    let requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-    };
-    Loader.open();
-    fetch("/api/v1/auth/login/admin", requestOptions)
-        .then((response) => {
-            response.text();
-            Loader.close();
-            if (response.status === 200) {
-                window.location.href = `/admin/`;
-            } else {
-                Toastify({
-                    text: "Wrong Credentials! Please enter details correctly",
-                    duration: 3000,
-                    style: {
-                        background: "#cc0000",
-                    },
-                }).showToast();
-            }
-        })
-        .catch((error) => {
-            // console.log('error', error)
-        });
-}
+    if (!response.ok) throw Error('Login failed!');
+    const { role } = await response.json();
+    if (role == 'admin') window.location.href = './admin/';
+    else if (role == 'student') window.location.href = './student/';
+  } catch (error) {
+    Toastify({
+      text: 'Wrong Credentials! Please enter details correctly',
+      duration: 3000,
+      style: {
+        background: '#cc0000',
+      },
+    }).showToast();
+  }
+});

@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <title>Student Login</title>
+        <title>Login</title>
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"
@@ -25,50 +25,35 @@
                 </div>
                 <div class="wrapper">
                     <div class="inner-warpper text-center">
-                        <h2 class="title">Student Login</h2>
-                        <form method="post" id="studentFormValidate">
+                        <h2 class="title">Login</h2>
+                        <form method="post" id="login-form">
                             <div class="input-group">
-                                <label class="palceholder" for="rollNo"
-                                    >Roll No</label
+                                <label class="palceholder" for="email"
+                                    >Email</label
                                 >
                                 <input
                                     class="form-control"
-                                    name="rollNo"
-                                    id="rollNo"
-                                    type="text"
+                                    name="email"
+                                    id="email"
+                                    type="email"
                                     placeholder=""
                                 />
                                 <span class="lighting"></span>
                             </div>
                             <div class="input-group">
-                                <!-- <label class="palceholder" for="userPassword">Enter DOB</label> -->
+                                <label class="palceholder" for="password">Password</label>
                                 <input
                                     class="form-control"
-                                    type="text"
-                                    name="dob"
-                                    id="dob"
+                                    type="password"
+                                    name="password"
+                                    id="password"
                                 />
                                 <span class="lighting"></span>
                             </div>
 
-                            <button type="submit" id="login">Login</button>
-                            <div class="clearfix supporter">
-                                <!-- <div class="pull-left remember-me">
-                    <input id="rememberMe" type="checkbox">
-                    <label for="rememberMe">Remember Me</label>
-                  </div> -->
-                                <a
-                                    class="forgot pull-right"
-                                    href="./admin-login.html"
-                                    >Admin Login</a
-                                >
-                            </div>
+                            <button type="submit">Login</button>
                         </form>
-                        <form method="post" id="adminFormValidate"></form>
                     </div>
-                    <!-- <div class="signup-wrapper text-center">
-              <a href="#">Don't have an accout? <span class="text-primary">Create One</span></a>
-            </div> -->
                 </div>
             </div>
         </div>

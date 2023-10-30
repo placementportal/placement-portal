@@ -2,14 +2,14 @@ const {
   CourseModel,
   DepartmentModel,
   BatchModel,
-} = require("../models/Course");
+} = require('../models/Course');
 
-const NoticeModel = require("../models/Notice");
-const UserModel = require("../models/User");
+const NoticeModel = require('../models/Notice');
+const UserModel = require('../models/User');
 
-const CustomAPIError = require("../errors");
-const { StatusCodes } = require("http-status-codes");
-const { fileUpload } = require("../utils/fileUpload");
+const CustomAPIError = require('../errors');
+const { StatusCodes } = require('http-status-codes');
+const { fileUpload } = require('../utils/fileUpload');
 
 const createNotice = async (req, res) => {
   let {
@@ -26,7 +26,7 @@ const createNotice = async (req, res) => {
   let noticeFile = req?.files?.noticeFile;
   if (!noticeTitle?.trim() || !noticeBody?.trim() || !noticeFile)
     throw new CustomAPIError.BadRequestError(
-      "Notice title, body and file is required!"
+      'Notice title, body and file is required!'
     );
 
   const createdBy = req.user?.userId;
@@ -37,7 +37,7 @@ const createNotice = async (req, res) => {
     receivingDepartments,
   });
 
-  const fileUploadResp = await fileUpload(noticeFile, "notices", "document");
+  const fileUploadResp = await fileUpload(noticeFile, 'notices', 'document');
 
   noticeFile = fileUploadResp?.fileURL;
 
@@ -53,7 +53,7 @@ const createNotice = async (req, res) => {
 
   res.status(StatusCodes.CREATED).json({
     success: true,
-    message: "Notice Created!",
+    message: 'Notice Created!',
     id: notice._id,
   });
 
@@ -88,11 +88,11 @@ const updateNotice = async (req, res) => {
   const createdBy = req.user?.userId;
   const id = req?.params?.id;
 
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required");
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError('Id is required');
 
   if (!noticeTitle?.trim() || !noticeBody?.trim())
     throw new CustomAPIError.BadRequestError(
-      "Notice title, body and file is required!"
+      'Notice title, body and file is required!'
     );
 
   const notice = await NoticeModel.findOne({ _id: id, createdBy });
@@ -106,7 +106,7 @@ const updateNotice = async (req, res) => {
   });
 
   if (noticeFile) {
-    const fileUploadResp = await fileUpload(noticeFile, "notices", "document");
+    const fileUploadResp = await fileUpload(noticeFile, 'notices', 'document');
     noticeFile = fileUploadResp?.fileURL;
   }
 
@@ -121,7 +121,7 @@ const updateNotice = async (req, res) => {
 
   res.status(StatusCodes.CREATED).json({
     success: true,
-    message: "Notice Updated!",
+    message: 'Notice Updated!',
     id,
   });
 
@@ -143,7 +143,7 @@ const deleteNotice = async (req, res) => {
   const createdBy = req.user?.userId;
   const id = req?.params?.id;
 
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required");
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError('Id is required');
 
   const notice = await NoticeModel.findOne({ _id: id, createdBy });
   if (!notice)
@@ -153,15 +153,15 @@ const deleteNotice = async (req, res) => {
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Notice deleted!",
+    message: 'Notice deleted!',
     id,
   });
-  
+
   const { receivingCourse, receivingBatches, receivingDepartments } = notice;
-  
+
   const course = await CourseModel.findById(receivingCourse);
   let courseLastNotice = await NoticeModel.find({ receivingCourse })
-    .sort("-updatedAt")
+    .sort('-updatedAt')
     .limit(1);
   courseLastNotice = courseLastNotice[0];
 
@@ -171,7 +171,7 @@ const deleteNotice = async (req, res) => {
   for (let receivingBatch of receivingBatches) {
     const batch = await BatchModel.findById(receivingBatch);
     let batchLastNotice = await NoticeModel.find({ receivingBatch })
-      .sort("-updatedAt")
+      .sort('-updatedAt')
       .limit(1);
     batchLastNotice = batchLastNotice[0];
 
@@ -182,7 +182,7 @@ const deleteNotice = async (req, res) => {
   for (let receivingDepartment of receivingDepartments) {
     const department = await DepartmentModel.findById(receivingDepartment);
     let departmentLastNotice = await NoticeModel.find({ receivingDepartment })
-      .sort("-updatedAt")
+      .sort('-updatedAt')
       .limit(1);
     departmentLastNotice = departmentLastNotice[0];
 
@@ -193,22 +193,22 @@ const deleteNotice = async (req, res) => {
 
 const getAllNotices = async (req, res) => {
   const notices = await NoticeModel.find()
-    .sort("-updatedAt")
+    .sort('-updatedAt')
     .populate({
-      path: "receivingCourse",
-      select: "courseName",
+      path: 'receivingCourse',
+      select: 'courseName',
     })
     .populate({
-      path: "receivingBatches",
-      select: "batchYear",
+      path: 'receivingBatches',
+      select: 'batchYear',
     })
     .populate({
-      path: "receivingDepartments",
-      select: "departmentName",
+      path: 'receivingDepartments',
+      select: 'departmentName',
     });
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Notices found!",
+    message: 'Notices found!',
     notices,
   });
 };
@@ -224,12 +224,12 @@ const getMyNotices = async (req, res) => {
     receivingBatches: batchId,
     receivingDepartments: departmentId,
   })
-    .select("noticeTitle noticeBody noticeFile createdAt updatedAt")
-    .sort("-updatedAt");
+    .select('noticeTitle noticeBody noticeFile createdAt updatedAt')
+    .sort('-updatedAt');
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Notices found!",
+    message: 'Notices found!',
     notices,
     lastNoticeFetched,
   });
@@ -249,7 +249,7 @@ async function validateNoticeReceivers(noticeReceivers) {
     !receivingBatches.length ||
     !receivingDepartments.length
   ) {
-    throw new CustomAPIError.BadRequestError("Invalid receveirs!");
+    throw new CustomAPIError.BadRequestError('Invalid receveirs!');
   }
 
   const course = await CourseModel.findById(receivingCourse);
@@ -291,4 +291,5 @@ module.exports = {
   deleteNotice,
   getAllNotices,
   getMyNotices,
+  validateNoticeReceivers,
 };

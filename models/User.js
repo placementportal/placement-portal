@@ -1,15 +1,15 @@
-const mongoose = require("mongoose");
-const validator = require("validator");
-const bcrypt = require("bcryptjs");
+const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
+      required: [true, 'Name is required'],
       trim: true,
-      minlength: [3, "Name should be of atleast 3 characters"],
-      maxlength: [30, "Name should be of maximum 30 characters"],
+      minlength: [3, 'Name should be of atleast 3 characters'],
+      maxlength: [30, 'Name should be of maximum 30 characters'],
     },
 
     photo: {
@@ -19,23 +19,24 @@ const UserSchema = new mongoose.Schema(
 
     email: {
       type: String,
-      required: [true, "Email is required"],
-      unique: [true, "User already exists"],
+      required: [true, 'Email is required'],
+      unique: [true, 'User already exists'],
       validate: {
         validator: validator.isEmail,
-        message: "Please enter a valid email",
+        message: 'Please enter a valid email',
       },
     },
 
     password: {
       type: String,
-      required: [true, "Password is required"],
-      minlength: [8, "Password should be of atleast 8 characters"],
+      required: [true, 'Password is required'],
+      minlength: [8, 'Password should be of atleast 8 characters'],
     },
 
     role: {
       type: String,
-      default: "student",
+      enum: ['student', 'admin', 'company_admin'],
+      default: 'student',
     },
 
     // student specific fields
@@ -44,40 +45,40 @@ const UserSchema = new mongoose.Schema(
       type: String,
       index: {
         unique: true,
-        partialFilterExpression: { roll_no: { $type: "string" } },
+        partialFilterExpression: { roll_no: { $type: 'string' } },
       },
     },
 
     courseId: {
       type: mongoose.Types.ObjectId,
-      ref: "Course",
+      ref: 'Course',
     },
 
     batchId: {
       type: mongoose.Types.ObjectId,
-      ref: "Batch",
+      ref: 'Batch',
     },
 
     departmentId: {
       type: mongoose.Types.ObjectId,
-      ref: "Department",
+      ref: 'Department',
     },
 
     personal_details: {
       type: mongoose.Types.ObjectId,
-      ref: "StudentPersonalData",
+      ref: 'StudentPersonalData',
       index: {
         unique: true,
-        partialFilterExpression: { personal_details: { $type: "objectId" } },
+        partialFilterExpression: { personal_details: { $type: 'objectId' } },
       },
     },
 
     education_details: {
       type: mongoose.Types.ObjectId,
-      ref: "StudentEducationData",
+      ref: 'StudentEducationData',
       index: {
         unique: true,
-        partialFilterExpression: { education_details: { $type: "objectId" } },
+        partialFilterExpression: { education_details: { $type: 'objectId' } },
       },
     },
 
@@ -85,12 +86,28 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       default: new Date(),
     },
+
+    lastJobFetched: {
+      type: Date,
+      default: new Date(),
+    },
+
+    // company id specific fields
+    companyId: {
+      type: mongoose.Types.ObjectId,
+      ref: 'Company',
+    },
+
+    companyRole: {
+      type: String,
+      trim: true,
+    },
   },
   { timestamps: true, versionKey: false }
 );
 
-UserSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
+UserSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
@@ -103,6 +120,6 @@ UserSchema.methods.comparePassword = async function (candidatePassword) {
   return isPasswordCorrect;
 };
 
-const UserModel = mongoose.model("User", UserSchema);
+const UserModel = mongoose.model('User', UserSchema);
 
 module.exports = UserModel;

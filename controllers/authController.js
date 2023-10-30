@@ -1,51 +1,30 @@
-const UserModel = require("../models/User");
+const UserModel = require('../models/User');
 
-const CustomAPIError = require("../errors");
-const { StatusCodes } = require("http-status-codes");
+const CustomAPIError = require('../errors');
+const { StatusCodes } = require('http-status-codes');
 
-const { createUserToken, attachCookieToResponse } = require("../utils");
+const { createUserToken, attachCookieToResponse } = require('../utils');
 
 const login = async (req, res) => {
-  const role = req.params?.role;
+  let { email, password } = req.body;
 
-  const { password } = req.body;
-
-  if (!role || (role != "student" && role != "admin")) {
-    throw new CustomAPIError.BadRequestError("Invalid role");
+  if (!email?.trim() || !password) {
+    CustomAPIError.BadRequestError("Email and Password is required")
   }
 
-  let user;
+  email = email.trim().toLowerCase();
 
-  if (role == "student") {
-    const { roll_no } = req.body;
-
-    if (!roll_no?.trim() || !password?.trim()) {
-      throw new CustomAPIError.BadRequestError(
-        "Please provide Roll No. & Date of Birth"
-      );
-    }
-    user = await UserModel.findOne({ roll_no, role });
-  } else if (role == "admin") {
-    const { email } = req.body;
-
-    if (!email?.trim() || !password) {
-      throw new CustomAPIError.BadRequestError(
-        "Please provide email & password"
-      );
-    }
-
-    user = await UserModel.findOne({ email: email.toLowerCase(), role });
-  }
+  const user = await UserModel.findOne({ email });
 
   if (!user) {
-    console.log("no user");
-    throw new CustomAPIError.UnauthenticatedError("Authentication failed");
+    console.log('no user');
+    throw new CustomAPIError.UnauthenticatedError('Authentication failed');
   }
 
   const isPasswordCorrect = await user.comparePassword(password);
 
   if (!isPasswordCorrect) {
-    throw new CustomAPIError.UnauthenticatedError("Authentication failed");
+    throw new CustomAPIError.UnauthenticatedError('Authentication failed');
   }
 
   const userToken = createUserToken(user);
@@ -53,20 +32,21 @@ const login = async (req, res) => {
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "User Logged in",
+    message: 'User Logged in',
+    role: user.role,
   });
 };
 
 const logout = async (req, res) => {
-  res.cookie("accessToken", "", {
+  res.cookie('accessToken', '', {
     httpOnly: true,
     signed: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === 'production',
     expires: new Date(Date.now()),
   });
   res
     .status(StatusCodes.OK)
-    .json({ success: true, message: "logged out successfully" });
+    .json({ success: true, message: 'logged out successfully' });
 };
 
 module.exports = {
