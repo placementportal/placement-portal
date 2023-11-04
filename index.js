@@ -58,9 +58,10 @@ const corsOptions = {
     }
   },
   credentials: true,
+  preflightContinue: true,
 };
 
-app.options('*', cors());
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 
 app.use(cookieParser(process.env.JWT_SECRET));
