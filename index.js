@@ -3,6 +3,7 @@ require('express-async-errors');
 
 const { createServer } = require('http');
 const express = require('express');
+const cors = require('cors');
 
 const app = express();
 const httpServer = createServer(app);
@@ -41,6 +42,25 @@ const batchDeptRouter = require('./routes/batchDeptRoutes');
 const noticeRouter = require('./routes/noticeRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const companyRouter = require('./routes/companyRoutes');
+
+const whitelist = [
+  'https://main--placement-portal-react.netlify.app/',
+  'http://localhost:5173',
+  undefined,  // for postman
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(morgan('tiny'));
