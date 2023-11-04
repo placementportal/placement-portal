@@ -44,7 +44,7 @@ const adminRouter = require('./routes/adminRoutes');
 const companyRouter = require('./routes/companyRoutes');
 
 const whitelist = [
-  'https://main--placement-portal-react.netlify.app/',
+  'https://placement-portal-react.netlify.app/',
   'http://localhost:5173',
   undefined,  // for postman
 ];
@@ -60,6 +60,7 @@ const corsOptions = {
   credentials: true,
 };
 
+app.options('*', cors());
 app.use(cors(corsOptions));
 
 app.use(cookieParser(process.env.JWT_SECRET));
