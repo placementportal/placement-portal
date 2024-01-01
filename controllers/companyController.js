@@ -1,9 +1,9 @@
 const JobOpeningModel = require('../models/JobOpenings');
 const CompanyModel = require('../models/Company');
-const UserModel = require('../models/User');
 
 const { StatusCodes } = require('http-status-codes');
 const CustomAPIError = require('../errors');
+
 const {
   validateNoticeReceivers: validateReceivers,
 } = require('./noticeController');
@@ -27,6 +27,8 @@ const createJobOpening = async (req, res) => {
     receivingBatches,
     receivingDepartments,
     keySkills,
+    openingsCount,
+    deadline,
   } = req.body;
 
   const { id: companyId } = req.params;
@@ -64,6 +66,8 @@ const createJobOpening = async (req, res) => {
     receivingDepartments,
     keySkills,
     postedBy,
+    openingsCount,
+    deadline,
   });
 
   res.status(StatusCodes.CREATED).json({
@@ -105,8 +109,11 @@ const getJobsForIncharge = async (req, res) => {
       `Not allowed to access this resource!`
     );
 
-  const jobOpenings = await JobOpeningModel.find({ company: companyId })
-    .select('-company')
+  const jobs = await JobOpeningModel.find({ company: companyId })
+    .populate({
+      path: 'company',
+      select: 'name website'
+    })
     .populate({
       path: 'receivingCourse',
       select: 'courseName',
@@ -127,50 +134,12 @@ const getJobsForIncharge = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,
     message: 'Found job openings!',
-    jobOpenings,
+    jobs,
   });
-};
-
-const getJobsForStudent = async (req, res) => {
-  const student_id = req.user.userId;
-  const student = await UserModel.findById(student_id);
-
-  const { batchId, departmentId, courseId, lastJobFetched } = student;
-
-  const jobOpenings = await JobOpeningModel.find({
-    receivingCourse: courseId,
-    receivingBatches: batchId,
-    receivingDepartments: departmentId,
-  })
-    .select('-receivingCourse -receivingBatches -receivingDepartments')
-    .sort('-updatedAt')
-    .populate({
-      path: 'postedBy',
-      select: 'name companyRole',
-    })
-    .populate({
-      path: 'postedBy',
-      select: 'name companyRole',
-    })
-    .populate({
-      path: 'company',
-      select: 'name',
-    });
-
-  res.status(StatusCodes.OK).json({
-    success: true,
-    message: 'Jobs found!',
-    jobOpenings,
-    lastJobFetched,
-  });
-
-  student.lastJobFetched = new Date();
-  await student.save();
 };
 
 module.exports = {
   getCompanies,
   createJobOpening,
-  getJobsForStudent,
   getJobsForIncharge,
 };

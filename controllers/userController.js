@@ -1,19 +1,22 @@
-const { StatusCodes } = require("http-status-codes");
-const CustomAPIError = require("../errors");
+const { StatusCodes } = require('http-status-codes');
+const CustomAPIError = require('../errors');
 
-const UserModel = require("../models/User");
+const UserModel = require('../models/User');
 const {
   CourseModel,
   DepartmentModel,
   BatchModel,
-} = require("../models/Course");
+} = require('../models/Course');
 
 const showCurrentUser = async (req, res) => {
   const user = req.user;
 
   const userData = await UserModel.findById(req.user.userId);
 
-  if (user.role == "student") {
+  if (userData._id != user.userId)
+    throw new CustomAPIError.UnauthenticatedError('Unauthenticated error!');
+
+  if (userData.role == 'student') {
     const { courseId, batchId, departmentId, lastNoticeFetched } = userData;
 
     const course = await CourseModel.findById(courseId);
@@ -28,7 +31,15 @@ const showCurrentUser = async (req, res) => {
 
     const notification = lastNoticeFetched < minLastNotice;
 
-    user["noticeNotification"] = notification;
+    (user['courseId'] = courseId),
+      (user['departmentId'] = departmentId),
+      (user['batchId'] = batchId),
+      (user['noticeNotification'] = notification);
+  }
+
+  if (userData.role == 'company_admin') {
+    user['companyId'] = userData.companyId;
+    user['companyRole'] = userData.companyRole;
   }
 
   res.status(StatusCodes.OK).json({ success: true, user });
@@ -38,10 +49,10 @@ const getUserById = async (req, res) => {
   const userId = req?.params?.userId;
 
   if (!userId) {
-    throw new CustomAPIError.BadRequestError("User Id is required");
+    throw new CustomAPIError.BadRequestError('User Id is required');
   }
 
-  const user = UserModel.findOne({ _id: userId, role: "user" });
+  const user = UserModel.findOne({ _id: userId, role: 'user' });
 
   if (user) {
     return res.json({

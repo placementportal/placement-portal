@@ -87,6 +87,38 @@ const UserSchema = new mongoose.Schema(
       default: new Date(),
     },
 
+    // student jobs
+
+    jobsApplied: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: 'JobOpenings',
+    },
+
+    jobsSelected: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: 'JobOpenings',
+    },
+
+    jobsRejected: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: 'JobOpenings',
+    },
+
+    jobsShortlisted: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: 'JobOpenings',
+    },
+
+    jobApplications: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: 'JobApplications',
+    },
+
     lastJobFetched: {
       type: Date,
       default: new Date(),

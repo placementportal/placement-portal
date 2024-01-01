@@ -4,13 +4,11 @@ const { authorizeRoles } = require('../middleware/authentication-middleware');
 const {
   getCompanies,
   createJobOpening,
-  getJobsForStudent,
   getJobsForIncharge,
 } = require('../controllers/companyController');
 
 router.get('/', getCompanies);
 router.post('/:id/job', authorizeRoles('company_admin'), createJobOpening);
-router.get('/:id/job', authorizeRoles('company_admin'), getJobsForIncharge);
-router.get('/jobs', authorizeRoles('student'), getJobsForStudent);
+router.get('/:id/jobs', authorizeRoles('company_admin'), getJobsForIncharge);
 
 module.exports = router;

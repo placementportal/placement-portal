@@ -37,7 +37,7 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 // routes
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
-const studentDetailsRouter = require('./routes/studentDetailsRoutes');
+const studentRoutes = require('./routes/studentRoutes');
 const batchDeptRouter = require('./routes/batchDeptRoutes');
 const noticeRouter = require('./routes/noticeRoutes');
 const adminRouter = require('./routes/adminRoutes');
@@ -46,12 +46,11 @@ const companyRouter = require('./routes/companyRoutes');
 const whitelist = [
   'https://placement-portal-react.netlify.app',
   'http://localhost:5173',
-  undefined,  // for postman
+  undefined, // for postman
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log(origin)
     if (whitelist.includes(origin)) {
       callback(null, true);
     } else {
@@ -59,11 +58,11 @@ const corsOptions = {
     }
   },
   credentials: true,
-  preflightContinue: true,
+  // preflightContinue: true,
 };
 
-app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(morgan('tiny'));
@@ -80,7 +79,7 @@ app.use('/api/v1/user', [authenticateUser, userRouter]);
 app.use('/api/v1/student', [
   authenticateUser,
   authorizeRoles('student'),
-  studentDetailsRouter,
+  studentRoutes,
 ]);
 app.use('/api/v1/batchDept', [
   authenticateUser,

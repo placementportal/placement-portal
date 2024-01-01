@@ -16,6 +16,13 @@ const JobOpeningSchema = new mongoose.Schema(
       trim: true,
     },
 
+    openingsCount: {
+      type: Number,
+      required: [true, 'Opening Count is required'],
+      default: 1,
+      min: 1,
+    },
+
     location: {
       type: String,
       required: [true, 'Job Location is required'],
@@ -36,6 +43,47 @@ const JobOpeningSchema = new mongoose.Schema(
     keySkills: {
       type: [String],
       default: [],
+    },
+
+    deadline: {
+      type: Date,
+      required: [true, 'Job Application Deadline is required!'],
+    },
+
+    status: {
+      type: String,
+      enum: ['open', 'closed'],
+      default: 'open',
+    },
+
+    applicants: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: 'User',
+    },
+
+    shortlistedCandidates: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: 'User',
+    },
+
+    rejectedCandidates: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: 'User',
+    },
+
+    selectedCandidates: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: 'User',
+    },
+
+    applications: {
+      type: [mongoose.Types.ObjectId],
+      default: [],
+      ref: 'JobApplication',
     },
 
     receivingCourse: {
