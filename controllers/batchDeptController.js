@@ -2,27 +2,27 @@ const {
   CourseModel,
   DepartmentModel,
   BatchModel,
-} = require("../models/Course");
+} = require('../models/Course');
 
-const CustomAPIError = require("../errors");
-const { StatusCodes } = require("http-status-codes");
+const CustomAPIError = require('../errors');
+const { StatusCodes } = require('http-status-codes');
 
 const createCourse = async (req, res) => {
   const { courseName } = req.body;
   const course = await CourseModel.create({ courseName });
   res.status(StatusCodes.CREATED).json({
     success: true,
-    message: "Course Created!",
+    message: 'Course Created!',
     id: course._id,
   });
 };
 
 const getAllCourses = async (req, res) => {
-  const courses = await CourseModel.find();
+  const courses = await CourseModel.find().select('courseName');
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Found all courses!",
-    id: courses,
+    message: 'Found all courses!',
+    courses,
   });
 };
 
@@ -30,7 +30,7 @@ const createBatch = async (req, res) => {
   const { batchYear, courseId } = req.body;
 
   if (!courseId?.trim()) {
-    throw new CustomAPIError.BadRequestError("Course Id is required!");
+    throw new CustomAPIError.BadRequestError('Course Id is required!');
   }
 
   const course = await CourseModel.findById(courseId);
@@ -47,7 +47,7 @@ const createBatch = async (req, res) => {
 
   res.status(StatusCodes.CREATED).json({
     success: true,
-    message: "Batch created!",
+    message: 'Batch created!',
     id: batch._id,
   });
 };
@@ -56,7 +56,7 @@ const getBatches = async (req, res) => {
   const courseId = req?.query?.courseId;
 
   if (!courseId?.trim()) {
-    throw new CustomAPIError.BadRequestError("Course Id is required!");
+    throw new CustomAPIError.BadRequestError('Course Id is required!');
   }
 
   const course = await CourseModel.findById(courseId);
@@ -78,7 +78,7 @@ const createDepartment = async (req, res) => {
   const { departmentName, courseId } = req.body;
 
   if (!courseId?.trim()) {
-    throw new CustomAPIError.BadRequestError("Course Id is required!");
+    throw new CustomAPIError.BadRequestError('Course Id is required!');
   }
 
   const course = await CourseModel.findById(courseId);
@@ -95,7 +95,7 @@ const createDepartment = async (req, res) => {
 
   res.status(StatusCodes.CREATED).json({
     success: true,
-    message: "Department created!",
+    message: 'Department created!',
     id: department._id,
   });
 };
@@ -104,7 +104,7 @@ const getDepartments = async (req, res) => {
   const courseId = req?.query?.courseId;
 
   if (!courseId?.trim()) {
-    throw new CustomAPIError.BadRequestError("Course Id is required!");
+    throw new CustomAPIError.BadRequestError('Course Id is required!');
   }
 
   const course = await CourseModel.findById(courseId);

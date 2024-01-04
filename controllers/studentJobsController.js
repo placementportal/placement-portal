@@ -20,10 +20,7 @@ const getJobsForStudent = async (req, res) => {
     throw new CustomAPIError.BadRequestError('Invalid job status');
   }
 
-  const student_id = req.user.userId;
-  const student = await UserModel.findById(student_id);
-
-  const { batchId, departmentId, courseId } = student;
+  const { batchId, departmentId, courseId, userId } = req.user;
 
   let jobs;
   if (status === 'open') {
@@ -32,12 +29,12 @@ const getJobsForStudent = async (req, res) => {
         batchId,
         courseId,
         departmentId,
-        student_id: student._id,
+        userId,
       })
     );
   } else {
     jobs = await UserModel.aggregate(
-      studentJobsByStatusAgg({ userId: req.user.userId, status })
+      studentJobsByStatusAgg({ userId, status })
     );
   }
 
@@ -47,6 +44,7 @@ const getJobsForStudent = async (req, res) => {
     jobs,
   });
 
+  const student = await UserModel.findById(userId);
   student.lastJobFetched = new Date();
   await student.save();
 };
@@ -55,7 +53,13 @@ const createJobApplication = async (req, res) => {
   const { portfolio, coverLetter } = req?.body;
   const resumeFile = req?.files?.resumeFile;
   const jobId = req?.params?.id;
-  const applicantId = req.user?.userId;
+  const {
+    userId: applicantId,
+    name: applicantName,
+    courseId,
+    departmentId,
+    batchId,
+  } = req.user;
 
   if (!jobId?.trim())
     throw new CustomAPIError.BadRequestError('Job Id is required!');
@@ -67,8 +71,11 @@ const createJobApplication = async (req, res) => {
 
   /* VALIDATE JOB & APPLICANT */
 
-  const job = await JobOpeningModel.findOne({ _id: jobId, status: 'open' });
+  const job = await JobOpeningModel.findById(jobId);
   if (!job) throw new CustomAPIError.BadRequestError('Invalid job id!');
+
+  if (job.status !== 'open')
+    throw new CustomAPIError.BadRequestError("This job isn't open anymore!");
 
   if (
     job.applicants.includes(applicantId) ||
@@ -80,11 +87,10 @@ const createJobApplication = async (req, res) => {
       'You have already applied for this job!'
     );
 
-  const applicant = await UserModel.findById(applicantId);
   if (
-    String(job.receivingCourse) != String(applicant.courseId) ||
-    !job.receivingBatches.includes(applicant.batchId) ||
-    !job.receivingDepartments.includes(applicant.departmentId)
+    String(job.receivingCourse) != courseId ||
+    !job.receivingBatches.includes(batchId) ||
+    !job.receivingDepartments.includes(departmentId)
   )
     throw new CustomAPIError.BadRequestError("You can't apply for this job!");
 
@@ -96,9 +102,11 @@ const createJobApplication = async (req, res) => {
   const jobApplication = await JobApplicationModel.create({
     jobId,
     applicantId,
+    applicantName,
     coverLetter,
     portfolio,
     resume,
+    companyId: job.company,
   });
 
   res.status(StatusCodes.CREATED).json({
@@ -111,6 +119,7 @@ const createJobApplication = async (req, res) => {
   job.applications.push(jobApplication._id);
   await job.save();
 
+  const applicant = await UserModel.findById(applicantId);
   applicant.jobsApplied.push(jobId);
   applicant.jobApplications.push(jobApplication._id);
   await applicant.save();

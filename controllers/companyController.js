@@ -1,5 +1,6 @@
 const JobOpeningModel = require('../models/JobOpenings');
 const CompanyModel = require('../models/Company');
+const JobApplicationModel = require('../models/JobApplication');
 
 const { StatusCodes } = require('http-status-codes');
 const CustomAPIError = require('../errors');
@@ -7,6 +8,8 @@ const CustomAPIError = require('../errors');
 const {
   validateNoticeReceivers: validateReceivers,
 } = require('./noticeController');
+
+const { jobApplicationsAgg } = require('../models/aggregations');
 
 const getCompanies = async (req, res) => {
   const companies = await CompanyModel.find();
@@ -31,7 +34,7 @@ const createJobOpening = async (req, res) => {
     deadline,
   } = req.body;
 
-  const { id: companyId } = req.params;
+  const { userId: postedBy, companyId } = req.user;
 
   if (!companyId?.trim())
     throw new CustomAPIError.BadRequestError('Company is required!');
@@ -43,7 +46,6 @@ const createJobOpening = async (req, res) => {
       `No company is found with id: ${companyId}`
     );
 
-  const postedBy = req?.user?.userId;
   if (!company.admins.includes(postedBy))
     throw new CustomAPIError.BadRequestError(
       `Not allowed to create an opening for company with id: ${companyId}`
@@ -91,7 +93,7 @@ const createJobOpening = async (req, res) => {
 };
 
 const getJobsForIncharge = async (req, res) => {
-  const { id: companyId } = req.params;
+  const { companyId, userId } = req.user;
 
   if (!companyId?.trim())
     throw new CustomAPIError.BadRequestError('Company is required!');
@@ -103,7 +105,6 @@ const getJobsForIncharge = async (req, res) => {
       `No company is found with id: ${companyId}`
     );
 
-  const userId = req.user.userId;
   if (!company.admins.includes(userId))
     throw new CustomAPIError.BadRequestError(
       `Not allowed to access this resource!`
@@ -112,7 +113,7 @@ const getJobsForIncharge = async (req, res) => {
   const jobs = await JobOpeningModel.find({ company: companyId })
     .populate({
       path: 'company',
-      select: 'name website'
+      select: 'name website',
     })
     .populate({
       path: 'receivingCourse',
@@ -138,8 +139,27 @@ const getJobsForIncharge = async (req, res) => {
   });
 };
 
+const getJobApplications = async (req, res) => {
+  const status = req?.params?.status || 'pending';
+  const companyId = req.user.companyId;
+
+  const applications = await JobApplicationModel.aggregate(
+    jobApplicationsAgg({
+      companyId,
+      status,
+    })
+  );
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Found Applications',
+    applications,
+  });
+};
+
 module.exports = {
   getCompanies,
   createJobOpening,
   getJobsForIncharge,
+  getJobApplications,
 };

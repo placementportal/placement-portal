@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
-function studentJobOpeningsAgg({
-  courseId,
-  batchId,
-  departmentId,
-  student_id,
-}) {
+function studentJobOpeningsAgg({ courseId, batchId, departmentId, userId }) {
+  userId = new mongoose.Types.ObjectId(userId);
+  courseId = new mongoose.Types.ObjectId(courseId);
+  batchId = new mongoose.Types.ObjectId(batchId);
+  departmentId = new mongoose.Types.ObjectId(departmentId);
+
   return [
     {
       $match: {
@@ -17,16 +17,16 @@ function studentJobOpeningsAgg({
           $gte: new Date(),
         },
         applicants: {
-          $nin: [student_id],
+          $nin: [userId],
         },
         shortlistedCandidates: {
-          $nin: [student_id],
+          $nin: [userId],
         },
         selectedCandidates: {
-          $nin: [student_id],
+          $nin: [userId],
         },
         rejectedCandidates: {
-          $nin: [student_id],
+          $nin: [userId],
         },
       },
     },

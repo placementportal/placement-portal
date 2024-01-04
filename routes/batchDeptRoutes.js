@@ -1,4 +1,6 @@
-const router = require("express").Router();
+const router = require('express').Router();
+
+const { authorizeRoles } = require('../middleware/authentication-middleware');
 
 const {
   createCourse,
@@ -7,15 +9,15 @@ const {
   getBatches,
   createDepartment,
   getDepartments,
-} = require("../controllers/batchDeptController");
+} = require('../controllers/batchDeptController');
 
-router.post("/course", createCourse);
-router.get("/course", getAllCourses);
+router.post('/course', authorizeRoles('admin'), createCourse);
+router.get('/course', authorizeRoles('admin', 'company_admin'), getAllCourses);
 
-router.post("/batch", createBatch);
-router.get("/batch", getBatches);
+router.post('/batch', authorizeRoles('admin'), createBatch);
+router.get('/batch', authorizeRoles('admin', 'company_admin'), getBatches);
 
-router.post("/dept", createDepartment);
-router.get("/dept", getDepartments);
+router.post('/dept', authorizeRoles('admin'), createDepartment);
+router.get('/dept', authorizeRoles('admin', 'company_admin'), getDepartments);
 
 module.exports = router;

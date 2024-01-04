@@ -83,7 +83,6 @@ app.use('/api/v1/student', [
 ]);
 app.use('/api/v1/batchDept', [
   authenticateUser,
-  authorizeRoles('admin'),
   batchDeptRouter,
 ]);
 app.use('/api/v1/notice', [authenticateUser, noticeRouter]);
