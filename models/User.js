@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema(
 
     // student specific fields
 
-    roll_no: {
+    rollNo: {
       type: String,
       index: {
         unique: true,
@@ -49,9 +49,36 @@ const UserSchema = new mongoose.Schema(
       },
     },
 
+    isLateralEntry: {
+      type: Boolean,
+      default: false,
+    },
+
     courseId: {
       type: mongoose.Types.ObjectId,
       ref: 'Course',
+    },
+
+    courseName: {
+      type: String,
+    },
+
+    courseLevel: {
+      type: String,
+      enum: ['graduation', 'PG'],
+      default: 'graduation',
+    },
+
+    yearsCount: {
+      type: Number,
+      min: 2,
+      max: 4,
+    },
+
+    semestersCount: {
+      type: Number,
+      min: 4,
+      max: 8,
     },
 
     batchId: {
@@ -59,27 +86,70 @@ const UserSchema = new mongoose.Schema(
       ref: 'Batch',
     },
 
+    batchYear: {
+      type: Number,
+    },
+
     departmentId: {
       type: mongoose.Types.ObjectId,
       ref: 'Department',
     },
 
-    personal_details: {
+    departmentName: {
+      type: String,
+    },
+
+    personalDetails: {
       type: mongoose.Types.ObjectId,
       ref: 'StudentPersonalData',
       index: {
         unique: true,
-        partialFilterExpression: { personal_details: { $type: 'objectId' } },
+        partialFilterExpression: { personalDetails: { $type: 'objectId' } },
       },
     },
 
-    education_details: {
+    educationDetails: {
       type: mongoose.Types.ObjectId,
       ref: 'StudentEducationData',
       index: {
         unique: true,
-        partialFilterExpression: { education_details: { $type: 'objectId' } },
+        partialFilterExpression: { educationDetails: { $type: 'objectId' } },
       },
+    },
+
+    placements: {
+      type: [mongoose.Types.ObjectId],
+      ref: 'StudentPlacementData',
+      index: {
+        unique: true,
+        partialFilterExpression: { placements: { $type: 'objectId' } },
+      },
+    },
+
+    experiences: {
+      type: [mongoose.Types.ObjectId],
+      ref: 'StudentExperiences',
+      index: {
+        unique: true,
+        partialFilterExpression: { experiences: { $type: 'objectId' } },
+      },
+    },
+
+    trainings: {
+      type: [mongoose.Types.ObjectId],
+      ref: 'StudentTrainings',
+      index: {
+        unique: true,
+        partialFilterExpression: { trainings: { $type: 'objectId' } },
+      },
+    },
+
+    skills: {
+      type: [String],
+    },
+
+    achievements: {
+      type: [String],
     },
 
     lastNoticeFetched: {

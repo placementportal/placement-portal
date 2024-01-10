@@ -5,6 +5,7 @@ const {
   updateEducationData,
 
   getPersonalData,
+  updatePersonalData,
 
   getExperiences,
   getExperienceById,
@@ -23,12 +24,6 @@ const {
   getTrainingById,
   updateTraining,
   deleteTraining,
-
-  createAward,
-  getAwards,
-  getAwardById,
-  updateAward,
-  deleteAward,
 } = require('../controllers/studentDetailsController');
 
 const {
@@ -37,8 +32,9 @@ const {
 } = require('../controllers/studentJobsController');
 
 router.get('/personal', getPersonalData);
+router.post('/personal', updatePersonalData);
 
-router.patch('/education', updateEducationData);
+router.post('/education/:update', updateEducationData);
 router.get('/education', getEducationData);
 
 router.get('/experience/:id', getExperienceById);
@@ -58,12 +54,6 @@ router.post('/training', createTraining);
 router.get('/training', getTrainings);
 router.patch('/training/:id', updateTraining);
 router.delete('/training/:id', deleteTraining);
-
-router.get('/award/:id', getAwardById);
-router.post('/award', createAward);
-router.get('/award', getAwards);
-router.patch('/award/:id', updateAward);
-router.delete('/award/:id', deleteAward);
 
 router.get('/jobs?', getJobsForStudent);
 router.post('/jobs/:id/apply', createJobApplication);

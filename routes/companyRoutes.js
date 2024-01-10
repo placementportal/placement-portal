@@ -6,6 +6,7 @@ const {
   createJobOpening,
   getJobsForIncharge,
   getJobApplications,
+  jobApplicationAction,
 } = require('../controllers/companyController');
 
 router.get('/', getCompanies);
@@ -15,6 +16,11 @@ router.get(
   '/applications',
   authorizeRoles('company_admin'),
   getJobApplications
+);
+router.patch(
+  '/applications/:id?',
+  authorizeRoles('company_admin'),
+  jobApplicationAction
 );
 
 module.exports = router;

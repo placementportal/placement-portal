@@ -113,6 +113,13 @@ const JobOpeningSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
+JobOpeningSchema.pre('save', async function () {
+  if (!this.isModified('selectedCandidates')) return;
+  if (this.selectedCandidates.length === this.openingsCount) {
+    this.status = 'closed';
+  }
+});
+
 const JobOpeningModel = mongoose.model('JobOpening', JobOpeningSchema);
 
 module.exports = JobOpeningModel;

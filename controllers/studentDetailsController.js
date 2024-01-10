@@ -1,167 +1,205 @@
-const UserModel = require("../models/User");
-const StudentPersonalDataModel = require("../models/StudentPersonalData");
-const StudentEducationDataModel = require("../models/StudentEducationData");
-const {
-  StudentPlacementDataModel,
-  StudentExperienceDataModel,
-  StudentJobDataModel,
-} = require("../models/StudentJobData");
+const UserModel = require('../models/User');
 
 const {
-  CourseModel,
-  DepartmentModel,
-  BatchModel,
-} = require("../models/Course");
+  PersonalDataModel,
+  EducationModel,
+  CurrentScoreModel,
+  PastScoreModel,
+  PlacementModel,
+  ExperienceModel,
+  TrainingModel,
+} = require('../models/student');
 
-const TrainingModel = require("../models/Training");
-const AwardModel = require("../models/Award");
-
-const CustomAPIError = require("../errors");
-const { StatusCodes } = require("http-status-codes");
-const { fileUpload } = require("../utils/fileUpload");
+const CustomAPIError = require('../errors');
+const { StatusCodes } = require('http-status-codes');
+const { fileUpload } = require('../utils/fileUpload');
 
 const getPersonalData = async (req, res) => {
-  const student_id = req.user.userId;
+  const studentId = req.user.userId;
 
-  const student = await UserModel.findById(student_id)
-    .select("name email photo personal_details")
-    .populate("personal_details");
+  const student = await UserModel.findById(studentId)
+    .select('name email photo personalDetails')
+    .populate('personalDetails');
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Pesonal details found!",
+    message: 'Pesonal details found!',
     student,
   });
 };
 
-const getEducationData = async (req, res) => {
-  const student_id = req.user.userId;
-  const student = await UserModel.findById(student_id)
-    .select("roll_no courseId batchId departmentId education_details")
-    .populate({
-      path: "courseId",
-      select: "courseName",
-    })
-    .populate({
-      path: "batchId",
-      select: "batchYear",
-    })
-    .populate({
-      path: "departmentId",
-      select: "departmentName",
-    })
-    .populate({
-      path: "education_details",
-      select: "-student_id -_id",
-    });
+const updatePersonalData = async (req, res) => {
+  const {
+    fatherName,
+    motherName,
+    contactNumber,
+    locality,
+    city,
+    pincode,
+    district,
+    state,
+  } = req.body;
+
+  const studentId = req.user.userId;
+
+  const { lastErrorObject } = await PersonalDataModel.findOneAndUpdate(
+    { studentId },
+    {
+      studentId,
+      fatherName,
+      motherName,
+      contactNumber,
+      address: { locality, city, pincode, district, state },
+    },
+    {
+      upsert: true,
+      rawResult: true,
+      runValidators: true,
+    }
+  );
+
+  const { updatedExisting, upserted } = lastErrorObject;
+
+  if (!updatedExisting) {
+    const student = await UserModel.findById(studentId);
+    student.personalDetails = upserted;
+    await student.save();
+  }
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Education Details found!",
-    data: student,
+    message: 'Updated Personal Details',
+  });
+};
+
+const getEducationData = async (req, res) => {
+  const studentId = req.user.userId;
+
+  const educationData = await EducationModel.findOne({ studentId });
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Education Details found!',
+    educationData,
   });
 };
 
 const updateEducationData = async (req, res) => {
-  const student_id = req.user.userId;
+  const update = req?.params?.update;
+  const validUpdates = [
+    'highschool',
+    'intermediate',
+    'diploma',
+    'graduation',
+    'postGraduation',
+  ];
 
-  let { is_lateral_entry, updateBody, update } = req.body;
+  if (!validUpdates.includes(update))
+    throw new CustomAPIError.BadRequestError('Invalid update request!');
 
-  const validUpdates = ["highschool", "intermediate", "diploma", "btech"];
-  if (!update?.trim() || !validUpdates.includes(update) || !updateBody) {
-    throw new CustomAPIError.BadRequestError("Invalid Update Request!");
-  }
+  const userId = req?.user?.userId;
 
-  if (is_lateral_entry && update == "intermediate") {
-    throw new CustomAPIError.BadRequestError("Invalid Update Request!");
-  } else if (!is_lateral_entry && update == "diploma") {
-    throw new CustomAPIError.BadRequestError("Invalid Update Request!");
-  }
+  const student = await UserModel.findById(userId);
+  if (!student) throw new CustomAPIError.BadRequestError('Invalid student');
 
-  let currentDetails;
-  currentDetails = await StudentEducationDataModel.findOne({
-    student_id,
-  });
+  const {
+    _id: studentId,
+    courseLevel,
+    isLateralEntry,
+    semestersCount,
+  } = student;
 
-  if (!currentDetails) {
-    currentDetails = await StudentEducationDataModel.create({
-      student_id,
-      is_lateral_entry,
-    });
-    await UserModel.findOneAndUpdate(
-      { role: "student", _id: student_id },
+  let lastErrorObject;
+
+  /* HIGHSCHOOL, INTER & DIPLOMA UPDATE */
+  if (
+    update === 'highschool' ||
+    update === 'intermediate' ||
+    update === 'diploma'
+  ) {
+    lastErrorObject = await updatePastEducationRecord(
       {
-        education_details: currentDetails._id,
-      }
+        ...req.body,
+        courseLevel,
+        isLateralEntry,
+        studentId,
+      },
+      update
     );
+  } else if (update === 'graduation') {
+    /* GRADUATION UPDATE */
+    if (courseLevel === 'graduation')
+      lastErrorObject = await updateCurrentScoreRecord(
+        {
+          ...req.body,
+          courseLevel,
+          isLateralEntry,
+          studentId,
+          semestersCount,
+        },
+        update
+      );
+    else if (courseLevel === 'PG')
+      lastErrorObject = await updatePastEducationRecord(
+        {
+          ...req.body,
+          courseLevel,
+          isLateralEntry,
+          studentId,
+        },
+        update
+      );
+  } else if (update === 'postGraduation') {
+    /* POST GRADUATION UPDATE */
+
+    if (courseLevel === 'graduation')
+      throw new CustomAPIError.BadRequestError(
+        'Post Graduation Data is not allowed!'
+      );
+
+    lastErrorObject = await updateCurrentScoreRecord({
+      ...req.body,
+      courseLevel,
+      isLateralEntry,
+      studentId,
+      semestersCount,
+    });
   }
 
-  if (update == "highschool") {
-    const { highschool_board, highschool_score, highschool_year } = updateBody;
-    if (!highschool_board?.trim() || !highschool_year || !highschool_score) {
-      throw new CustomAPIError.BadRequestError("Invalid HighSchool Data!");
-    }
-  } else if (update == "intermediate") {
-    const { intermediate_board, intermediate_score, intermediate_year } =
-      updateBody;
-    if (
-      !intermediate_board?.trim() ||
-      !intermediate_year ||
-      !intermediate_score
-    ) {
-      throw new CustomAPIError.BadRequestError("Invalid Intermediate Data!");
-    }
-  } else if (update == "diploma") {
-    const { diploma_board, diploma_score, diploma_year } = updateBody;
-    if (!diploma_board?.trim() || !diploma_score || !diploma_year) {
-      throw new CustomAPIError.BadRequestError("Invalid Diploma Data!");
-    }
-  } else if (update == "btech") {
-    const { btech_scores } = updateBody;
-    let scoresMaxCount = is_lateral_entry ? 6 : 8;
-
-    if (
-      !btech_scores ||
-      !Array.isArray(btech_scores) ||
-      btech_scores.length > scoresMaxCount
-    )
-      throw new CustomAPIError.BadRequestError("Invalid B. Tech. scores!");
+  const { updatedExisting, upserted } = lastErrorObject;
+  if (!updatedExisting) {
+    student.educationDetails = upserted;
+    await student.save();
   }
 
-  await StudentEducationDataModel.findByIdAndUpdate(currentDetails._id, {
-    ...updateBody,
-  });
-
-  res.status(StatusCodes.CREATED).json({
+  res.status(StatusCodes.OK).json({
     success: true,
-    message: "Education Details Updated!",
+    message: 'Education Record Updated!',
   });
 };
 
 const getExperiences = async (req, res) => {
-  const student_id = req.user.userId;
+  const studentId = req.user.userId;
 
-  const experiences = await StudentExperienceDataModel.find({ student_id });
+  const experiences = await ExperienceModel.find({ studentId });
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Experiences found!",
+    message: 'Experiences found!',
     experiences,
   });
 };
 
 const getExperienceById = async (req, res) => {
   const id = req?.params?.id;
-  const student_id = req.user.userId;
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError('Id is required!');
 
-  const experience = await StudentExperienceDataModel.findOne({
-    _id: id,
-    student_id,
-  });
+  const experience = await ExperienceModel.findById(id);
 
   if (!experience)
-    throw new CustomAPIError.NotFoundError(`No experience found with id: ${id}`);
+    throw new CustomAPIError.NotFoundError(
+      `No experience found with id: ${id}`
+    );
 
   res.status(StatusCodes.OK).json({
     success: true,
@@ -171,80 +209,79 @@ const getExperienceById = async (req, res) => {
 };
 
 const createExperience = async (req, res) => {
-  const student_id = req.user.userId;
+  const studentId = req.user.userId;
   let { jobProfile, company, startDate, endDate } = req.body;
 
   if (!startDate) {
-    throw new CustomAPIError.BadRequestError("Start Date is required!");
+    throw new CustomAPIError.BadRequestError('Start Date is required!');
   }
 
   startDate = new Date(startDate);
-  if (startDate == "Invalid Date")
-    throw new CustomAPIError.BadRequestError("Invalid Start Date!");
+  if (startDate == 'Invalid Date')
+    throw new CustomAPIError.BadRequestError('Invalid Start Date!');
 
   if (endDate) {
     endDate = new Date(endDate);
-    if (endDate == "Invalid Date")
-      throw new CustomAPIError.BadRequestError("Invalid End Date!");
+    if (endDate == 'Invalid Date')
+      throw new CustomAPIError.BadRequestError('Invalid End Date!');
   }
 
-  const experience = await StudentExperienceDataModel.create({
-    student_id,
+  const experience = await ExperienceModel.create({
+    studentId,
     jobProfile,
     company,
     startDate,
     endDate,
   });
 
-  let jobData = await StudentJobDataModel.findOne({ student_id });
-  if (!jobData) {
-    jobData = await StudentJobDataModel.create({ student_id });
-  }
-
-  jobData.experiences.push(experience._id);
-  await jobData.save();
-
   res.status(StatusCodes.CREATED).json({
     success: true,
-    message: "New Experience created!",
+    message: 'New Experience created!',
     id: experience._id,
   });
+
+  const student = await UserModel.findById(studentId);
+  student.experiences.push(experience._id);
+  await student.save();
 };
 
 const updateExperience = async (req, res) => {
-  const student_id = req.user.userId;
-  const experienceId = req?.params?.id;
+  const studentId = req.user.userId;
+  const id = req?.params?.id;
 
   let { jobProfile, company, startDate, endDate } = req.body;
 
-  if (!experienceId?.trim()) {
-    throw new CustomAPIError.BadRequestError("Experience Id is required");
+  if (!id?.trim()) {
+    throw new CustomAPIError.BadRequestError('Experience Id is required');
   }
 
-  const experience = await StudentExperienceDataModel.findOne({
-    _id: experienceId,
-    student_id,
-  });
+  const experience = await ExperienceModel.findById(id);
 
   if (!experience) {
     throw new CustomAPIError.NotFoundError(
-      `No experience found with id: ${experienceId}`
+      `No experience found with id: ${id}`
+    );
+  }
+
+  if (experience.studentId != studentId && req.user.role !== 'admin') {
+    throw new CustomAPIError.UnauthorizedError(
+      'Not authorized to perform this action'
     );
   }
 
   if (startDate) {
     startDate = new Date(startDate);
-    if (startDate == "Invalid Date")
-      throw new CustomAPIError.BadRequestError("Invalid Start Date!");
+    if (startDate == 'Invalid Date')
+      throw new CustomAPIError.BadRequestError('Invalid Start Date!');
   }
 
   if (endDate) {
     endDate = new Date(endDate);
-    if (endDate == "Invalid Date")
-      throw new CustomAPIError.BadRequestError("Invalid End Date!");
+    if (endDate == 'Invalid Date')
+      throw new CustomAPIError.BadRequestError('Invalid End Date!');
   }
 
-  await StudentExperienceDataModel.findByIdAndUpdate(experienceId, {
+  await ExperienceModel.findByIdAndUpdate(experience._id, {
     jobProfile,
     company,
     startDate,
@@ -253,55 +290,63 @@ const updateExperience = async (req, res) => {
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Experience updated!",
-    id: experienceId,
+    message: 'Experience updated!',
+    id,
   });
 };
 
 const deleteExperience = async (req, res) => {
   const { id } = req.params;
-  const student_id = req.user.userId;
+  const studentId = req.user.userId;
 
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError('Id is required!');
 
-  const experience = await StudentExperienceDataModel.findOne({
-    _id: id,
-    student_id,
-  });
+  const experience = await ExperienceModel.findById(id);
 
   if (!experience)
     throw new CustomAPIError.NotFoundError(`No Experience found with ${id}`);
 
-  await StudentExperienceDataModel.findByIdAndDelete(id);
+  if (
+    experience.studentId.toString() != studentId &&
+    req.user.role != 'admin'
+  ) {
+    throw new CustomAPIError.UnauthorizedError(
+      'Not allowed to perform this action'
+    );
+  }
+
+  await ExperienceModel.findByIdAndDelete(id);
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Experience deleted!",
+    message: 'Experience deleted!',
     id,
   });
 
-  const jobData = await StudentJobDataModel.findOne({ student_id });
-  jobData.experiences = jobData.experiences.filter((ele) => ele != id);
-  await jobData.save();
+  const student = await UserModel.findById(studentId);
+  student.experiences = student.experiences.filter(
+    (ele) => ele.toString() !== id
+  );
+  await student.save();
 };
 
 const createPlacement = async (req, res) => {
   let { jobProfile, company, location, package, joiningDate } = req.body;
   let offerLetter = req?.files?.offerLetter;
   let joiningLetter = req?.files?.joiningLetter;
-  const student_id = req.user.userId;
+  const studentId = req.user.userId;
 
   if (joiningDate) {
     joiningDate = new Date(joiningDate);
-    if (joiningDate == "Invalid Date") {
-      throw new CustomAPIError.BadRequestError("Invalid joining date!");
+    if (joiningDate == 'Invalid Date') {
+      throw new CustomAPIError.BadRequestError('Invalid joining date!');
     }
   }
 
   if (offerLetter) {
     const fileUploadResp = await fileUpload(
       offerLetter,
-      "offer-letters",
-      "document"
+      'offer-letters',
+      'document'
     );
     const { fileURL } = fileUploadResp;
     offerLetter = fileURL;
@@ -309,19 +354,19 @@ const createPlacement = async (req, res) => {
 
   if (joiningLetter) {
     if (!joiningDate)
-      throw new CustomAPIError.BadRequestError("Joining Date is required!");
+      throw new CustomAPIError.BadRequestError('Joining Date is required!');
 
     const fileUploadResp = await fileUpload(
       joiningLetter,
-      "joining-letters",
-      "document"
+      'joining-letters',
+      'document'
     );
     const { fileURL } = fileUploadResp;
     joiningLetter = fileURL;
   }
 
-  const placement = await StudentPlacementDataModel.create({
-    student_id,
+  const placement = await PlacementModel.create({
+    studentId,
     jobProfile,
     company,
     location,
@@ -331,43 +376,34 @@ const createPlacement = async (req, res) => {
     joiningLetter,
   });
 
-  let jobData = await StudentJobDataModel.findOne({ student_id });
-  if (!jobData) {
-    jobData = await StudentJobDataModel.create({ student_id });
-  }
-
-  jobData.placements.push(placement._id);
-  await jobData.save();
-
   res.status(StatusCodes.CREATED).json({
     success: true,
-    message: "New Placement created!",
+    message: 'New Placement created!',
     id: placement._id,
   });
+
+  const student = await UserModel.findById(studentId);
+  student.placements.push(placement._id);
+  await student.save();
 };
 
 const getPlacements = async (req, res) => {
-  const student_id = req.user.userId;
+  const studentId = req.user.userId;
 
-  const placements = await StudentPlacementDataModel.find({ student_id });
+  const placements = await PlacementModel.find({ studentId });
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Placements found!",
+    message: 'Placements found!',
     placements,
   });
 };
 
 const getPlacementById = async (req, res) => {
   const id = req?.params?.id;
-  const student_id = req.user.userId;
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError('Id is required!');
 
-  const placement = await StudentPlacementDataModel.findOne({
-    _id: id,
-    student_id,
-  });
-
+  const placement = await PlacementModel.findById(id);
   if (!placement)
     throw new CustomAPIError.NotFoundError(`No placement found with id: ${id}`);
 
@@ -382,30 +418,34 @@ const updatePlacement = async (req, res) => {
   let { jobProfile, company, location, package, joiningDate } = req.body;
   let offerLetter = req?.files?.offerLetter;
   let joiningLetter = req?.files?.joiningLetter;
-  const student_id = req.user.userId;
+  const studentId = req.user.userId;
   const id = req?.params?.id;
 
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError('Id is required!');
 
-  const placement = await StudentPlacementDataModel.findOne({
-    _id: id,
-    student_id,
-  });
+  const placement = await PlacementModel.findById(id);
+
   if (!placement)
     throw new CustomAPIError.NotFoundError(`No placement found with id: ${id}`);
 
+  if (placement.studentId.toString() != studentId && req.user.role != 'admin') {
+    throw new CustomAPIError.UnauthorizedError(
+      'Not allowed to perform this action'
+    );
+  }
+
   if (joiningDate) {
     joiningDate = new Date(joiningDate);
-    if (joiningDate == "Invalid Date") {
-      throw new CustomAPIError.BadRequestError("Invalid joining date!");
+    if (joiningDate == 'Invalid Date') {
+      throw new CustomAPIError.BadRequestError('Invalid joining date!');
     }
   }
 
   if (offerLetter) {
     const fileUploadResp = await fileUpload(
       offerLetter,
-      "offer-letters",
-      "document"
+      'offer-letters',
+      'document'
     );
     const { fileURL } = fileUploadResp;
     offerLetter = fileURL;
@@ -413,18 +453,18 @@ const updatePlacement = async (req, res) => {
 
   if (joiningLetter) {
     if (!joiningDate)
-      throw new CustomAPIError.BadRequestError("Joining Date is required!");
+      throw new CustomAPIError.BadRequestError('Joining Date is required!');
 
     const fileUploadResp = await fileUpload(
       joiningLetter,
-      "joining-letters",
-      "document"
+      'joining-letters',
+      'document'
     );
     const { fileURL } = fileUploadResp;
     joiningLetter = fileURL;
   }
 
-  await StudentPlacementDataModel.findByIdAndUpdate(id, {
+  await PlacementModel.findByIdAndUpdate(id, {
     jobProfile,
     company,
     location,
@@ -436,85 +476,109 @@ const updatePlacement = async (req, res) => {
 
   res.status(StatusCodes.CREATED).json({
     success: true,
-    message: "Placement Updated!",
+    message: 'Placement Updated!',
     id,
   });
 };
 
 const deletePlacement = async (req, res) => {
   const { id } = req.params;
-  const student_id = req.user.userId;
+  const studentId = req.user.userId;
 
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError('Id is required!');
 
-  const placement = await StudentPlacementDataModel.findOne({
-    _id: id,
-    student_id,
-  });
+  const placement = await PlacementModel.findById(id);
 
   if (!placement)
     throw new CustomAPIError.NotFoundError(`No placement found with ${id}`);
 
-  await StudentPlacementDataModel.findByIdAndDelete(id);
+  if (placement.studentId.toString() != studentId && req.user.role != 'admin') {
+    throw new CustomAPIError.UnauthorizedError(
+      'Not allowed to perform this action'
+    );
+  }
+
+  await PlacementModel.findByIdAndDelete(id);
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Placement deleted!",
+    message: 'Placement deleted!',
     id,
   });
 
-  const jobData = await StudentJobDataModel.findOne({ student_id });
-  jobData.placements = jobData.placements.filter((ele) => ele != id);
-  await jobData.save();
+  const student = await UserModel.findById(studentId);
+  student.placements = student.placements.filter(
+    (ele) => ele.toString() !== id
+  );
+  await student.save();
 };
 
 const createTraining = async (req, res) => {
   let { trainingName, organisation, startDate, endDate } = req.body;
-  const student_id = req.user.userId;
+  const studentId = req.user.userId;
+  let certificate = req?.files?.certificate;
 
   startDate = new Date(startDate);
-  if (startDate == "Invalid Date")
-    throw new CustomAPIError.BadRequestError("Invalid start date!");
+  if (startDate == 'Invalid Date')
+    throw new CustomAPIError.BadRequestError('Invalid start date!');
 
   if (endDate) {
     endDate = new Date(endDate);
-    if (endDate == "Invalid Date")
-      throw new CustomAPIError.BadRequestError("Invalid end date!");
+    if (endDate == 'Invalid Date')
+      throw new CustomAPIError.BadRequestError('Invalid end date!');
+  }
+
+  if (certificate) {
+    if (!endDate)
+      throw new CustomAPIError.BadRequestError('End Date is required!');
+
+    const fileUploadResp = await fileUpload(
+      certificate,
+      'training_certificates',
+      'document'
+    );
+    const { fileURL } = fileUploadResp;
+    certificate = fileURL;
   }
 
   const training = await TrainingModel.create({
-    student_id,
+    studentId,
     trainingName,
     organisation,
     startDate,
     endDate,
+    certificate,
   });
 
   res.status(StatusCodes.CREATED).json({
     success: true,
-    message: "Training Created!",
+    message: 'Training Created!',
     id: training._id,
   });
+
+  const student = await UserModel.findById(studentId);
+  student.trainings.push(training._id);
+  await student.save();
 };
 
 const getTrainings = async (req, res) => {
-  const student_id = req.user.userId;
-  const trainings = await TrainingModel.find({ student_id });
+  const studentId = req.user.userId;
+  const trainings = await TrainingModel.find({ studentId });
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Found trainings!",
+    message: 'Found trainings!',
     trainings,
   });
 };
 
 const getTrainingById = async (req, res) => {
   const id = req?.params?.id;
-  const student_id = req.user.userId;
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+  const studentId = req.user.userId;
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError('Id is required!');
 
   const training = await TrainingModel.findOne({
     _id: id,
-    student_id,
+    studentId,
   });
 
   if (!training)
@@ -529,50 +593,65 @@ const getTrainingById = async (req, res) => {
 
 const updateTraining = async (req, res) => {
   let { trainingName, organisation, startDate, endDate } = req.body;
-  const student_id = req.user.userId;
+  let certificate = req?.files?.certificate;
+  const studentId = req.user.userId;
   const id = req?.params?.id;
 
   startDate = new Date(startDate);
-  if (startDate == "Invalid Date")
-    throw new CustomAPIError.BadRequestError("Invalid start date!");
+  if (startDate == 'Invalid Date')
+    throw new CustomAPIError.BadRequestError('Invalid start date!');
 
   if (endDate) {
     endDate = new Date(endDate);
-    if (endDate == "Invalid Date")
-      throw new CustomAPIError.BadRequestError("Invalid end date!");
+    if (endDate == 'Invalid Date')
+      throw new CustomAPIError.BadRequestError('Invalid end date!');
   }
 
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError('Id is required!');
 
   const training = await TrainingModel.findOne({
     _id: id,
-    student_id,
+    studentId,
   });
 
   if (!training)
     throw new CustomAPIError.NotFoundError(`No training found with id: ${id}`);
+
+  if (certificate) {
+    if (!endDate)
+      throw new CustomAPIError.BadRequestError('End Date is required!');
+
+    const fileUploadResp = await fileUpload(
+      certificate,
+      'training_certificates',
+      'document'
+    );
+    const { fileURL } = fileUploadResp;
+    certificate = fileURL;
+  }
 
   await TrainingModel.findByIdAndUpdate(id, {
     trainingName,
     organisation,
     startDate,
     endDate,
+    certificate,
   });
 
-  res.status(StatusCodes.CREATED).json({
+  res.status(StatusCodes.OK).json({
     success: true,
-    message: "Training Updated!",
+    message: 'Training Updated!',
     id,
   });
 };
 
 const deleteTraining = async (req, res) => {
   const { id } = req.params;
-  const student_id = req.user.userId;
+  const studentId = req.user.userId;
 
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+  if (!id?.trim()) throw new CustomAPIError.BadRequestError('Id is required!');
 
-  const training = await TrainingModel.findOne({ _id: id, student_id });
+  const training = await TrainingModel.findOne({ _id: id, studentId });
   if (!training) {
     throw new CustomAPIError.NotFoundError(`No Training found with ${id}`);
   }
@@ -581,112 +660,100 @@ const deleteTraining = async (req, res) => {
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Training deleted!",
+    message: 'Training deleted!',
     id,
   });
+
+  const student = await UserModel.findById(studentId);
+  student.trainings = student.trainings.filter((ele) => ele.toString() !== id);
+  await student.save();
 };
 
-const createAward = async (req, res) => {
-  let { awardName, organisation, description } = req.body;
-  const student_id = req.user.userId;
+async function updatePastEducationRecord(data, label) {
+  const {
+    studentId,
+    courseLevel,
+    isLateralEntry,
+    year,
+    scale,
+    score,
+    institute,
+    board,
+  } = data;
 
-  const award = await AwardModel.create({
-    student_id,
-    awardName,
-    organisation,
-    description,
+  const doc = new PastScoreModel({
+    year,
+    scale,
+    score,
+    institute,
+    board,
   });
 
-  res.status(StatusCodes.CREATED).json({
-    success: true,
-    message: "Award Created!",
-    id: award._id,
-  });
-};
+  throwDocErrors(doc, `Invalid ${label} data`);
 
-const getAwards = async (req, res) => {
-  const student_id = req.user.userId;
-  const awards = await AwardModel.find({ student_id });
-  res.status(StatusCodes.OK).json({
-    success: true,
-    message: "Found Awards!",
-    awards,
-  });
-};
+  const { lastErrorObject } = await EducationModel.findOneAndUpdate(
+    { studentId },
+    {
+      studentId,
+      isLateralEntry,
+      courseLevel,
+      [label]: doc,
+    },
+    { upsert: true, runValidators: true, rawResult: true }
+  );
 
-const getAwardById = async (req, res) => {
-  const id = req?.params?.id;
-  const student_id = req.user.userId;
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
+  return lastErrorObject;
+}
 
-  const award = await AwardModel.findOne({
-    _id: id,
-    student_id,
-  });
+async function updateCurrentScoreRecord(data, label) {
+  const {
+    studentId,
+    isLateralEntry,
+    courseLevel,
+    scores,
+    semestersCount,
+    aggregateGPA,
+  } = data;
 
-  if (!award)
-    throw new CustomAPIError.NotFoundError(`No Award found with id: ${id}`);
-
-  res.status(StatusCodes.OK).json({
-    success: true,
-    message: `Award found with id: ${id}`,
-    award,
-  });
-};
-
-const updateAward = async (req, res) => {
-  let { awardName, organisation, description } = req.body;
-  const student_id = req.user.userId;
-  const id = req?.params?.id;
-
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
-
-  const award = await AwardModel.findOne({
-    _id: id,
-    student_id,
+  const doc = new CurrentScoreModel({
+    semestersCount,
+    scores,
+    aggregateGPA,
   });
 
-  if (!award)
-    throw new CustomAPIError.NotFoundError(`No award found with id: ${id}`);
+  throwDocErrors(doc, `Invalid ${label} data`);
 
-  await AwardModel.findByIdAndUpdate(id, {
-    awardName,
-    organisation,
-    description,
-  });
+  const { lastErrorObject } = await EducationModel.findOneAndUpdate(
+    { studentId },
+    {
+      studentId,
+      isLateralEntry,
+      courseLevel,
+      [label]: doc,
+    },
+    { upsert: true, runValidators: true, rawResult: true }
+  );
 
-  res.status(StatusCodes.CREATED).json({
-    success: true,
-    message: "Award Updated!",
-    id,
-  });
-};
+  return lastErrorObject;
+}
 
-const deleteAward = async (req, res) => {
-  const { id } = req.params;
-  const student_id = req.user.userId;
-
-  if (!id?.trim()) throw new CustomAPIError.BadRequestError("Id is required!");
-
-  const award = await AwardModel.findOne({ _id: id, student_id });
-  if (!award) {
-    throw new CustomAPIError.NotFoundError(`No award found with ${id}`);
+function throwDocErrors(doc, message) {
+  const error = doc.validateSync();
+  if (error) {
+    for (let key in error?.errors) {
+      message = error?.errors?.[key]?.message;
+      break;
+    }
+    throw new CustomAPIError.BadRequestError(message);
   }
-
-  await AwardModel.findByIdAndDelete(id);
-
-  res.status(StatusCodes.OK).json({
-    success: true,
-    message: "Award deleted!",
-    id,
-  });
-};
+}
 
 module.exports = {
   getEducationData,
   updateEducationData,
 
   getPersonalData,
+  updatePersonalData,
 
   getExperiences,
   getExperienceById,
@@ -705,10 +772,4 @@ module.exports = {
   getTrainingById,
   updateTraining,
   deleteTraining,
-
-  createAward,
-  getAwards,
-  getAwardById,
-  updateAward,
-  deleteAward,
 };

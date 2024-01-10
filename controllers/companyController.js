@@ -10,6 +10,7 @@ const {
 } = require('./noticeController');
 
 const { jobApplicationsAgg } = require('../models/aggregations');
+const UserModel = require('../models/User');
 
 const getCompanies = async (req, res) => {
   const companies = await CompanyModel.find();
@@ -140,26 +141,126 @@ const getJobsForIncharge = async (req, res) => {
 };
 
 const getJobApplications = async (req, res) => {
-  const status = req?.params?.status || 'pending';
   const companyId = req.user.companyId;
 
-  const applications = await JobApplicationModel.aggregate(
-    jobApplicationsAgg({
-      companyId,
-      status,
-    })
+  const jobsWithApplications = await JobOpeningModel.aggregate(
+    jobApplicationsAgg({ companyId })
   );
 
   res.status(StatusCodes.OK).json({
     success: true,
     message: 'Found Applications',
-    applications,
+    jobsWithApplications,
   });
 };
+
+const jobApplicationAction = async (req, res) => {
+  const applicationId = req?.params?.id;
+  const action = req?.query?.action;
+  const userId = req?.user?.userId;
+
+  const application = await JobApplicationModel.findById(applicationId);
+  if (!application)
+    throw new CustomAPIError.BadRequestError('Invalid application id!');
+
+  const { applicantId, jobId, companyId, status: currentStatus } = application;
+
+  const {
+    isValid,
+    updatedStatus,
+    currentJobArr,
+    updatedJobArr,
+    currentApplicantArr,
+    updatedApplicantArr,
+  } = isActionValid(action, currentStatus);
+
+  if (!isValid) throw new CustomAPIError.BadRequestError('Invalid action!');
+
+  const job = await JobOpeningModel.findById(jobId);
+
+  if (job.status !== 'open')
+    throw new CustomAPIError.BadRequestError('Job is already closed!');
+
+  const company = await CompanyModel.findById(companyId);
+  if (!company.admins.includes(userId))
+    throw new CustomAPIError.BadRequestError(
+      'Not authorized to perform this action'
+    );
+
+  application.status = updatedStatus;
+
+  job[currentJobArr] = job[currentJobArr].filter(
+    (id) => id.toString() !== applicantId.toString()
+  );
+  job[updatedJobArr].push(applicantId);
+
+  const applicant = await UserModel.findById(applicantId);
+  applicant[currentApplicantArr] = applicant[currentApplicantArr].filter(
+    (id) => id.toString() !== jobId.toString()
+  );
+  applicant[updatedApplicantArr].push(jobId);
+
+  await application.save();
+  await job.save();
+  await applicant.save();
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: `Candidate is ${updatedStatus}`,
+  });
+};
+
+function isActionValid(action, currentStatus) {
+  const obj = {
+    isValid: false,
+    updatedStatus: '',
+    currentJobArr: '',
+    updatedJobArr: '',
+    currentApplicantArr: '',
+    updatedApplicantArr: '',
+  };
+
+  switch (action) {
+    case 'shortlist':
+      obj.isValid = currentStatus === 'pending';
+      obj.updatedStatus = 'shortlisted';
+      obj.updatedJobArr = 'shortlistedCandidates';
+      obj.updatedApplicantArr = 'jobsShortlisted';
+      break;
+    case 'hire':
+      obj.isValid =
+        currentStatus === 'pending' || currentStatus === 'shortlisted';
+      obj.updatedStatus = 'hired';
+      obj.updatedJobArr = 'selectedCandidates';
+      obj.updatedApplicantArr = 'jobsSelected';
+      break;
+    case 'reject':
+      obj.isValid =
+        currentStatus === 'pending' || currentStatus === 'shortlisted';
+      obj.updatedStatus = 'rejected';
+      obj.updatedJobArr = 'rejectedCandidates';
+      obj.updatedApplicantArr = 'jobsRejected';
+      break;
+  }
+
+  switch (currentStatus) {
+    case 'pending':
+      obj.currentJobArr = 'applicants';
+      obj.currentApplicantArr = 'jobsApplied';
+      break;
+    case 'shortlist':
+      obj.currentJobArr = 'shortlistedCandidates';
+      obj.currentApplicantArr = 'jobsShortlisted';
+      break;
+  }
+
+  return obj;
+}
 
 module.exports = {
   getCompanies,
   createJobOpening,
   getJobsForIncharge,
   getJobApplications,
+  jobApplicationAction,
 };
