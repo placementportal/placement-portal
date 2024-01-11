@@ -10,6 +10,8 @@ const {
   TrainingModel,
 } = require('../models/student');
 
+const { studentProfileDetailsAgg } = require('../models/aggregations');
+
 const CustomAPIError = require('../errors');
 const { StatusCodes } = require('http-status-codes');
 const { fileUpload } = require('../utils/fileUpload');
@@ -669,6 +671,18 @@ const deleteTraining = async (req, res) => {
   await student.save();
 };
 
+const getStudentProfile = async (req, res) => {
+  const studentId = req?.user?.userId;
+  const profileDetails = (
+    await UserModel.aggregate(studentProfileDetailsAgg(studentId, true))
+  )[0];
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Profile Details Found!',
+    profileDetails,
+  });
+};
+
 async function updatePastEducationRecord(data, label) {
   const {
     studentId,
@@ -754,6 +768,7 @@ module.exports = {
 
   getPersonalData,
   updatePersonalData,
+  getStudentProfile,
 
   getExperiences,
   getExperienceById,

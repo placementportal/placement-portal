@@ -6,6 +6,7 @@ const {
 
   getPersonalData,
   updatePersonalData,
+  getStudentProfile,
 
   getExperiences,
   getExperienceById,
@@ -30,6 +31,8 @@ const {
   getJobsForStudent,
   createJobApplication,
 } = require('../controllers/studentJobsController');
+
+router.get('/profile', getStudentProfile);
 
 router.get('/personal', getPersonalData);
 router.post('/personal', updatePersonalData);
