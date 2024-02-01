@@ -110,14 +110,18 @@ const updateNotice = async (req, res) => {
     noticeFile = fileUploadResp?.fileURL;
   }
 
-  const updatedNotice = await NoticeModel.findByIdAndUpdate(id, {
-    noticeTitle,
-    noticeBody,
-    noticeFile,
-    receivingCourse,
-    receivingBatches,
-    receivingDepartments,
-  });
+  const updatedNotice = await NoticeModel.findByIdAndUpdate(
+    id,
+    {
+      noticeTitle,
+      noticeBody,
+      noticeFile,
+      receivingCourse,
+      receivingBatches,
+      receivingDepartments,
+    },
+    { runValidators: true }
+  );
 
   res.status(StatusCodes.CREATED).json({
     success: true,

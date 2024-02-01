@@ -38,6 +38,11 @@ const PastScoreSchema = new mongoose.Schema(
       trim: true,
       required: true,
     },
+
+    stream: {
+      type: String,
+      trim: true,
+    },
   },
   { versionKey: false, _id: false }
 );
@@ -113,13 +118,12 @@ const EducationDataSchema = new mongoose.Schema(
 
     courseLevel: {
       type: String,
-      enum: ['graduation', 'PG'],
+      enum: ['graduation', 'postGraduation'],
       default: 'graduation',
     },
 
     highschool: {
       type: PastScoreSchema,
-      required: [true, 'Highschool Data is required'],
     },
 
     intermediate: {
@@ -136,7 +140,7 @@ const EducationDataSchema = new mongoose.Schema(
         validator: function (value) {
           if (this.courseLevel === 'graduation')
             return value instanceof CurrentScoreModel;
-          else if (this.courseLevel === 'PG')
+          else if (this.courseLevel === 'postGraduation')
             return value instanceof PastScoreModel;
         },
         message: 'Invalid graduation data',
@@ -147,7 +151,7 @@ const EducationDataSchema = new mongoose.Schema(
       type: {},
       validate: {
         validator: function (value) {
-          if (this.courseLevel === 'PG')
+          if (this.courseLevel === 'postGraduation')
             return value instanceof CurrentScoreModel;
           if (this.courseLevel === 'graduation' && value) return false;
         },

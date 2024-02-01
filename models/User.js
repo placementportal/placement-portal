@@ -51,7 +51,9 @@ const UserSchema = new mongoose.Schema(
 
     isLateralEntry: {
       type: Boolean,
-      default: false,
+      default: function () {
+        if (this.role === 'student') return false;
+      },
     },
 
     courseId: {
@@ -65,8 +67,10 @@ const UserSchema = new mongoose.Schema(
 
     courseLevel: {
       type: String,
-      enum: ['graduation', 'PG'],
-      default: 'graduation',
+      enum: ['graduation', 'postGraduation'],
+      default: function () {
+        if (this.role === 'student') return 'graduation';
+      },
     },
 
     yearsCount: {
@@ -154,44 +158,43 @@ const UserSchema = new mongoose.Schema(
 
     lastNoticeFetched: {
       type: Date,
-      default: new Date(),
+      default: function () {
+        if (this.role === 'student') return new Date();
+      },
     },
 
     // student jobs
 
     jobsApplied: {
       type: [mongoose.Types.ObjectId],
-      default: [],
       ref: 'JobOpenings',
     },
 
     jobsSelected: {
       type: [mongoose.Types.ObjectId],
-      default: [],
       ref: 'JobOpenings',
     },
 
     jobsRejected: {
       type: [mongoose.Types.ObjectId],
-      default: [],
       ref: 'JobOpenings',
     },
 
     jobsShortlisted: {
       type: [mongoose.Types.ObjectId],
-      default: [],
       ref: 'JobOpenings',
     },
 
     jobApplications: {
       type: [mongoose.Types.ObjectId],
-      default: [],
       ref: 'JobApplications',
     },
 
     lastJobFetched: {
       type: Date,
-      default: new Date(),
+      default: function () {
+        if (this.role === 'student') return new Date();
+      },
     },
 
     // company id specific fields

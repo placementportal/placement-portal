@@ -2,8 +2,8 @@ require("dotenv").config();
 const connectDB = require("../db/connect");
 
 const UserModel = require("../models/User");
-const StudentPersonalDataModel = require("../models/StudentPersonalData");
-const StudentEducationDataModel = require("../models/StudentEducationData");
+// const StudentPersonalDataModel = require("../models/StudentPersonalData");
+// const StudentEducationDataModel = require("../models/StudentEducationData");
 
 const addAdmin = async (adminInfo) => {
   await connectDB(process.env.MONGO_URI);
@@ -11,11 +11,11 @@ const addAdmin = async (adminInfo) => {
   console.log("Admin created!", admin._id);
 };
 
-// addAdmin({
-//   name: "Admin",
-//   email: "admin@gmail.com",
-//   password: "secret_pass",
-// });
+addAdmin({
+  name: "Admin",
+  email: "admin@gmail.com",
+  password: "secret_pass",
+});
 
 const addStudent = async (studentInfo) => {
   const { name, roll_no, email, courseId, batchId, departmentId, password } =

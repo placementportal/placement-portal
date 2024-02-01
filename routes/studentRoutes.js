@@ -3,6 +3,7 @@ const router = require('express').Router();
 const {
   getEducationData,
   updateEducationData,
+  deletePastEducation,
 
   getPersonalData,
   updatePersonalData,
@@ -38,6 +39,7 @@ router.get('/personal', getPersonalData);
 router.post('/personal', updatePersonalData);
 
 router.post('/education/:update', updateEducationData);
+router.delete('/education/:field', deletePastEducation);
 router.get('/education', getEducationData);
 
 router.get('/experience/:id', getExperienceById);

@@ -33,6 +33,7 @@ const TrainingSchema = new mongoose.Schema(
 
     endDate: {
       type: Date,
+      required: [true, 'Training End Date is required!'],
     },
   },
   { versionKey: false, timestamps: true, collection: 'StudentTrainings' }

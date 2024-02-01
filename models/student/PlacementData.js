@@ -42,6 +42,11 @@ const PlacementDataSchema = new mongoose.Schema(
     joiningDate: {
       type: Date,
     },
+
+    isOnCampus: {
+      type: Boolean,
+      default: false,
+    },
   },
   { versionKey: false, timestamps: true, collection: 'StudentPlacements' }
 );

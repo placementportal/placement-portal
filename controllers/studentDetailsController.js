@@ -19,14 +19,12 @@ const { fileUpload } = require('../utils/fileUpload');
 const getPersonalData = async (req, res) => {
   const studentId = req.user.userId;
 
-  const student = await UserModel.findById(studentId)
-    .select('name email photo personalDetails')
-    .populate('personalDetails');
+  const personalDetails = await PersonalDataModel.findOne({ studentId });
 
   res.status(StatusCodes.OK).json({
     success: true,
     message: 'Pesonal details found!',
-    student,
+    personalDetails,
   });
 };
 
@@ -77,12 +75,12 @@ const updatePersonalData = async (req, res) => {
 const getEducationData = async (req, res) => {
   const studentId = req.user.userId;
 
-  const educationData = await EducationModel.findOne({ studentId });
+  const educationDetails = await EducationModel.findOne({ studentId });
 
   res.status(StatusCodes.OK).json({
     success: true,
     message: 'Education Details found!',
-    educationData,
+    educationDetails,
   });
 };
 
@@ -141,7 +139,7 @@ const updateEducationData = async (req, res) => {
         },
         update
       );
-    else if (courseLevel === 'PG')
+    else if (courseLevel === 'postGraduation')
       lastErrorObject = await updatePastEducationRecord(
         {
           ...req.body,
@@ -177,6 +175,35 @@ const updateEducationData = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,
     message: 'Education Record Updated!',
+  });
+};
+
+const deletePastEducation = async (req, res) => {
+  const studentId = req?.user?.userId;
+  const field = req?.params?.field;
+
+  const validFields = ['highschool', 'intermediate', 'diploma', 'graduation'];
+
+  if (!field?.trim() || !validFields.includes(field))
+    throw new CustomAPIError.BadRequestError('Invalid field provided!');
+
+  const educationDetails = await EducationModel.findOne({ studentId });
+
+  if (!educationDetails) throw new CustomAPIError('No education record found!');
+
+  if (
+    field === 'graduation' &&
+    educationDetails.courseLevel !== 'postGraduation'
+  )
+    throw new CustomAPIError.BadRequestError('Invalid field provided!');
+
+  await EducationModel.findByIdAndUpdate(educationDetails._id, {
+    $unset: { [field]: '' },
+  });
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: `Deleted ${field} data`,
   });
 };
 
@@ -283,12 +310,16 @@ const updateExperience = async (req, res) => {
       throw new CustomAPIError.BadRequestError('Invalid End Date!');
   }
 
-  await ExperienceModel.findByIdAndUpdate(experience._id, {
-    jobProfile,
-    company,
-    startDate,
-    endDate,
-  });
+  await ExperienceModel.findByIdAndUpdate(
+    experience._id,
+    {
+      jobProfile,
+      company,
+      startDate,
+      endDate,
+    },
+    { runValidators: true }
+  );
 
   res.status(StatusCodes.OK).json({
     success: true,
@@ -466,15 +497,19 @@ const updatePlacement = async (req, res) => {
     joiningLetter = fileURL;
   }
 
-  await PlacementModel.findByIdAndUpdate(id, {
-    jobProfile,
-    company,
-    location,
-    package,
-    joiningDate,
-    offerLetter,
-    joiningLetter,
-  });
+  await PlacementModel.findByIdAndUpdate(
+    id,
+    {
+      jobProfile,
+      company,
+      location,
+      package,
+      joiningDate,
+      offerLetter,
+      joiningLetter,
+    },
+    { runValidators: true }
+  );
 
   res.status(StatusCodes.CREATED).json({
     success: true,
@@ -632,13 +667,17 @@ const updateTraining = async (req, res) => {
     certificate = fileURL;
   }
 
-  await TrainingModel.findByIdAndUpdate(id, {
-    trainingName,
-    organisation,
-    startDate,
-    endDate,
-    certificate,
-  });
+  await TrainingModel.findByIdAndUpdate(
+    id,
+    {
+      trainingName,
+      organisation,
+      startDate,
+      endDate,
+      certificate,
+    },
+    { runValidators: true }
+  );
 
   res.status(StatusCodes.OK).json({
     success: true,
@@ -693,6 +732,7 @@ async function updatePastEducationRecord(data, label) {
     score,
     institute,
     board,
+    stream,
   } = data;
 
   const doc = new PastScoreModel({
@@ -701,6 +741,7 @@ async function updatePastEducationRecord(data, label) {
     score,
     institute,
     board,
+    stream,
   });
 
   throwDocErrors(doc, `Invalid ${label} data`);
@@ -765,6 +806,7 @@ function throwDocErrors(doc, message) {
 module.exports = {
   getEducationData,
   updateEducationData,
+  deletePastEducation,
 
   getPersonalData,
   updatePersonalData,

@@ -34,6 +34,20 @@ function studentProfileDetailsAgg(studentId, isPrivate = false) {
         localField: 'trainings',
         foreignField: '_id',
         as: 'trainings',
+        pipeline: [
+          {
+            $sort: {
+              startDate: -1,
+            },
+          },
+          {
+            $project: {
+              createdAt: 0,
+              updatedAt: 0,
+              studentId: 0,
+            },
+          },
+        ],
       },
     },
     {
@@ -42,6 +56,20 @@ function studentProfileDetailsAgg(studentId, isPrivate = false) {
         localField: 'experiences',
         foreignField: '_id',
         as: 'experiences',
+        pipeline: [
+          {
+            $sort: {
+              startDate: -1,
+            },
+          },
+          {
+            $project: {
+              createdAt: 0,
+              updatedAt: 0,
+              studentId: 0,
+            },
+          },
+        ],
       },
     },
     {
