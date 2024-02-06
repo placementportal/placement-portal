@@ -26,6 +26,16 @@ const {
   getTrainingById,
   updateTraining,
   deleteTraining,
+
+  addSkill,
+  deleteSkill,
+  getSkills,
+  updateSkill,
+
+  addAchievement,
+  updateAchievement,
+  deleteAchievement,
+  getAchievements,
 } = require('../controllers/studentDetailsController');
 
 const {
@@ -62,5 +72,15 @@ router.delete('/training/:id', deleteTraining);
 
 router.get('/jobs?', getJobsForStudent);
 router.post('/jobs/:id/apply', createJobApplication);
+
+router.post('/skills', addSkill);
+router.delete('/skills', deleteSkill);
+router.get('/skills', getSkills);
+router.patch('/skills', updateSkill);
+
+router.post('/achievements', addAchievement);
+router.delete('/achievements', deleteAchievement);
+router.get('/achievements', getAchievements);
+router.patch('/achievements', updateAchievement);
 
 module.exports = router;

@@ -150,10 +150,18 @@ const UserSchema = new mongoose.Schema(
 
     skills: {
       type: [String],
+      index: {
+        unique: true,
+        partialFilterExpression: { experiences: { $type: 'string' } },
+      },
     },
 
     achievements: {
       type: [String],
+      index: {
+        unique: true,
+        partialFilterExpression: { experiences: { $type: 'string' } },
+      },
     },
 
     lastNoticeFetched: {

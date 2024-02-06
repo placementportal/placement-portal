@@ -722,6 +722,162 @@ const getStudentProfile = async (req, res) => {
   });
 };
 
+const getSkills = async (req, res) => {
+  const studentId = req?.user?.userId;
+
+  const skills = await UserModel.findById(studentId).select('skills');
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Found skills!',
+    skills: skills.skills,
+  });
+};
+
+const addSkill = async (req, res) => {
+  const studentId = req?.user?.userId;
+  const skill = req?.body?.skill?.trim();
+  if (!skill) throw new CustomAPIError.BadRequestError('Skill is required!');
+
+  await UserModel.findByIdAndUpdate(
+    studentId,
+    {
+      $addToSet: { skills: skill },
+    },
+    { runValidators: true }
+  );
+
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    message: 'Added skill!',
+  });
+};
+
+const updateSkill = async (req, res) => {
+  const studentId = req?.user?.userId;
+  const { oldSkill, updatedSkill } = req?.body;
+
+  if (!oldSkill?.trim())
+    throw new CustomAPIError.BadRequestError('Invalid old skill!');
+
+  if (!updatedSkill?.trim())
+    throw new CustomAPIError.BadRequestError('Invalid updated skill!');
+
+  await UserModel.findOneAndUpdate(
+    { _id: studentId, skills: oldSkill },
+    {
+      $set: {
+        'skills.$': updatedSkill,
+      },
+    },
+    { runValidators: true }
+  );
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Updated skill!',
+  });
+};
+
+const deleteSkill = async (req, res) => {
+  const studentId = req?.user?.userId;
+  const skill = req?.body?.skill?.trim();
+  if (!skill) throw new CustomAPIError.BadRequestError('Skill is required!');
+
+  await UserModel.findByIdAndUpdate(
+    studentId,
+    {
+      $pull: { skills: skill },
+    },
+    { runValidators: true }
+  );
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Deleted skill!',
+  });
+};
+
+const getAchievements = async (req, res) => {
+  const studentId = req?.user?.userId;
+
+  const achievements = await UserModel.findById(studentId).select(
+    'achievements'
+  );
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Found achievements!',
+    achievements: achievements.achievements,
+  });
+};
+
+const addAchievement = async (req, res) => {
+  const studentId = req?.user?.userId;
+  const achievement = req?.body?.achievement?.trim();
+  if (!achievement)
+    throw new CustomAPIError.BadRequestError('Achievement is required!');
+
+  await UserModel.findByIdAndUpdate(
+    studentId,
+    {
+      $addToSet: { achievements: achievement },
+    },
+    { runValidators: true }
+  );
+
+  res.status(StatusCodes.CREATED).json({
+    success: true,
+    message: 'Added achievement!',
+  });
+};
+
+const updateAchievement = async (req, res) => {
+  const studentId = req?.user?.userId;
+  const { oldAchievement, updatedAchievement } = req?.body;
+
+  if (!oldAchievement?.trim())
+    throw new CustomAPIError.BadRequestError('Invalid old achievement!');
+
+  if (!updatedAchievement?.trim())
+    throw new CustomAPIError.BadRequestError('Invalid updated achievement!');
+
+  await UserModel.findOneAndUpdate(
+    { _id: studentId, achievements: oldAchievement },
+    {
+      $set: {
+        'achievements.$': updatedAchievement,
+      },
+    },
+    { runValidators: true }
+  );
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Updated achievement!',
+  });
+};
+
+const deleteAchievement = async (req, res) => {
+  const studentId = req?.user?.userId;
+  const achievement = req?.body?.achievement?.trim();
+  if (!achievement)
+    throw new CustomAPIError.BadRequestError('Achievement is required!');
+
+  await UserModel.findByIdAndUpdate(
+    studentId,
+    {
+      $pull: { achievements: achievement },
+    },
+    { runValidators: true }
+  );
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Deleted achievement!',
+  });
+};
+
 async function updatePastEducationRecord(data, label) {
   const {
     studentId,
@@ -829,4 +985,14 @@ module.exports = {
   getTrainingById,
   updateTraining,
   deleteTraining,
+
+  addSkill,
+  deleteSkill,
+  getSkills,
+  updateSkill,
+
+  addAchievement,
+  updateAchievement,
+  deleteAchievement,
+  getAchievements,
 };
