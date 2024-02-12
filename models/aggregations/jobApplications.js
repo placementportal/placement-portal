@@ -5,7 +5,7 @@ function jobApplicationsAgg({ companyId }) {
   return [
     {
       $match: {
-        company: companyId,
+        'company.id': companyId,
         status: 'open',
         applications: {
           $exists: true,

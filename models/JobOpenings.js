@@ -1,5 +1,89 @@
 const mongoose = require('mongoose');
 
+const CompanySchema = new mongoose.Schema(
+  {
+    id: {
+      type: mongoose.Types.ObjectId,
+      required: [true, 'Company Id is required'],
+    },
+
+    name: {
+      type: String,
+      trim: true,
+      required: [true, 'Company Name is required'],
+    },
+
+    website: {
+      type: String,
+      trim: true,
+    },
+  },
+  { versionKey: false, _id: false }
+);
+
+const CourseSchema = new mongoose.Schema(
+  {
+    id: {
+      type: mongoose.Types.ObjectId,
+      required: [true, 'Course Id is required'],
+    },
+
+    courseName: {
+      type: String,
+      trim: true,
+      required: [true, 'Course Name is required!'],
+    },
+  },
+  { versionKey: false, _id: false }
+);
+
+const DepartmentSchema = new mongoose.Schema(
+  {
+    id: {
+      type: mongoose.Types.ObjectId,
+      required: [true, 'Department Id is required'],
+    },
+
+    departmentName: {
+      type: String,
+      trim: true,
+      required: [true, 'Department Name is required!'],
+    },
+  },
+  { versionKey: false, _id: false }
+);
+
+const BatchSchema = new mongoose.Schema(
+  {
+    id: {
+      type: mongoose.Types.ObjectId,
+      required: [true, 'Batch Id is required'],
+    },
+
+    batchYear: {
+      type: Number,
+      required: [true, 'Batch Year is required!'],
+    },
+  },
+  { versionKey: false, _id: false }
+);
+
+const JobPosterSchema = new mongoose.Schema(
+  {
+    id: {
+      type: mongoose.Types.ObjectId,
+      required: [true, 'Job Poster Id is required'],
+    },
+
+    name: {
+      type: String,
+      required: [true, 'Job Poster Name is required'],
+      trim: true,
+    },
+  },
+  { versionKey: false, _id: false }
+);
+
 const JobOpeningSchema = new mongoose.Schema(
   {
     profile: {
@@ -30,8 +114,7 @@ const JobOpeningSchema = new mongoose.Schema(
     },
 
     company: {
-      type: mongoose.Types.ObjectId,
-      ref: 'Company',
+      type: CompanySchema,
       required: [true, 'Company is required!'],
     },
 
@@ -43,6 +126,15 @@ const JobOpeningSchema = new mongoose.Schema(
     keySkills: {
       type: [String],
       default: [],
+      validate: {
+        validator: function (skills) {
+          for (let skill of skills) {
+            if (!skill?.trim()) return false;
+          }
+          return true;
+        },
+        message: "Skill can't be empty",
+      },
     },
 
     deadline: {
@@ -87,27 +179,23 @@ const JobOpeningSchema = new mongoose.Schema(
     },
 
     receivingCourse: {
-      type: mongoose.Types.ObjectId,
-      ref: 'Course',
-      required: true,
+      type: CourseSchema,
+      required: [true, 'Receving Course is required!'],
     },
 
-    receivingBatches: {
-      type: [mongoose.Types.ObjectId],
-      ref: 'Batch',
-      required: true,
+    receivingBatch: {
+      type: BatchSchema,
+      required: [true, 'Receving Batch is required!'],
     },
 
     receivingDepartments: {
-      type: [mongoose.Types.ObjectId],
-      ref: 'Department',
-      required: true,
+      type: [DepartmentSchema],
+      required: [true, 'Receving Department is required!'],
     },
 
     postedBy: {
-      type: mongoose.Types.ObjectId,
-      ref: 'User',
-      required: true,
+      type: JobPosterSchema,
+      required: [true, 'Job Poster is required!'],
     },
   },
   { timestamps: true, versionKey: false }

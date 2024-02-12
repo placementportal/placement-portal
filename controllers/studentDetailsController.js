@@ -14,7 +14,7 @@ const { studentProfileDetailsAgg } = require('../models/aggregations');
 
 const CustomAPIError = require('../errors');
 const { StatusCodes } = require('http-status-codes');
-const { fileUpload } = require('../utils/fileUpload');
+const { fileUpload, validateModelDoc } = require('../utils');
 
 const getPersonalData = async (req, res) => {
   const studentId = req.user.userId;
@@ -461,6 +461,11 @@ const updatePlacement = async (req, res) => {
   if (!placement)
     throw new CustomAPIError.NotFoundError(`No placement found with id: ${id}`);
 
+  if (placement.isOnCampus)
+    throw new CustomAPIError.BadRequestError(
+      "Can't update an on-campus placement"
+    );
+
   if (placement.studentId.toString() != studentId && req.user.role != 'admin') {
     throw new CustomAPIError.UnauthorizedError(
       'Not allowed to perform this action'
@@ -528,6 +533,11 @@ const deletePlacement = async (req, res) => {
 
   if (!placement)
     throw new CustomAPIError.NotFoundError(`No placement found with ${id}`);
+
+  if (placement.isOnCampus)
+    throw new CustomAPIError.BadRequestError(
+      "Can't delete an on-campus placement"
+    );
 
   if (placement.studentId.toString() != studentId && req.user.role != 'admin') {
     throw new CustomAPIError.UnauthorizedError(
@@ -900,7 +910,7 @@ async function updatePastEducationRecord(data, label) {
     stream,
   });
 
-  throwDocErrors(doc, `Invalid ${label} data`);
+  validateModelDoc(doc, `Invalid ${label} data`);
 
   const { lastErrorObject } = await EducationModel.findOneAndUpdate(
     { studentId },
@@ -932,7 +942,7 @@ async function updateCurrentScoreRecord(data, label) {
     aggregateGPA,
   });
 
-  throwDocErrors(doc, `Invalid ${label} data`);
+  validateModelDoc(doc, `Invalid ${label} data`);
 
   const { lastErrorObject } = await EducationModel.findOneAndUpdate(
     { studentId },
@@ -946,17 +956,6 @@ async function updateCurrentScoreRecord(data, label) {
   );
 
   return lastErrorObject;
-}
-
-function throwDocErrors(doc, message) {
-  const error = doc.validateSync();
-  if (error) {
-    for (let key in error?.errors) {
-      message = error?.errors?.[key]?.message;
-      break;
-    }
-    throw new CustomAPIError.BadRequestError(message);
-  }
 }
 
 module.exports = {

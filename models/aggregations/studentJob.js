@@ -9,9 +9,9 @@ function studentJobOpeningsAgg({ courseId, batchId, departmentId, userId }) {
   return [
     {
       $match: {
-        receivingCourse: courseId,
-        receivingBatches: batchId,
-        receivingDepartments: departmentId,
+        'receivingCourse.id': courseId,
+        'receivingBatch.id': batchId,
+        'receivingDepartments.id': departmentId,
         status: 'open',
         deadline: {
           $gte: new Date(),
@@ -32,8 +32,8 @@ function studentJobOpeningsAgg({ courseId, batchId, departmentId, userId }) {
     },
     {
       $addFields: {
-        applicantsCount: {
-          $size: '$applicants',
+        applicationsCount: {
+          $size: '$applications',
         },
       },
     },
@@ -47,47 +47,7 @@ function studentJobOpeningsAgg({ courseId, batchId, departmentId, userId }) {
         rejectedCandidates: 0,
         selectedCandidates: 0,
         status: 0,
-      },
-    },
-    {
-      $lookup: {
-        from: 'companies',
-        localField: 'company',
-        foreignField: '_id',
-        as: 'company',
-        pipeline: [
-          {
-            $project: {
-              name: 1,
-              website: 1,
-            },
-          },
-        ],
-      },
-    },
-    {
-      $unwind: {
-        path: '$company',
-      },
-    },
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'postedBy',
-        foreignField: '_id',
-        as: 'postedBy',
-        pipeline: [
-          {
-            $project: {
-              name: 1,
-            },
-          },
-        ],
-      },
-    },
-    {
-      $unwind: {
-        path: '$postedBy',
+        applications: 0,
       },
     },
     {
@@ -144,8 +104,8 @@ function studentJobsByStatusAgg({ userId, status }) {
         pipeline: [
           {
             $addFields: {
-              applicantsCount: {
-                $size: '$applicants',
+              applicationsCount: {
+                $size: '$applications',
               },
             },
           },
@@ -159,47 +119,7 @@ function studentJobsByStatusAgg({ userId, status }) {
               rejectedCandidates: 0,
               selectedCandidates: 0,
               status: 0,
-            },
-          },
-          {
-            $lookup: {
-              from: 'companies',
-              localField: 'company',
-              foreignField: '_id',
-              as: 'company',
-              pipeline: [
-                {
-                  $project: {
-                    name: 1,
-                    website: 1,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $unwind: {
-              path: '$company',
-            },
-          },
-          {
-            $lookup: {
-              from: 'users',
-              localField: 'postedBy',
-              foreignField: '_id',
-              as: 'postedBy',
-              pipeline: [
-                {
-                  $project: {
-                    name: 1,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $unwind: {
-              path: '$postedBy',
+              applications: 0,
             },
           },
         ],
@@ -221,7 +141,43 @@ function studentJobsByStatusAgg({ userId, status }) {
   ];
 }
 
+function companyInchargeJobsAgg({ companyId, status }) {
+  companyId = new mongoose.Types.ObjectId(companyId);
+
+  return [
+    {
+      $match: {
+        'company.id': companyId,
+        status,
+      },
+    },
+    {
+      $addFields: {
+        applicationsCount: {
+          $size: '$applications',
+        },
+      },
+    },
+    {
+      $project: {
+        applicants: 0,
+        applications: 0,
+        shortlistedCandidates: 0,
+        rejectedCandidates: 0,
+        selectedCandidates: 0,
+        status: 0,
+      },
+    },
+    {
+      $sort: {
+        createdAt: -1,
+      },
+    },
+  ];
+}
+
 module.exports = {
   studentJobOpeningsAgg,
   studentJobsByStatusAgg,
+  companyInchargeJobsAgg,
 };

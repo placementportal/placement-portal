@@ -2,47 +2,18 @@ const { StatusCodes } = require('http-status-codes');
 const CustomAPIError = require('../errors');
 
 const UserModel = require('../models/User');
-const {
-  CourseModel,
-  DepartmentModel,
-  BatchModel,
-} = require('../models/Course');
 
 const showCurrentUser = async (req, res) => {
-  const user = req.user;
+  const userId = req?.user?.userId;
 
-  const userData = await UserModel.findById(req.user.userId);
-
-  if (userData._id != user.userId)
+  if (userId) {
+    const userData = await UserModel.findById(userId);
+    if (userData._id != userId)
+      throw new CustomAPIError.UnauthenticatedError('Unauthenticated error!');
+  } else
     throw new CustomAPIError.UnauthenticatedError('Unauthenticated error!');
 
-  if (userData.role == 'student') {
-    const { courseId, batchId, departmentId, lastNoticeFetched } = userData;
-
-    const course = await CourseModel.findById(courseId);
-    const batch = await BatchModel.findById(batchId);
-    const department = await DepartmentModel.findById(departmentId);
-
-    const minLastNotice = Math.min(
-      course.lastNoticeTime,
-      batch.lastNoticeTime,
-      department.lastNoticeTime
-    );
-
-    const notification = lastNoticeFetched < minLastNotice;
-
-    (user['courseId'] = courseId),
-      (user['departmentId'] = departmentId),
-      (user['batchId'] = batchId),
-      (user['noticeNotification'] = notification);
-  }
-
-  if (userData.role == 'company_admin') {
-    user['companyId'] = userData.companyId;
-    user['companyRole'] = userData.companyRole;
-  }
-
-  res.status(StatusCodes.OK).json({ success: true, user });
+  res.status(StatusCodes.OK).json({ success: true, user: req.user });
 };
 
 const getUserById = async (req, res) => {

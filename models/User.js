@@ -87,7 +87,6 @@ const UserSchema = new mongoose.Schema(
 
     batchId: {
       type: mongoose.Types.ObjectId,
-      ref: 'Batch',
     },
 
     batchYear: {
@@ -96,7 +95,6 @@ const UserSchema = new mongoose.Schema(
 
     departmentId: {
       type: mongoose.Types.ObjectId,
-      ref: 'Department',
     },
 
     departmentName: {

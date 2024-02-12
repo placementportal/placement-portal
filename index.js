@@ -38,7 +38,7 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 const studentRoutes = require('./routes/studentRoutes');
-const batchDeptRouter = require('./routes/batchDeptRoutes');
+const courseRouter = require('./routes/courseRoutes');
 const noticeRouter = require('./routes/noticeRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const companyRouter = require('./routes/companyRoutes');
@@ -81,10 +81,7 @@ app.use('/api/v1/student', [
   authorizeRoles('student'),
   studentRoutes,
 ]);
-app.use('/api/v1/batchDept', [
-  authenticateUser,
-  batchDeptRouter,
-]);
+app.use('/api/v1/courses', [authenticateUser, courseRouter]);
 app.use('/api/v1/notice', [authenticateUser, noticeRouter]);
 app.use('/api/v1/admin', [
   authenticateUser,

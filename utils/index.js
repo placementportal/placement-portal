@@ -3,9 +3,10 @@ const {
   createUserToken,
   attachCookieToResponse,
   verifyJWT,
-} = require("./jwt");
+} = require('./jwt');
 
-const { fileUpload } = require("./fileUpload");
+const { fileUpload } = require('./fileUpload');
+const { validateModelDoc, validateJobReceivers } = require('./dbUtils');
 
 module.exports = {
   createJWT,
@@ -13,4 +14,6 @@ module.exports = {
   attachCookieToResponse,
   verifyJWT,
   fileUpload,
+  validateModelDoc,
+  validateJobReceivers,
 };

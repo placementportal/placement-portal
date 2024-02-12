@@ -8,8 +8,26 @@ const CustomAPIError = require('../errors');
 const { StatusCodes } = require('http-status-codes');
 
 const createCourse = async (req, res) => {
-  const { courseName } = req.body;
-  const course = await CourseModel.create({ courseName });
+  const {
+    courseName,
+    courseLevel,
+    regularYearsCount,
+    regularSemestersCount,
+    isLateralAllowed,
+    lateralYearsCount,
+    lateralSemestersCount,
+  } = req.body;
+
+  const course = await CourseModel.create({
+    courseName,
+    courseLevel,
+    regularYearsCount,
+    regularSemestersCount,
+    isLateralAllowed,
+    lateralYearsCount,
+    lateralSemestersCount,
+  });
+
   res.status(StatusCodes.CREATED).json({
     success: true,
     message: 'Course Created!',
@@ -18,7 +36,7 @@ const createCourse = async (req, res) => {
 };
 
 const getAllCourses = async (req, res) => {
-  const courses = await CourseModel.find().select('courseName');
+  const courses = await CourseModel.find().select('-batches -departments');
   res.status(StatusCodes.OK).json({
     success: true,
     message: 'Found all courses!',
@@ -27,7 +45,8 @@ const getAllCourses = async (req, res) => {
 };
 
 const createBatch = async (req, res) => {
-  const { batchYear, courseId } = req.body;
+  const courseId = req?.params?.courseId;
+  const batchYear = req?.body?.batchYear;
 
   if (!courseId?.trim()) {
     throw new CustomAPIError.BadRequestError('Course Id is required!');
@@ -40,9 +59,8 @@ const createBatch = async (req, res) => {
     );
   }
 
-  const batch = await BatchModel.create({ batchYear, courseId });
-
-  course.batches.push(batch._id);
+  const batch = new BatchModel({ batchYear });
+  course.batches.set(batch._id.toString(), batch);
   await course.save();
 
   res.status(StatusCodes.CREATED).json({
@@ -53,7 +71,7 @@ const createBatch = async (req, res) => {
 };
 
 const getBatches = async (req, res) => {
-  const courseId = req?.query?.courseId;
+  const courseId = req?.params?.courseId;
 
   if (!courseId?.trim()) {
     throw new CustomAPIError.BadRequestError('Course Id is required!');
@@ -66,16 +84,16 @@ const getBatches = async (req, res) => {
     );
   }
 
-  const batches = await BatchModel.find({ courseId });
   res.status(StatusCodes.OK).json({
     success: true,
     message: `Found batches for course id: ${courseId}`,
-    batches,
+    batches: course.batches,
   });
 };
 
 const createDepartment = async (req, res) => {
-  const { departmentName, courseId } = req.body;
+  const courseId = req?.params?.courseId;
+  const { departmentName, departmentCode } = req.body;
 
   if (!courseId?.trim()) {
     throw new CustomAPIError.BadRequestError('Course Id is required!');
@@ -88,9 +106,8 @@ const createDepartment = async (req, res) => {
     );
   }
 
-  const department = await DepartmentModel.create({ departmentName, courseId });
-
-  course.departments.push(department._id);
+  const department = new DepartmentModel({ departmentName, departmentCode });
+  course.departments.set(department._id.toString(), department);
   await course.save();
 
   res.status(StatusCodes.CREATED).json({
@@ -101,7 +118,7 @@ const createDepartment = async (req, res) => {
 };
 
 const getDepartments = async (req, res) => {
-  const courseId = req?.query?.courseId;
+  const courseId = req?.params?.courseId;
 
   if (!courseId?.trim()) {
     throw new CustomAPIError.BadRequestError('Course Id is required!');
@@ -114,11 +131,49 @@ const getDepartments = async (req, res) => {
     );
   }
 
-  const departments = await DepartmentModel.find({ courseId });
   res.status(StatusCodes.OK).json({
     success: true,
     message: `Departments batches for course id: ${courseId}`,
-    departments,
+    departments: course.departments,
+  });
+};
+
+const getCourseOptions = async (req, res) => {
+  const courses = await CourseModel.find().select(
+    'courseName batches departments'
+  );
+
+  const options = [];
+
+  courses.forEach((course) => {
+    const departments = [];
+    const batches = [];
+
+    course.departments.forEach((value, key) => {
+      departments.push({
+        departmentId: key,
+        departmentName: value.departmentName,
+      });
+    });
+
+    course.batches.forEach((value, key) => {
+      batches.push({
+        batchId: key,
+        batchYear: value.batchYear,
+      });
+    });
+
+    options.push({
+      courseId: course._id,
+      courseName: course.courseName,
+      departments,
+      batches,
+    });
+  });
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    options,
   });
 };
 
@@ -129,4 +184,5 @@ module.exports = {
   getBatches,
   createDepartment,
   getDepartments,
+  getCourseOptions,
 };

@@ -87,10 +87,14 @@ const createJobApplication = async (req, res) => {
       'You have already applied for this job!'
     );
 
+  const validDeptIds = job.receivingDepartments.map((dept) =>
+    dept.id.toString()
+  );
+
   if (
-    String(job.receivingCourse) != courseId ||
-    !job.receivingBatches.includes(batchId) ||
-    !job.receivingDepartments.includes(departmentId)
+    job.receivingCourse.id.toString() !== courseId ||
+    job.receivingBatch.id.toString() !== batchId ||
+    !validDeptIds.includes(departmentId)
   )
     throw new CustomAPIError.BadRequestError("You can't apply for this job!");
 
@@ -106,7 +110,7 @@ const createJobApplication = async (req, res) => {
     coverLetter,
     portfolio,
     resume,
-    companyId: job.company,
+    companyId: job.company.id,
   });
 
   res.status(StatusCodes.CREATED).json({

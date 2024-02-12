@@ -1,84 +1,10 @@
 const mongoose = require('mongoose');
 
-const CourseSchema = new mongoose.Schema(
-  {
-    courseName: {
-      type: String,
-      trim: true,
-      required: [true, 'Course Name is required!'],
-      unique: [true, 'Course Name must be unique!'],
-    },
-
-    courseLevel: {
-      type: String,
-      enum: ['graduation', 'PG'],
-      default: 'graduation',
-    },
-
-    regularYearsCount: {
-      type: Number,
-      min: 1,
-      required: [true, 'Course Year Count is required!'],
-    },
-
-    regularSemestersCount: {
-      type: Number,
-      min: 2,
-      required: [true, 'Course Semester Count is required!'],
-    },
-
-    lateralYearsCount: {
-      type: Number,
-      min: 1,
-    },
-
-    lateralSemesterCount: {
-      type: Number,
-      min: 1,
-    },
-
-    isLateralAllowed: {
-      type: Boolean,
-      default: false,
-    },
-
-    batches: {
-      type: [mongoose.Types.ObjectId],
-      ref: 'Batch',
-      default: [],
-    },
-
-    departments: {
-      type: [mongoose.Types.ObjectId],
-      ref: 'Department',
-      default: [],
-    },
-
-    lastNoticeTime: {
-      type: Date,
-      default: new Date(),
-    },
-
-    lastJobOpening: {
-      type: Date,
-      default: new Date(),
-    },
-  },
-  { versionKey: false, timestamps: true }
-);
-
 const BatchSchema = new mongoose.Schema(
   {
     batchYear: {
       type: Number,
-      trim: true,
       required: [true, 'Batch Year is required!'],
-    },
-
-    courseId: {
-      type: mongoose.Types.ObjectId,
-      ref: 'Course',
-      required: [true, 'Course Id is required!'],
     },
 
     lastNoticeTime: {
@@ -91,10 +17,8 @@ const BatchSchema = new mongoose.Schema(
       default: new Date(),
     },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false }
 );
-
-BatchSchema.index({ courseId: 1, batchYear: 1 }, { unique: true });
 
 const DepartmentSchema = new mongoose.Schema(
   {
@@ -110,10 +34,77 @@ const DepartmentSchema = new mongoose.Schema(
       required: [true, 'Department Code is required!'],
     },
 
-    courseId: {
-      type: mongoose.Types.ObjectId,
-      required: [true, 'Course Id is required!'],
-      ref: 'Course',
+    lastNoticeTime: {
+      type: Date,
+      default: new Date(),
+    },
+
+    lastJobOpening: {
+      type: Date,
+      default: new Date(),
+    },
+  },
+  { versionKey: false }
+);
+
+const CourseSchema = new mongoose.Schema(
+  {
+    courseName: {
+      type: String,
+      trim: true,
+      required: [true, 'Course Name is required!'],
+      unique: [true, 'Course Name must be unique!'],
+    },
+
+    courseLevel: {
+      type: String,
+      enum: ['graduation', 'postGraduation'],
+      required: [true, 'Course Level is required!'],
+    },
+
+    regularYearsCount: {
+      type: Number,
+      min: 1,
+      required: [true, 'Course Year Count is required!'],
+    },
+
+    regularSemestersCount: {
+      type: Number,
+      min: 2,
+      required: [true, 'Course Semester Count is required!'],
+    },
+
+    isLateralAllowed: {
+      type: Boolean,
+      default: false,
+    },
+
+    lateralYearsCount: {
+      type: Number,
+      min: 1,
+      required: function () {
+        return this.isLateralAllowed;
+      },
+    },
+
+    lateralSemestersCount: {
+      type: Number,
+      min: 1,
+      required: function () {
+        return this.isLateralAllowed;
+      },
+    },
+
+    batches: {
+      type: Map,
+      of: BatchSchema,
+      default: new Map(),
+    },
+
+    departments: {
+      type: Map,
+      of: DepartmentSchema,
+      default: new Map(),
     },
 
     lastNoticeTime: {
@@ -126,14 +117,15 @@ const DepartmentSchema = new mongoose.Schema(
       default: new Date(),
     },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false }
 );
 
-DepartmentSchema.index({ courseId: 1, departmentName: 1 }, { unique: true });
-DepartmentSchema.index({ courseId: 1, departmentCode: 1 }, { unique: true });
+/* TODO:
+Ensure uniqueness of batches and departments in each course
+*/
 
 const CourseModel = mongoose.model('Course', CourseSchema);
-const BatchModel = mongoose.model('Batch', BatchSchema);
 const DepartmentModel = mongoose.model('Department', DepartmentSchema);
+const BatchModel = mongoose.model('Batches', BatchSchema);
 
-module.exports = { CourseModel, BatchModel, DepartmentModel };
+module.exports = { CourseModel, DepartmentModel, BatchModel };
