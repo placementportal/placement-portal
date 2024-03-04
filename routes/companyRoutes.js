@@ -14,8 +14,6 @@ const {
   getSingleJobApplications,
 } = require('../controllers/companyController');
 
-const { createQuiz } = require('../controllers/QuizController');
-
 router.post('/jobs', authorizeRoles('company_admin'), createJobOpening);
 router.patch('/jobs/:jobId', authorizeRoles('company_admin'), updateJobOpening);
 router.delete(
@@ -30,8 +28,6 @@ router.get(
   authorizeRoles('company_admin'),
   getSingleJobApplications
 );
-
-router.post('/jobs/:jobId/quiz', authorizeRoles('company_admin'), createQuiz);
 
 router.get(
   '/applications',
