@@ -34,7 +34,7 @@ const CompanySchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, 'Email is required'],
-      unique: [true, 'User already exists'],
+      unique: [true, 'Company with this email already exists'],
       validate: {
         validator: validator.isEmail,
         message: 'Please enter a valid email',
@@ -45,6 +45,21 @@ const CompanySchema = new mongoose.Schema(
       type: [mongoose.Types.ObjectId],
       default: [],
       ref: 'User',
+    },
+
+    jobsPosted: {
+      type: Number,
+      default: 0,
+    },
+
+    openingsCreated: {
+      type: Number,
+      default: 0,
+    },
+
+    candidatesHired: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true, versionKey: false }

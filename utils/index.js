@@ -6,7 +6,11 @@ const {
 } = require('./jwt');
 
 const { fileUpload } = require('./fileUpload');
-const { validateModelDoc, validateJobReceivers } = require('./dbUtils');
+const {
+  validateModelDoc,
+  validateJobReceivers,
+  validateStudentCourse,
+} = require('./dbUtils');
 
 module.exports = {
   createJWT,
@@ -16,4 +20,5 @@ module.exports = {
   fileUpload,
   validateModelDoc,
   validateJobReceivers,
+  validateStudentCourse,
 };

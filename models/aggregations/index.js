@@ -2,9 +2,14 @@ const {
   studentJobOpeningsAgg,
   studentJobsByStatusAgg,
   companyInchargeJobsAgg,
+  singleJobCompanyAgg,
+  singleJobStudentAgg,
 } = require('./studentJob');
 
-const { jobApplicationsAgg } = require('./jobApplications');
+const {
+  jobApplicationsAgg,
+  singleJobApplicationsAgg,
+} = require('./jobApplications');
 const { studentProfileDetailsAgg } = require('./studentDetails');
 
 module.exports = {
@@ -13,4 +18,7 @@ module.exports = {
   companyInchargeJobsAgg,
   jobApplicationsAgg,
   studentProfileDetailsAgg,
+  singleJobCompanyAgg,
+  singleJobStudentAgg,
+  singleJobApplicationsAgg,
 };

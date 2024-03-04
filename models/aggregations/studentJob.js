@@ -31,16 +31,9 @@ function studentJobOpeningsAgg({ courseId, batchId, departmentId, userId }) {
       },
     },
     {
-      $addFields: {
-        applicationsCount: {
-          $size: '$applications',
-        },
-      },
-    },
-    {
       $project: {
         receivingCourse: 0,
-        receivingBatches: 0,
+        receivingBatch: 0,
         receivingDepartments: 0,
         applicants: 0,
         shortlistedCandidates: 0,
@@ -48,6 +41,8 @@ function studentJobOpeningsAgg({ courseId, batchId, departmentId, userId }) {
         selectedCandidates: 0,
         status: 0,
         applications: 0,
+        openingsCount: 0,
+        description: 0,
       },
     },
     {
@@ -103,16 +98,9 @@ function studentJobsByStatusAgg({ userId, status }) {
         as: 'jobs',
         pipeline: [
           {
-            $addFields: {
-              applicationsCount: {
-                $size: '$applications',
-              },
-            },
-          },
-          {
             $project: {
               receivingCourse: 0,
-              receivingBatches: 0,
+              receivingBatch: 0,
               receivingDepartments: 0,
               applicants: 0,
               shortlistedCandidates: 0,
@@ -120,6 +108,8 @@ function studentJobsByStatusAgg({ userId, status }) {
               selectedCandidates: 0,
               status: 0,
               applications: 0,
+              openingsCount: 0,
+              description: 0,
             },
           },
         ],
@@ -136,6 +126,70 @@ function studentJobsByStatusAgg({ userId, status }) {
     {
       $replaceRoot: {
         newRoot: '$jobs',
+      },
+    },
+  ];
+}
+
+function singleJobStudentAgg({
+  jobId,
+  userId,
+  courseId,
+  batchId,
+  departmentId,
+}) {
+  userId = new mongoose.Types.ObjectId(userId);
+  jobId = new mongoose.Types.ObjectId(jobId);
+  courseId = new mongoose.Types.ObjectId(courseId);
+  batchId = new mongoose.Types.ObjectId(batchId);
+  departmentId = new mongoose.Types.ObjectId(departmentId);
+
+  return [
+    {
+      $match: {
+        _id: jobId,
+        'receivingCourse.id': courseId,
+        'receivingBatch.id': batchId,
+        'receivingDepartments.id': departmentId,
+      },
+    },
+    {
+      $addFields: {
+        applicationsCount: {
+          $size: '$applications',
+        },
+        applicationStatus: {
+          $switch: {
+            branches: [
+              { case: { $in: [userId, '$applicants'] }, then: 'applied' },
+              {
+                case: { $in: [userId, '$shortlistedCandidates'] },
+                then: 'shortlisted',
+              },
+              {
+                case: { $in: [userId, '$rejectedCandidates'] },
+                then: 'rejected',
+              },
+              {
+                case: { $in: [userId, '$selectedCandidates'] },
+                then: 'hired',
+              },
+            ],
+            default: 'not applied',
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        applicants: 0,
+        applications: 0,
+        shortlistedCandidates: 0,
+        rejectedCandidates: 0,
+        selectedCandidates: 0,
+        receivingCourse: 0,
+        receivingBatch: 0,
+        receivingDepartments: 0,
       },
     },
   ];
@@ -166,6 +220,15 @@ function companyInchargeJobsAgg({ companyId, status }) {
         rejectedCandidates: 0,
         selectedCandidates: 0,
         status: 0,
+        description: 0,
+        // profile: 1,
+        // company: 1,
+        // location: 1,
+        // jobPackage: 1,
+        // keySkills: 1,
+        // deadline: 1,
+        // postedBy: 1,
+        // applicationsCount: 1,
       },
     },
     {
@@ -176,8 +239,40 @@ function companyInchargeJobsAgg({ companyId, status }) {
   ];
 }
 
+function singleJobCompanyAgg({ companyId, jobId }) {
+  companyId = new mongoose.Types.ObjectId(companyId);
+  jobId = new mongoose.Types.ObjectId(jobId);
+
+  return [
+    {
+      $match: {
+        'company.id': companyId,
+        _id: jobId,
+      },
+    },
+    {
+      $addFields: {
+        applicationsCount: {
+          $size: '$applications',
+        },
+      },
+    },
+    {
+      $project: {
+        applicants: 0,
+        applications: 0,
+        shortlistedCandidates: 0,
+        rejectedCandidates: 0,
+        selectedCandidates: 0,
+      },
+    },
+  ];
+}
+
 module.exports = {
   studentJobOpeningsAgg,
   studentJobsByStatusAgg,
+  singleJobStudentAgg,
   companyInchargeJobsAgg,
+  singleJobCompanyAgg,
 };

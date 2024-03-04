@@ -9,6 +9,7 @@ const { fileUpload } = require('../utils/fileUpload');
 const {
   studentJobOpeningsAgg,
   studentJobsByStatusAgg,
+  singleJobStudentAgg,
 } = require('../models/aggregations/');
 const JobApplicationModel = require('../models/JobApplication');
 
@@ -47,6 +48,29 @@ const getJobsForStudent = async (req, res) => {
   const student = await UserModel.findById(userId);
   student.lastJobFetched = new Date();
   await student.save();
+};
+
+const getStudentJobById = async (req, res) => {
+  const jobId = req?.params?.jobId;
+  if (!jobId?.trim())
+    throw new CustomAPIError.BadRequestError('Job Id is required!');
+
+  const { batchId, departmentId, courseId, userId } = req.user;
+
+  const job = (
+    await JobOpeningModel.aggregate(
+      singleJobStudentAgg({ jobId, userId, batchId, departmentId, courseId })
+    )
+  )?.[0];
+
+  if (!job)
+    throw new CustomAPIError.NotFoundError(`No job found with id: ${jobId}`);
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Job found!',
+    job,
+  });
 };
 
 const createJobApplication = async (req, res) => {
@@ -132,4 +156,5 @@ const createJobApplication = async (req, res) => {
 module.exports = {
   getJobsForStudent,
   createJobApplication,
+  getStudentJobById,
 };

@@ -60,4 +60,53 @@ async function validateJobReceivers({
   };
 }
 
-module.exports = { validateModelDoc, validateJobReceivers };
+async function validateStudentCourse({
+  courseId,
+  departmentId,
+  batchId,
+  isLateralEntry,
+}) {
+  const course = await CourseModel.findById(courseId);
+  if (!course)
+    throw new CustomAPIError.BadRequestError(
+      `No course found with id: ${courseId}`
+    );
+
+  if (isLateralEntry && !course.isLateralAllowed)
+    throw new CustomAPIError.BadRequestError(
+      "Lateral Entry isn't allowed for this course"
+    );
+
+  const department = course.departments.get(departmentId);
+  if (!department)
+    throw new CustomAPIError.BadRequestError(
+      `Invalid Department Id: ${departmentId}`
+    );
+
+  const batch = course.batches.get(batchId);
+  if (!batch)
+    throw new CustomAPIError.BadRequestError(`Invalid Batch Id: ${batchId}`);
+
+  const yearsCount = isLateralEntry
+    ? course.lateralYearsCount
+    : course.regularYearsCount;
+
+  const semestersCount = isLateralEntry
+    ? course.lateralSemestersCount
+    : course.regularSemestersCount;
+
+  return {
+    courseName: course.courseName,
+    courseLevel: course.courseLevel,
+    departmentName: department.departmentName,
+    batchYear: batch.batchYear,
+    yearsCount,
+    semestersCount,
+  };
+}
+
+module.exports = {
+  validateModelDoc,
+  validateJobReceivers,
+  validateStudentCourse,
+};

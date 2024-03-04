@@ -41,6 +41,7 @@ const {
 const {
   getJobsForStudent,
   createJobApplication,
+  getStudentJobById,
 } = require('../controllers/studentJobsController');
 
 router.get('/profile', getStudentProfile);
@@ -71,6 +72,7 @@ router.patch('/training/:id', updateTraining);
 router.delete('/training/:id', deleteTraining);
 
 router.get('/jobs?', getJobsForStudent);
+router.get('/jobs/:jobId', getStudentJobById);
 router.post('/jobs/:id/apply', createJobApplication);
 
 router.post('/skills', addSkill);

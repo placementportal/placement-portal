@@ -90,8 +90,8 @@ const JobOpeningSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Job Profile is required'],
       trim: true,
-      minlength: [3, 'Name should be of atleast 3 characters'],
-      maxlength: [30, 'Name should be of maximum 30 characters'],
+      minlength: [3, 'Job Profile should be of atleast 3 characters'],
+      maxlength: [50, 'Job Profile should be of maximum 50 characters'],
     },
 
     description: {
@@ -128,6 +128,7 @@ const JobOpeningSchema = new mongoose.Schema(
       default: [],
       validate: {
         validator: function (skills) {
+          if (!skills || !skills.length) return false;
           for (let skill of skills) {
             if (!skill?.trim()) return false;
           }

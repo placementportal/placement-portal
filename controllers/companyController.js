@@ -10,20 +10,14 @@ const { validateJobReceivers } = require('../utils');
 const {
   jobApplicationsAgg,
   companyInchargeJobsAgg,
+  studentProfileDetailsAgg,
+  singleJobCompanyAgg,
+  singleJobApplicationsAgg,
 } = require('../models/aggregations');
 const UserModel = require('../models/User');
 
 const { fileUpload } = require('../utils');
 const { PlacementModel } = require('../models/student');
-
-const getCompanies = async (req, res) => {
-  const companies = await CompanyModel.find();
-  res.status(StatusCodes.OK).json({
-    success: true,
-    message: 'Companies found!',
-    companies,
-  });
-};
 
 const createJobOpening = async (req, res) => {
   const {
@@ -140,6 +134,32 @@ const getJobsForIncharge = async (req, res) => {
   });
 };
 
+const getSingleJob = async (req, res) => {
+  const jobId = req?.params?.jobId;
+  const companyId = req?.user?.companyId;
+
+  if (!jobId?.trim())
+    throw new CustomAPIError.BadRequestError('Job is required!');
+
+  const job = (
+    await JobOpeningModel.aggregate(
+      singleJobCompanyAgg({
+        companyId,
+        jobId,
+      })
+    )
+  )?.[0];
+
+  if (!job)
+    throw new CustomAPIError.NotFoundError(`No job found with id: ${jobId}`);
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Found job',
+    job,
+  });
+};
+
 const updateJobOpening = async (req, res) => {
   const jobId = req?.params?.jobId;
   const { userId, companyId } = req.user;
@@ -251,6 +271,31 @@ const getJobApplications = async (req, res) => {
   });
 };
 
+const getSingleJobApplications = async (req, res) => {
+  const jobId = req?.params?.jobId;
+  const companyId = req?.user?.companyId;
+
+  console.log(jobId, companyId);
+
+  if (!jobId?.trim())
+    throw new CustomAPIError.BadRequestError('Job Id is required!');
+
+  const job = (
+    await JobOpeningModel.aggregate(
+      singleJobApplicationsAgg({ jobId, companyId })
+    )
+  )?.[0];
+
+  if (!job)
+    throw new CustomAPIError.NotFoundError(`No job found with id: ${jobId}`);
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Applications found!',
+    job,
+  });
+};
+
 const jobApplicationAction = async (req, res) => {
   const { id: applicationId, action } = req?.params;
   const userId = req?.user?.userId;
@@ -336,7 +381,7 @@ const createOnCampusPlacement = async (req, res) => {
     throw new CustomAPIError.BadRequestError(`Job is closed`);
 
   let { offerLetter, joiningLetter } = req?.files;
-  const joiningDate = req?.body?.joiningDate;
+  let joiningDate = req?.body?.joiningDate;
 
   if (joiningDate) {
     joiningDate = new Date(joiningDate);
@@ -390,7 +435,7 @@ const createOnCampusPlacement = async (req, res) => {
   await application.save();
 
   const pastCandidatesArr =
-    applicationStatus === 'pending' ? 'applicants' : 'selectedCandidates';
+    applicationStatus === 'pending' ? 'applicants' : 'shortlistedCandidates';
 
   job[pastCandidatesArr] = job[pastCandidatesArr].filter(
     (id) => id.toString() !== applicantId.toString()
@@ -400,13 +445,50 @@ const createOnCampusPlacement = async (req, res) => {
 
   const user = await UserModel.findById(applicantId);
   const pastJobsArr =
-    application === 'pending' ? 'jobsApplied' : 'jobsShortlisted';
+    applicationStatus === 'pending' ? 'jobsApplied' : 'jobsShortlisted';
   user[pastJobsArr] = user[pastJobsArr].filter(
     (id) => id.toString() !== jobId.toString()
   );
   user.jobsSelected.push(jobId);
   user.placements.push(placement._id);
   await user.save();
+};
+
+const getStudentPublicProfile = async (req, res) => {
+  const { applicationId, studentId } = req?.params;
+
+  if (!applicationId?.trim() || !studentId?.trim())
+    throw new CustomAPIError.BadRequestError(
+      'Application Id and Student Id are required'
+    );
+
+  const application = await JobApplicationModel.findById(applicationId);
+
+  if (!application)
+    throw new CustomAPIError.NotFoundError(
+      `No application found with id: ${applicationId}`
+    );
+
+  if (application.companyId.toString() !== req?.user?.companyId)
+    throw new CustomAPIError.UnauthenticatedError("Can't access this resource");
+
+  if (application.applicantId != studentId)
+    throw new CustomAPIError.BadRequestError('Wrong student id!');
+
+  const profileDetails = (
+    await UserModel.aggregate(studentProfileDetailsAgg(studentId, false))
+  )?.[0];
+
+  if (!profileDetails)
+    throw new CustomAPIError.NotFoundError(
+      `No student found with id: ${studentId}`
+    );
+
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'Profile Details Found!',
+    profileDetails,
+  });
 };
 
 function isActionValid(action, currentStatus) {
@@ -457,7 +539,6 @@ function isActionValid(action, currentStatus) {
 }
 
 module.exports = {
-  getCompanies,
   createJobOpening,
   updateJobOpening,
   deleteJobOpening,
@@ -465,4 +546,7 @@ module.exports = {
   getJobApplications,
   jobApplicationAction,
   createOnCampusPlacement,
+  getStudentPublicProfile,
+  getSingleJob,
+  getSingleJobApplications,
 };
