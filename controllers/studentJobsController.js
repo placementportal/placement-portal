@@ -10,6 +10,7 @@ const {
   studentJobOpeningsAgg,
   studentJobsByStatusAgg,
   singleJobStudentAgg,
+  studentJobApplicationsAgg,
 } = require('../models/aggregations/');
 const JobApplicationModel = require('../models/JobApplication');
 
@@ -153,8 +154,21 @@ const createJobApplication = async (req, res) => {
   await applicant.save();
 };
 
+const getApplications = async (req, res) => {
+  const applicantId = req?.user?.userId;
+  const applications = await JobApplicationModel.aggregate(
+    studentJobApplicationsAgg({ applicantId })
+  );
+  res.status(StatusCodes.OK).json({
+    success: true,
+    message: 'found applications',
+    applications,
+  });
+};
+
 module.exports = {
   getJobsForStudent,
   createJobApplication,
   getStudentJobById,
+  getApplications,
 };

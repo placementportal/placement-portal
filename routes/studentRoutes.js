@@ -42,6 +42,7 @@ const {
   getJobsForStudent,
   createJobApplication,
   getStudentJobById,
+  getApplications,
 } = require('../controllers/studentJobsController');
 
 router.get('/profile', getStudentProfile);
@@ -84,5 +85,7 @@ router.post('/achievements', addAchievement);
 router.delete('/achievements', deleteAchievement);
 router.get('/achievements', getAchievements);
 router.patch('/achievements', updateAchievement);
+
+router.get('/applications', getApplications);
 
 module.exports = router;

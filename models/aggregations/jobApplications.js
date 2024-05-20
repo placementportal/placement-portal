@@ -143,7 +143,55 @@ function singleJobApplicationsAgg({ jobId, companyId }) {
   ];
 }
 
+function studentJobApplicationsAgg({ applicantId }) {
+  applicantId = new mongoose.Types.ObjectId(applicantId);
+  return [
+    {
+      $match: {
+        applicantId: applicantId,
+      },
+    },
+    {
+      $project: {
+        portfolio: 1,
+        resume: 1,
+        coverLetter: 1,
+        jobId: 1,
+        status: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: 'jobopenings',
+        localField: 'jobId',
+        foreignField: '_id',
+        as: 'job',
+        pipeline: [
+          {
+            $project: {
+              profile: 1,
+              company: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: '$job',
+    },
+    {
+      $group: {
+        _id: { status: '$status' },
+        application: {
+          $push: '$$ROOT',
+        },
+      },
+    },
+  ];
+}
+
 module.exports = {
   jobApplicationsAgg,
   singleJobApplicationsAgg,
+  studentJobApplicationsAgg,
 };
