@@ -4,6 +4,8 @@ const CompanyModel = require('../models/Company');
 const CustomAPIError = require('../errors');
 const { StatusCodes } = require('http-status-codes');
 const { validateStudentCourse } = require('../utils');
+const JobOpeningModel = require('../models/JobOpenings');
+const { default: mongoose } = require('mongoose');
 
 const getStudents = async (req, res) => {
   const page = req?.query?.page || 1;
@@ -204,7 +206,7 @@ const addCompany = async (req, res) => {
 const updateCompany = async (req, res) => {
   const companyId = req?.params?.companyId;
   const { companyName: name, companyEmail: email, about } = req.body;
-  console.log(req.body);
+
   let website = req?.body?.website;
 
   if (website && !website.match(/^https?:\/\//)) {
@@ -227,6 +229,16 @@ const updateCompany = async (req, res) => {
     message: 'Company updated!',
     id: company._id,
   });
+
+  await JobOpeningModel.updateMany(
+    { 'company.id': new mongoose.Types.ObjectId(companyId) },
+    {
+      $set: {
+        'company.name': name,
+        'company.website': website,
+      },
+    }
+  );
 };
 
 const addCompanyAdmin = async (req, res) => {
